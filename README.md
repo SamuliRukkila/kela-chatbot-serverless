@@ -1,6 +1,14 @@
 # kela-chatbot-serverless
+
 Local Lambda-functions using [Serverless](https://serverless.com/) -framework.
 
-### Install Serverless -framework
+Download: `npm i serverless -g`
 
-`npm i serverless -g`
+### Serverless
+
+Deploy everything: `serverless deploy`
+
+Deploy specific function: `serverless deploy function -f {{ functionName }}`
+
+
+
