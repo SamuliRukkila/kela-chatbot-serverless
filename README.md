@@ -6,9 +6,9 @@ Download: `npm i serverless -g`
 
 ### Serverless
 
-Deploy everything: `serverless deploy`
+Deploy everything: `sls deploy`
 
-Deploy specific function: `serverless deploy function -f {{ functionName }}`
+Deploy specific function: `sls deploy function -f {{ functionName }}`
 
 
 
