@@ -1,4 +1,4 @@
-# kela-chatbot-serverless
+# Kela Chatbot: Serverless
 
 Local Lambda-functions using [Serverless](https://serverless.com/) -framework.
 
