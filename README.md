@@ -1,14 +1,16 @@
-# Kela Chatbot: Serverless
+Kela Chatbot: Serverless
+------------------------
 
 Local Lambda-functions using [Serverless](https://serverless.com/) -framework.
 
 Download: `npm i serverless -g`
 
-### Serverless
+Serverless
+----------
 
-Deploy everything: `sls deploy`
+Deploy everything (Also when serverless.yml is updated): `sls deploy -v`
 
-Deploy specific function: `sls deploy function -f {{ functionName }}`
+Deploy specific function (when you have modified only 1 function): `sls deploy function -f {{ functionName }}`
 
 
 
