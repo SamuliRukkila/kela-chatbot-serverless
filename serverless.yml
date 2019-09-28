@@ -25,6 +25,8 @@ provider:
   runtime: nodejs10.x
   region: eu-west-1
 
+plugins:
+  - serverless-ignore
 # you can overwrite defaults here
 #  stage: dev
 
