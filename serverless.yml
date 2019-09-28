@@ -58,9 +58,9 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  KelaUserCredential:
-    handler: kelaUserCredential.handler
-    name: KelaUserCredentialFunction
+  KelaUserInformation:
+    handler: userInformation.handler
+    name: kela-userInformaton
 
 
 #    The following are a few example events you can configure
