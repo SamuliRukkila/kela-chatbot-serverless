@@ -62,7 +62,7 @@ plugins:
 functions:
   KelaUserInformation:
     handler: lambdas/kela-userInformation/userInformation.handler
-    name: kela-userInformaton
+    name: kela-userInformation
   KelaLocateNearestBuilding:
     handler: lambdas/kela-locateNearestBuilding/locateNearestBuilding.handler
     name: kela-locateNearestBuilding 

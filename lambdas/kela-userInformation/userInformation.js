@@ -7,7 +7,6 @@ const response = require('./response');
 module.exports.handler = event => {
   console.log(event);
 
-  //
   if (event.invocationSource === 'DialogCodeHook' &&
     event.currentIntent.slots.Pin) {
     const pin = validate.validatePin(event.currentIntent.slots.Pin);
