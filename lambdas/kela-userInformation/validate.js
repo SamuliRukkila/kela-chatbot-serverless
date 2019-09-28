@@ -6,7 +6,7 @@ const validate = {
     for (let i = 0; i < words.length; i++) {
       if (pin.contains(words[i])) pin.replace(words[i], '-');  
     }
-
+    
     const pinLength = pin.split(' ').join('').length;
     let status;
 
