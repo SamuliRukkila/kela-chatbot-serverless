@@ -1,6 +1,13 @@
 # package directories
-node_modules
-jspm_packages
+node_modules/
+jspm_packages/
+serverless_sdk/
 
 # Serverless directories
 .serverless
+
+# Temporary test files
+s_*
+
+# Local files
+package*

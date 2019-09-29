@@ -60,12 +60,21 @@ plugins:
 #    - exclude-me-dir/**
 
 functions:
+
+  # Get user's Kela information
   KelaUserInformation:
-    handler: lambdas/kela-userInformation/userInformation.handler
+    handler: lambdas/userInformation/userInformation.handler
     name: kela-userInformation
+
+  # Locate nearest Kela -apartment
   KelaLocateNearestBuilding:
-    handler: lambdas/kela-locateNearestBuilding/locateNearestBuilding.handler
-    name: kela-locateNearestBuilding 
+    handler: lambdas/locateNearestBuilding/locateNearestBuilding.handler
+    name: kela-locateNearestBuilding
+    
+  # Book a new time for Kela meeting
+  KelaBookTime:
+    handler: lambdas/bookTime/bookTime.handler
+    name: kela-bookTime
 
 
 #    The following are a few example events you can configure
