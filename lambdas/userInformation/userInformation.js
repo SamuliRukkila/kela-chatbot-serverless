@@ -4,32 +4,37 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 const validate = require('./validate');
 const response = require('./response');
 
-module.exports.handler = event => {
+module.exports.handler = async event => {
   
   console.log(event);
   console.log(event.currentIntent);
 
   // If Lex is doing a validation call for the PIN
-  if (event.invocationSource === 'DialogCodeHook' &&
-    event.currentIntent.slots.Pin) {
-    console.log('In 1. option');
-    const pin = validate.validatePin(event.currentIntent.slots.Pin);
+  if (event.invocationSource === 'DialogCodeHook' && event.currentIntent.slots.Kela_PIN) {
+    
+    const pin = validate.validatePin(event.currentIntent.slots.Kela_PIN);
 
-    if (pin.status === 'long' || pin.status === 'short') {
-      return response.returnErrorAnswer(
-        `Your given PIN: ${pin.pin} is too ${pin.status}`
-      );
-    } else {
-      return response.returnValidAnswer(pin.pin);
+    if (pin.invalidLength) {
+      return response.returnInvalidPin({
+        pin: pin.pin, errorMessage: `PIN is too ${pin.invalidLength}`
+      });
     }
-  } 
-  else if (event.invocationSource === 'DialogCodeHook') {
-    console.log('In 2. option');
-    return response.returnAnswer('Delegate');
+    
+    if (pin.invalidSymbol) {
+      return response.returnInvalidPin({
+        pin: pin.pin, errorMessage: `Invalid century-symbol. Possible symbols (- & A)`
+      });
+    }
+
+    return response.returnConfirmPin(pin.pin);
   }
+
+  // If lex is doing initilization
+  else if (event.invocationSource === 'DialogCodeHook') {
+    return response.returnDelegate();
+  }
+
   else {
-    console.log('In 3. option');
-    // get
   }
 
 };

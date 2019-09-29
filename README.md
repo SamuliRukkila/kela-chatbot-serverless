@@ -20,7 +20,7 @@ $ sls deploy -v
 
 Deploy only a specific function (when you have modified 1 function): 
 ```
-$ sls deploy function -f <functionName>`
+$ sls deploy function -f <functionName>
 ```
 
 Test functions locally (test data found from folder `local-test-data`):
