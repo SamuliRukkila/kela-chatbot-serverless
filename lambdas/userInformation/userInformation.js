@@ -1,22 +1,31 @@
-const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient();
-
 const validate = require('./validate');
 const response = require('./response');
+const dynamoDB = require('./dynamodb');
 
+/**
+ * Main function of user information -lambda. At this
+ * moment only LEX will call this function. Function
+ * will consist of three different scenarios which will
+ * be distruped by conditional statement (if, else etc.).
+ * 
+ * @param {Object} event Contains events send by LEX's bot
+ */
 module.exports.handler = async event => {
   
   console.log(event);
   console.log(event.currentIntent);
 
-  // User PIN is confirmed and information will be searched 
-  // according to that user by it's PIN from DynamoDB
+  /**
+   * 1. SCENARIO
+   * 
+   * User PIN is confirmed and information will be searched 
+   * according to that user by it's PIN from DynamoDB
+   */
   if (event.currentIntent.confirmationStatus === 'Confirmed' &&
     event.currentIntent.slots.Kela_PIN) {
-
-    searchUserByPin(event.currentIntent.slots.Kela_PIN, (err, res) => {
-      const pin = event.currentIntent.slots.Kela_PIN;
       
+    dynamoDB.searchUserByPin(event.currentIntent.slots.Kela_PIN, (err, res) => {
+      const pin = event.currentIntent.slots.Kela_PIN;
       if (err) {
         console.error(err);
         return response.returnFailedSearch(false);
@@ -25,13 +34,16 @@ module.exports.handler = async event => {
         console.error('Could not find user with PIN: ' + pin);
         return response.returnFailedSearch(true, pin);
       }
-  
       return response.returnUserInformation(res.Item);
-
     });
   }
 
-  // If Lex is doing a validation call for the PIN
+  /**
+   * 2. SCENARIO
+   * 
+   * If Lex is doing a validation call for the PIN.
+   * Validated PIN will be sent back to LEX in the end.
+   */
   else if (event.invocationSource === 'DialogCodeHook' && event.currentIntent.slots.Kela_PIN) {
     
     // Validate PIN
@@ -55,23 +67,16 @@ module.exports.handler = async event => {
     return response.returnConfirmPin(res.pin);
   }
 
-  // If lex is doing initilization
+  
+  /**
+   * 3. SCENARIO
+   * 
+   * This will (and should) only happen when Lex is doing
+   * initialization call.
+   */
   else {
     return response.returnDelegate();
   }
 
 
-};
-
-const searchUserByPin = (pin, callback) => {
-  const params = {
-    TableName: 'kela-Customers',
-    Key: {
-      Pin: pin
-    }
-  };
-
-  ddb.get(params).promise()
-    .then(res => callback(null, res))
-    .catch(err => callback(err, null));
 };
