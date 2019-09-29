@@ -50,6 +50,7 @@ const validate = {
 
   /**
    * Checks that PIN's length is exactly 11 characters.
+   * 
    * @param {Number} length PIN's length
    * @returns string if PIN is too long/short; null if valid
    */
@@ -61,7 +62,9 @@ const validate = {
   /**
    * Checks that PIN has valid century symbol.
    * Century symbol is 7th character in PIN.
-   * Valid symbols are "-" -symbol (1900-1999) and A (2000 ->)
+   * 
+   * Valid symbols are "-" -symbol (1900-1999) and A (2000 ->).
+   * 
    * @param {String} pin PIN which'll be checked
    * @returns boolean value telling is century -symbol is valid
    */
