@@ -14,8 +14,7 @@ module.exports.handler = async event => {
   if (event.currentIntent.confirmationStatus === 'Confirmed' &&
     event.currentIntent.slots.Kela_PIN) {
 
-    const res = searchUserByPin(event.currentIntent.slots.Kela_PIN);
-
+    searchUserByPin(event.currentIntent.slots.Kela_PIN, (err, res) => {
       const pin = event.currentIntent.slots.Kela_PIN;
       
       if (err) {
@@ -64,7 +63,7 @@ module.exports.handler = async event => {
 
 };
 
-async const searchUserByPin = (pin, callback) => {
+const searchUserByPin = (pin, callback) => {
   const params = {
     TableName: 'kela-Customers',
     Key: {
