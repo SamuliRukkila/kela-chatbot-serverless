@@ -9,18 +9,25 @@
  * https://docs.aws.amazon.com/lex/latest/dg/lambda-input-response-format.html?shortFooter=true#using-lambda-response-format
  *
  */
-const response = {
+
+import { DialogClose } from '../../classes/DialogClose';
+import { DialogDelegate } from '../../classes/DialogDelegate';
+import { User } from '../../classes/User';
+import { DialogConfirmIntent } from '../../classes/DialogConfirmIntent';
+import { DialogElicitSlot } from '../../classes/DialogElicitSlot';
+
+export class Response {
   /**
    * Return empty response. Lex's bot will continue
    * according to it's configuration.
    */
-  returnDelegate: () => {
+  public returnDelegate (): DialogDelegate {
     return {
       dialogAction: {
-        type: 'Delegate'
+        type: 'Delegate',
       }
     };
-  },
+  }
 
   /**
    * If PIN is invalid by it's length/value,
@@ -31,7 +38,7 @@ const response = {
    * @param {string} res.errorMessage Why PIN failed
    *
    */
-  returnInvalidPin: res => {
+  public returnInvalidPin(res: any): DialogElicitSlot {
     return {
       dialogAction: {
         type: 'ElicitSlot',
@@ -47,7 +54,7 @@ const response = {
         slotToElicit: 'Kela_PIN'
       }
     };
-  },
+  }
 
   /**
    * PIN is valid and it'll be added to Kela_PIN -slot.
@@ -56,7 +63,7 @@ const response = {
    *
    * @param {String} pin Validated PIN
    */
-  returnConfirmPin: pin => {
+  public returnConfirmPin(pin: string): DialogConfirmIntent {
     return {
       dialogAction: {
         type: 'ConfirmIntent',
@@ -66,7 +73,7 @@ const response = {
         }
       }
     };
-  },
+  }
 
   /**
    * If Lambda gets an error while searching for PIN from
@@ -76,7 +83,7 @@ const response = {
    * 
    * @param {Boolean} unknownPin If user wasn't found from database
    */
-  returnFailedSearch: (unknownPin, pin = null) => {
+  public returnFailedSearch (unknownPin: boolean, pin = null): DialogClose {
 
     const content = unknownPin
       ? `Could not find user via provided PIN: ${pin}`
@@ -92,21 +99,20 @@ const response = {
         }
       }
     };
-  },
+  }
 
-  returnUserInformation: user => {
+  public returnUserInformation (user: User): DialogClose {
+
     return {
       dialogAction: {
         type: 'Close',
         fulfillmentState: 'Fulfilled',
         message: {
           contentType: 'PlainText',
-          content: user
+          content: user.toString()
         }
       }
     };
   }
 
 };
-
-module.exports = response;

@@ -27,6 +27,7 @@ provider:
 
 plugins:
   - serverless-ignore
+  - serverless-plugin-typescript
 # you can overwrite defaults here
 #  stage: dev
 
