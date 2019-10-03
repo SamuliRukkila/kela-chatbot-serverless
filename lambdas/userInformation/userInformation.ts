@@ -1,6 +1,7 @@
 import { Validate } from './validate';
 import { Response } from './response';
 import { DynamoDB} from './dynamodb';
+import { LexEvent } from '../../classes/LexEvent';
 
 /**
  * Main function of user information -lambda. At this moment 
@@ -10,7 +11,7 @@ import { DynamoDB} from './dynamodb';
  * 
  * @param {Object} event Contains events send by LEX's bot
  */
-module.exports.handler = async event => {
+module.exports.handler = async (event: LexEvent) => {
   
   console.log(event);
   console.log(event.currentIntent);
