@@ -2,6 +2,7 @@ import { Validate } from './validate';
 import { Response } from './response';
 import { DynamoDB} from './dynamodb';
 import { LexEvent } from '../../classes/LexEvent';
+import { User } from '../../classes/User';
 
 /**
  * Main function of user information -lambda. At this moment 
@@ -11,7 +12,7 @@ import { LexEvent } from '../../classes/LexEvent';
  * 
  * @param {Object} event Contains events send by LEX's bot
  */
-module.exports.handler = async (event: LexEvent) => {
+module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
   
   console.log(event);
   console.log(event.currentIntent);
@@ -29,19 +30,26 @@ module.exports.handler = async (event: LexEvent) => {
 
     const dynamoDB = new DynamoDB(); 
       
-    const pin = event.currentIntent.slots.Kela_PIN;
+    const pin: string = event.currentIntent.slots.Kela_PIN;
     
-    const ddbRes = await dynamoDB.searchUserByPin(pin);
+    await dynamoDB.searchUserByPin(pin).then(res => {
+      if (!res) {
+        console.error('Could not find user with PIN: ' + pin);
+        callback(null, response.returnFailedSearch(true, pin));
+      }
+      console.log('Found user: ' + res.Item);
+      callback(null, response.returnUserInformation(res.Item));
+    }).catch(err => {
+      console.error(err);
+      callback(null, response.returnFailedSearch(false));
+    });
 
     //   if (ddbRes.err) {
     //     console.error(ddbRes.err);
     //     return response.returnFailedSearch(false);
     //   }
     // if (!ddbRes.res) {
-    //     console.error('Could not find user with PIN: ' + pin);
-    //     return response.returnFailedSearch(true, pin);
     //   }
-    // return response.returnUserInformation(ddbRes.res.Item);
   }
 
 

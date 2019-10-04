@@ -101,7 +101,14 @@ export class Response {
     };
   }
 
-  public returnUserInformation (user: User): DialogClose {
+  public returnUserInformation (res: any): DialogClose {
+    
+    const user: User = res;
+    const content = `Here's your information:\n
+                     PIN: ${user.Pin}\n
+                     Date of birth: ${user.DateOfBirth}\n
+                     Full name: ${user.FirstName} ${user.LastName}\n
+                     City: ${user.City}`;
 
     return {
       dialogAction: {
@@ -109,7 +116,7 @@ export class Response {
         fulfillmentState: 'Fulfilled',
         message: {
           contentType: 'PlainText',
-          content: user.toString()
+          content: content
         }
       }
     };

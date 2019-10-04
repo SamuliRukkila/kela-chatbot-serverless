@@ -18,9 +18,10 @@ export class Validate {
    */
   public validatePin(pin: string): void {
 
+    console.log('Given unvalidated PIN: ' + pin);
+    
     pin = pin.replace(/ /g, '').toUpperCase();
     
-    console.log('Given unvalidated PIN: ' + pin);
     
     this.pin = pin;
 
