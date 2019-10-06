@@ -33,12 +33,13 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     const pin: string = event.currentIntent.slots.Kela_PIN;
     
     await dynamoDB.searchUserByPin(pin).then(res => {
-      if (!res) {
+      if (!res.Item) {
         console.error('Could not find user with PIN: ' + pin);
         callback(null, response.returnFailedSearch(true, pin));
+      } else {
+        console.log('Found user: ' + res.Item);
+        callback(null, response.returnUserInformation(res.Item));
       }
-      console.log('Found user: ' + res.Item);
-      callback(null, response.returnUserInformation(res.Item));
     }).catch(err => {
       console.error(err);
       callback(null, response.returnFailedSearch(false));

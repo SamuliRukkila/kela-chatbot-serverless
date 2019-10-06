@@ -11,6 +11,7 @@ export class DynamoDB {
    * Gets user information by their PIN
    * 
    * @param {string} pin PIN which identifies the user
+   * @retuns Promise which'll return user information/error
    */
   public async searchUserByPin(pin: string): Promise<GetItemOutput> {
     const params = {
