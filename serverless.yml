@@ -49,16 +49,17 @@ functions:
     handler: lambdas/userInformation/userInformation.handler
     name: kela-userInformation
     description: Gets user information from DynamoDB via provided PIN
-
-  # Locate nearest Kela -apartment
-  KelaLocateNearestBuilding:
-    handler: lambdas/locateNearestBuilding/locateNearestBuilding.handler
-    name: kela-locateNearestBuilding
     
   # Book a new time for Kela meeting
   KelaBookTime:
     handler: lambdas/bookTime/bookTime.handler
     name: kela-bookTime
+    description: Books time for the user for a meeting
+
+  # Locate nearest Kela -apartment
+  KelaLocateNearestBuilding:
+    handler: lambdas/locateNearestBuilding/locateNearestBuilding.handler
+    name: kela-locateNearestBuilding
 
 
 #    The following are a few example events you can configure
