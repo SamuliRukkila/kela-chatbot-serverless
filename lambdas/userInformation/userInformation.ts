@@ -1,6 +1,6 @@
 import { Validate } from './validate';
 import { Response } from './response';
-import { DynamoDB} from './dynamodb';
+import { DynamoDB } from './dynamodb';
 import { LexEvent } from '../../classes/LexEvent';
 import { User } from '../../classes/User';
 
@@ -13,7 +13,7 @@ import { User } from '../../classes/User';
  * @param {Object} event Contains events send by LEX's bot
  */
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
-  
+
   console.log(event);
   console.log(event.currentIntent);
 
@@ -28,11 +28,12 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   if (event.currentIntent.confirmationStatus === 'Confirmed' &&
     event.currentIntent.slots.Kela_PIN) {
 
-    const dynamoDB = new DynamoDB(); 
-      
-    const pin: string = event.currentIntent.slots.Kela_PIN;
-    
+    const dynamoDB = new DynamoDB();
+
+    const pin: any = event.currentIntent.slots.Kela_PIN;
+
     await dynamoDB.searchUserByPin(pin).then(res => {
+
       if (!res) {
         console.error('Could not find user with PIN: ' + pin);
         callback(null, response.returnFailedSearch(true, pin));
@@ -60,19 +61,19 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * Validated PIN will be sent back to LEX in the end.
    */
   else if (event.invocationSource === 'DialogCodeHook' && event.currentIntent.slots.Kela_PIN) {
-    
+
     const validate = new Validate();
 
     // Validate PIN
     validate.validatePin(event.currentIntent.slots.Kela_PIN);
 
     // PIN's length is too short/long
-    if (validate.invalidLength) {
+    if (validate.invalidLength === 'short' || validate.invalidLength === 'long') {
       return response.returnInvalidPin({
         pin: validate.pin, errorMessage: `PIN is too ${validate.invalidLength}`
       });
     }
-    
+
     // PIN's century -symbol is invalid
     if (validate.invalidSymbol) {
       return response.returnInvalidPin({
@@ -84,7 +85,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     return response.returnConfirmPin(validate.pin);
   }
 
-  
+
   /**
    * 3. SCENARIO
    * 
