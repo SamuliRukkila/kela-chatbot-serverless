@@ -1,0 +1,37 @@
+{
+  "kela-Customers": [
+    {
+      "PutRequest": {
+        "Item": {
+          "City": { "S": "Jyväskylä" },
+          "DateOfBirth": { "S": "1995-10-10" },
+          "FirstName": { "S": "Samuli" },
+          "LastName": { "S": "Rukkila" },
+          "Pin": { "S": "101095-391E" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "City": { "S": "Kouvola" },
+          "DateOfBirth": { "S": "1999-12-25" },
+          "FirstName": { "S": "Eero" },
+          "LastName": { "S": "Huohkola" },
+          "Pin": { "S": "122599-123F" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "City": { "S": "Vantaa" },
+          "DateOfBirth": { "S": "2002-02-09" },
+          "FirstName": { "S": "Juuso" },
+          "LastName": { "S": "Jöri" },
+          "Pin": { "S": "0209202A031E" }
+        }
+      }
+    }
+  ]
+}

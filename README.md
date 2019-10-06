@@ -24,10 +24,13 @@ $ sls deploy function -f <functionName>
 ```
 
 Test functions locally (test data found from folder `local-test-data`):
+
+OS: 
 ```
 $ sls invoke local -f <functionName> --path local-test-data/<functionName>/test.json
 ```
-Windows example:
+
+Windows:
 ```
 sls invoke local -f KelaUserInformation --path local-test-data\userInformation\confirmed.json
 ```
@@ -35,4 +38,15 @@ sls invoke local -f KelaUserInformation --path local-test-data\userInformation\c
 > library locally in root folder `npm i aws-sdk`. These files will be automatically excluded 
 > from final build.
 
+Push mock-data into DynamoDB
+-----------------------------
+
+OS:
+```
+aws dynamodb batch-write.item --request-items file://dynamodb-mock-data/<table-name.json>
+```
+Windows:
+```
+aws dynamodb batch-write.item --request-items file:\\dynamodb-mock-data\<table-name.json>
+```
 

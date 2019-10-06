@@ -1,0 +1,28 @@
+{
+  "<TABLE-NAME>": [
+    {
+      "PutRequest": {
+        "Item": {
+          "<ATTRIBUTE-NAME>": { "<ATTRIBUTE-TYPE>": "<VALUE>" },
+          "DateOfBirth": { "S": "1995-10-10" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "City": { "S": "Kouvola" },
+          "DateOfBirth": { "S": "1999-12-25" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "City": { "S": "Vantaa" },
+          "DateOfBirth": { "S": "2002-02-09" }
+        }
+      }
+    }
+  ]
+}
