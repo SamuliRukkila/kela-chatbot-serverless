@@ -5,7 +5,7 @@
  */
 
 export class Validate {
-  
+
   public pin: string;
   public invalidLength: string;
   public invalidSymbol: boolean;
@@ -19,10 +19,10 @@ export class Validate {
   public validatePin(pin: string): void {
 
     console.log('Given unvalidated PIN: ' + pin);
-    
+
     pin = pin.replace(/ /g, '').toUpperCase();
-    
-    
+
+
     this.pin = pin;
 
     this.convertHyphon();
@@ -53,7 +53,7 @@ export class Validate {
    */
   private isPinLengthInvalid(): void {
     const length = this.pin.length;
-    this.invalidLength = length < 11 ? 'short' : length > 11 ? 'long' : null;
+    this.invalidLength = length < 11 ? 'short' : length > 11 ? 'long' : 'valid';
   }
 
 
