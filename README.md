@@ -38,7 +38,7 @@ sls invoke local -f KelaUserInformation --path local-test-data\userInformation\<
 > library locally in root folder `npm i aws-sdk`. These files will be automatically excluded 
 > from final build.
 
-Push mock-data into DynamoDB
+Push mock-data into DynamoDB:
 
 OS:
 ```

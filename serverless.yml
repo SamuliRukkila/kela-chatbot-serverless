@@ -101,7 +101,6 @@ functions:
 #    environment:
 #      variable2: value2
 
-# you can add CloudFormation resource templates here
 resources:
   Resources:
     # DynamoDB table for Customer-data
@@ -118,6 +117,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+          
 #    NewResource:
 #      Type: AWS::S3::Bucket
 #      Properties:
