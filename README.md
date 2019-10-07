@@ -12,18 +12,18 @@ $ npm i serverless -g
 Serverless
 ----------
 
-Deploy everything (also when serverless.yml is updated): 
+#### Deploy everything (also when serverless.yml is updated): 
 
 ```
 $ sls deploy -v
 ```
 
-Deploy only a specific function (when you have modified 1 function): 
+#### Deploy only a specific function (when you have modified 1 function): 
 ```
 $ sls deploy function -f <functionName>
 ```
 
-Test functions locally (test data found from folder `local-test-data`):
+#### Test functions locally (test data found from folder `local-test-data`):
 
 OS: 
 ```
@@ -38,7 +38,7 @@ sls invoke local -f KelaUserInformation --path local-test-data\userInformation\<
 > library locally in root folder `npm i aws-sdk`. These files will be automatically excluded 
 > from final build.
 
-Push mock-data into DynamoDB:
+#### Push mock-data into DynamoDB:
 
 OS:
 ```
