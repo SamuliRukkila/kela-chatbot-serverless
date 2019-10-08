@@ -40,12 +40,6 @@ sls invoke local -f KelaUserInformation --path local-test-data\userInformation\<
 
 #### Push mock-data into DynamoDB:
 
-OS:
 ```
-aws dynamodb batch-write.item --request-items file://dynamodb-mock-data/<table-name.json>
+aws dynamodb batch-write-item --request-items file://dynamodb-mock-data/<table-name.json>
 ```
-Windows:
-```
-aws dynamodb batch-write.item --request-items file:\\dynamodb-mock-data\<table-name.json>
-```
-
