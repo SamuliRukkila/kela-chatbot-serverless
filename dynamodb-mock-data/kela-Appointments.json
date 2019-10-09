@@ -1,0 +1,28 @@
+{
+  "kela-Appointments": [
+    {
+      "PutRequest": {
+        "Item": {
+          "StartDateTime": {"S": "2019-08-09T17:00:00" },
+          "EndDateTime": {"S": "2019-08-09T17:30:00" },
+          "FirstName": {"S": "Samuli" },
+          "LastName": {"S": "Rukkila" },
+          "AppointmentReason": {"S": "Military service" },
+          "Information": {"S": "My military service is starting at this moment and I think I need some additional help for my house payments" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "StartDateTime": {"S": "2019-08-09T17:30:00" },
+          "EndDateTime": {"S": "2019-08-09T18:00:00" },
+          "FirstName": {"S": "Jeela" },
+          "LastName": {"S": "Anne" },
+          "AppointmentReason": {"S": "Unemployment" },
+          "Information": {"S": "I'm unemployed at this moment and I'm in dire need for somey money. Please help" }
+        }
+      }
+    }
+  ]
+}

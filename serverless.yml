@@ -26,6 +26,7 @@ iamRoleStatements:
       - dynamodb:PutItem
       - dynamodb:UpdateItem
       - dynamodb:DeleteItem
+      - cloudwatch:*
 
 
 
@@ -51,10 +52,10 @@ functions:
     description: Gets user information from DynamoDB via provided PIN
     
   # Book a new time for Kela meeting
-  KelaBookTime:
-    handler: lambdas/bookTime/bookTime.handler
-    name: kela-bookTime
-    description: Books time for the user for a meeting
+  KelaBookAppointment:
+    handler: lambdas/bookAppointment/bookAppointment.handler
+    name: kela-bookAppointment
+    description: Books an appointment for the user 
 
   # Locate nearest Kela -apartment
   KelaLocateNearestBuilding:
@@ -118,7 +119,25 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
-          
+    # DynamoDB table for booked appointments
+    KelaAppointmentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: kela-Appointments
+        AttributeDefinitions:
+          - AttributeName: StartDateTime
+            AttributeType: S
+          - AttributeName: EndDateTime
+            AttributeType: S
+        KeySchema:
+          - AttributeName: StartDateTime
+            KeyType: HASH
+          - AttributeName: EndDateTime
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
 #    NewResource:
 #      Type: AWS::S3::Bucket
 #      Properties:
