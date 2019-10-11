@@ -12,7 +12,7 @@
  */
 
 export class DialogDelegate {
-  
+  public sessionAttributes?: Object;
   public dialogAction: {
     type: 'Delegate';
     slots?: Object;

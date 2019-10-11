@@ -28,5 +28,13 @@ export class LexEvent {
   public messageVersion: string;
   public sessionAttributes?: Object;
   public requestAttributes?: Object;
-
-}
+  public recentIntentSummaryView?: [{
+    intentName?: string;
+    checkpointLabel?: string;
+    slots?: Object[];
+    confirmationStatus?: string;
+    dialogActionType?: string;
+    fulfillmentState?: string;
+    slotToElicit?: string;
+  }];
+};

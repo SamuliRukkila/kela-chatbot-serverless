@@ -1,0 +1,48 @@
+{
+  "messageVersion": "1.0",
+  "invocationSource": "DialogCodeHook",
+  "userId": "ug57haxcvlerxgq9ximbxrt57om59p3k",
+  "sessionAttributes": {},
+  "requestAttributes": null,
+  "bot": { "name": "KelaChatBot", "alias": "$LATEST", "version": "$LATEST" },
+  "outputDialogMode": "Text",
+  "currentIntent": {
+    "name": "Kela_BookAppointment",
+    "slots":{ 
+      "Kela_ReasonForAppointment": null,
+      "Kela_AppointmentInformation": null,
+      "Kela_StartTime": null,
+      "Kela_StartDate": null,
+      "Kela_PIN": null,
+      "Kela_AppointmentLength": null },
+      "slotDetails": { 
+        "Kela_ReasonForAppointment": { 
+          "resolutions": [], 
+          "originalValue": null 
+        },
+        "Kela_AppointmentInformation": { 
+          "resolutions": [], 
+          "originalValue": null 
+        },
+        "Kela_StartTime": { 
+          "resolutions": [], 
+          "originalValue": null 
+        },
+        "Kela_StartDate": { 
+          "resolutions": [], 
+          "originalValue": null 
+        },
+        "Kela_PIN": { 
+          "resolutions": [], 
+          "originalValue": null 
+        },
+        "Kela_AppointmentLength": { 
+          "resolutions": [], 
+          "originalValue": null 
+        },
+        "confirmationStatus": "None" 
+      }
+    },
+  "inputTranscript": "i need an appoinment",
+  "recentIntentSummaryView": null
+}

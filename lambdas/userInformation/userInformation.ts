@@ -1,8 +1,7 @@
-import { Validate } from './validate';
+import { ValidatePin } from '../helper-functions/validators/validatePin';
 import { Response } from './response';
-import { DynamoDB } from './dynamodb';
+import { DynamoDB } from '../helper-functions/database/dynamodb';
 import { LexEvent } from '../../classes/LexEvent';
-import { User } from '../../classes/User';
 
 /**
  * Main function of user information -lambda. At this moment 
@@ -17,6 +16,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   console.log(event);
   console.log(event.currentIntent);
 
+  const slots = event.currentIntent.slots;
   const response = new Response();
 
   /**
@@ -25,32 +25,24 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * User PIN is confirmed and information will be searched 
    * according to that user by it's PIN from DynamoDB
    */
-  if (event.currentIntent.confirmationStatus === 'Confirmed' &&
-    event.currentIntent.slots.Kela_PIN) {
+  if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.Kela_PIN) {
 
     const dynamoDB = new DynamoDB();
 
-    const pin: any = event.currentIntent.slots.Kela_PIN;
+    const pin: string = slots.Kela_PIN;
 
     await dynamoDB.searchUserByPin(pin).then(res => {
       if (!res.Item) {
         console.error('Could not find user with PIN: ' + pin);
         callback(null, response.returnFailedSearch(true, pin));
       } else {
-        console.log('Found user: ' + res.Item);
+        console.log('Found user via PIN: ' + res.Item);
         callback(null, response.returnUserInformation(res.Item));
       }
     }).catch(err => {
       console.error(err);
-      callback(null, response.returnFailedSearch(false));
+      callback(null, response.returnFailedSearch(false, pin));
     });
-
-    //   if (ddbRes.err) {
-    //     console.error(ddbRes.err);
-    //     return response.returnFailedSearch(false);
-    //   }
-    // if (!ddbRes.res) {
-    //   }
   }
 
 
@@ -60,29 +52,20 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * If Lex is doing a validation call for the PIN.
    * Validated PIN will be sent back to LEX in the end.
    */
-  else if (event.invocationSource === 'DialogCodeHook' && event.currentIntent.slots.Kela_PIN) {
+  else if (event.invocationSource === 'DialogCodeHook' && slots.Kela_PIN) {
 
-    const validate = new Validate();
+    const validator = new ValidatePin();
 
     // Validate PIN
-    validate.validatePin(event.currentIntent.slots.Kela_PIN);
+    validator.validatePin(slots.Kela_PIN);
 
-    // PIN's length is too short/long
-    if (validate.invalidLength === 'short' || validate.invalidLength === 'long') {
-      return response.returnInvalidPin({
-        pin: validate.pin, errorMessage: `PIN is too ${validate.invalidLength}`
-      });
-    }
-
-    // PIN's century -symbol is invalid
-    if (validate.invalidSymbol) {
-      return response.returnInvalidPin({
-        pin: validate.pin, errorMessage: `Invalid century -symbol. Possible symbols (- & A)`
-      });
+    // PIN is invalid
+    if (validator.invalidPin) {
+      return response.returnInvalidPin(validator.pin);
     }
 
     // Pin is valid and user is required to confirm it
-    return response.returnConfirmPin(validate.pin);
+    return response.returnConfirmPin(validator.pin);
   }
 
 

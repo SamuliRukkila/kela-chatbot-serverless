@@ -7,6 +7,7 @@
           "EndDateTime": {"S": "2019-08-09T17:30:00" },
           "FirstName": {"S": "Samuli" },
           "LastName": {"S": "Rukkila" },
+          "Pin": {"S": "101095-391E" },
           "AppointmentReason": {"S": "Military service" },
           "Information": {"S": "My military service is starting at this moment and I think I need some additional help for my house payments" }
         }
@@ -19,6 +20,7 @@
           "EndDateTime": {"S": "2019-08-09T18:00:00" },
           "FirstName": {"S": "Jeela" },
           "LastName": {"S": "Anne" },
+          "Pin": {"S": "122599-125F" },
           "AppointmentReason": {"S": "Unemployment" },
           "Information": {"S": "I'm unemployed at this moment and I'm in dire need for somey money. Please help" }
         }

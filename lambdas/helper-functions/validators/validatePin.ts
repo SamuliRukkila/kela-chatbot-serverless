@@ -4,11 +4,10 @@
  * TODO: Add validation for valid DATES
  */
 
-export class Validate {
+export class ValidatePin {
 
   public pin: string;
-  public invalidLength: string;
-  public invalidSymbol: boolean;
+  public invalidPin: boolean;
 
   /**
    * Main function which validates PIN by calling other functions.
@@ -19,15 +18,14 @@ export class Validate {
   public validatePin(pin: string): void {
 
     console.log('Given unvalidated PIN: ' + pin);
-
-    pin = pin.replace(/ /g, '').toUpperCase();
-
-
+    pin = pin.replace(/ /g, '').toUpperCase().substr(pin.length - 11);
     this.pin = pin;
 
     this.convertHyphon();
-    this.isPinLengthInvalid();
-    this.isCenturySymbolInvalid();
+    
+    if (!this.invalidPin) {
+      this.isCenturySymbolInvalid();
+    }
 
     console.log('Validated PIN: ' + this.pin);
 
@@ -43,17 +41,10 @@ export class Validate {
     const words = ['HYPHON', 'STREAK', 'SLASH', 'LINE', 'MINUS', 'DASH'];
 
     for (let i = 0; i < words.length; i++) {
-      if (this.pin.includes(words[i])) this.pin = this.pin.replace(words[i], '-');
+      if (this.pin.includes(words[i])) {
+        this.pin = this.pin.replace(words[i], '-');
+      }
     }
-  }
-
-
-  /**
-   * Checks that PIN's length is exactly 11 characters.
-   */
-  private isPinLengthInvalid(): void {
-    const length = this.pin.length;
-    this.invalidLength = length < 11 ? 'short' : length > 11 ? 'long' : 'valid';
   }
 
 
@@ -67,12 +58,16 @@ export class Validate {
     const symbols = ["-", "A"];
     for (let i = 0; i < symbols.length; i++) {
       if (this.pin.slice(6, 7) === symbols[i]) {
-        this.invalidSymbol = false;
+        this.invalidPin = true;
         return;
       }
     }
-    this.invalidSymbol = true;
-
+    console.error(
+      `Provided PIN: [${this.pin}] is invalid. Reason: 
+      PIN's 7th letter should contain either
+      slash (-) or A character. Actual 
+      character: [${this.pin.slice(6, 7)}]`
+    ); 
   }
 };
 

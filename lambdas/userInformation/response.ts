@@ -15,6 +15,7 @@ import { DialogDelegate } from '../../classes/DialogDelegate';
 import { User } from '../../classes/User';
 import { DialogConfirmIntent } from '../../classes/DialogConfirmIntent';
 import { DialogElicitSlot } from '../../classes/DialogElicitSlot';
+import DynamoDB = require('aws-sdk/clients/dynamodb');
 
 export class Response {
   /**
@@ -36,22 +37,19 @@ export class Response {
    * return an error message to Lex's bot telling
    * why it has failed.
    *
-   * @param {string} res.pin Validated PIN
-   * @param {string} res.errorMessage Why PIN failed
-   * @returns Information why the PIN was invalid
+   * @param {string} pin Invalid PIN
    */
-  public returnInvalidPin(res: any): DialogElicitSlot {
+  public returnInvalidPin(pin: string): DialogElicitSlot {
     return {
       dialogAction: {
         type: 'ElicitSlot',
         message: {
           contentType: 'PlainText',
-          content: `Your provided PIN: [${res.pin}] is invalid. 
-            Reason: ${res.errorMessage}. Please try again.`
+          content: `Your provided PIN: [${pin}] is invalid. Please try again.`
         },
         intentName: 'Kela_UserInformation',
         slots: {
-          Kela_PIN: ''
+          Kela_PIN: null
         },
         slotToElicit: 'Kela_PIN'
       }
@@ -85,13 +83,15 @@ export class Response {
    * Error message will not be shown to the user.
    * 
    * @param {Boolean} unknownPin If user wasn't found from database
+   * @param {string} pin User's provided PIN
    * @returns Error message why search failed and data to close current intent
    */
-  public returnFailedSearch (unknownPin: boolean, pin = null): DialogClose {
+  public returnFailedSearch (unknownPin: boolean, pin: string): DialogClose {
 
     const content = unknownPin
       ? `Could not find user via provided PIN: ${pin}`
-      : 'Seems like there were an error while fetching your data. My apologies.';  
+      : `Seems like there were an error while fetching 
+          your data with provided PIN: ${pin}. My apologies.`;  
 
     return {
       dialogAction: {

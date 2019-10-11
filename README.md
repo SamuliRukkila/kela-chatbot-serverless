@@ -39,7 +39,7 @@ $ sls invoke local -f <functionName> --path local-test-data/<functionName>/<file
 
 Windows:
 ```
-sls invoke local -f KelaUserInformation --path local-test-data\userInformation\<file>.json
+sls invoke local -f <functionName> --path local-test-data\userInformation\<file>.json
 ```
 > If local invoke fails because of missing library (for example aws-sdk), download that 
 > library locally in root folder `npm i aws-sdk`. These files will be automatically excluded 

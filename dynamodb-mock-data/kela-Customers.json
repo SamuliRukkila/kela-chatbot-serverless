@@ -47,6 +47,18 @@
           "Phone": { "S": "0449318200" }
         }
       }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "City": { "S": "Kouvola" },
+          "DateOfBirth": { "S": "1999-12-25" },
+          "FirstName": { "S": "Jeela" },
+          "LastName": { "S": "Anne" },
+          "Pin": { "S": "122599-125F" },
+          "Phone": { "S": "0405938192" }
+        }
+      }
     }
   ]
 }
