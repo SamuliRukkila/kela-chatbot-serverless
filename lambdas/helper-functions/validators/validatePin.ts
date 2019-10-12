@@ -17,9 +17,9 @@ export class ValidatePin {
    */
   public validatePin(pin: string): void {
 
-    console.log('Given unvalidated PIN: ' + pin);
-    pin = pin.replace(/ /g, '').toUpperCase().substr(pin.length - 11);
-    this.pin = pin;
+    console.log('Given string which should contain PIN: ' + pin);
+    pin = pin.replace(/ /g, '').toUpperCase();
+    this.pin = pin.substr(pin.length - 11);
 
     this.convertHyphon();
     
@@ -28,7 +28,6 @@ export class ValidatePin {
     }
 
     console.log('Validated PIN: ' + this.pin);
-
   }
 
 
@@ -58,10 +57,10 @@ export class ValidatePin {
     const symbols = ["-", "A"];
     for (let i = 0; i < symbols.length; i++) {
       if (this.pin.slice(6, 7) === symbols[i]) {
-        this.invalidPin = true;
         return;
       }
     }
+    this.invalidPin = true;
     console.error(
       `Provided PIN: [${this.pin}] is invalid. Reason: 
       PIN's 7th letter should contain either

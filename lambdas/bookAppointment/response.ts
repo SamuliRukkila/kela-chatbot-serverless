@@ -39,7 +39,7 @@ export class Response {
         },
         intentName: 'Kela_BookAppointment',
         slots: {
-          Kela_PIN: null
+          KELA_PIN: null
         },
         slotToElicit: 'KELA_PIN'
       }
@@ -65,7 +65,7 @@ export class Response {
         },
         intentName: 'Kela_BookAppointment',
         slots: {
-          Kela_PIN: null
+          KELA_PIN: null
         },
         slotToElicit: 'KELA_PIN'
       }
@@ -91,7 +91,7 @@ export class Response {
         },
         intentName: 'Kela_BookAppointment',
         slots: {
-          Kela_PIN: null
+          KELA_PIN: null
         },
         slotToElicit: 'KELA_PIN'
       }
@@ -99,16 +99,23 @@ export class Response {
   }
 
 
+  /**
+   * 
+   * @param item 
+   */
   public returnPinSuccess(item: any): DialogDelegate {
     const user: User = item;
     return {
       sessionAttributes: {
         'KELA_FIRSTNAME': user.FirstName,
         'KELA_LASTNAME': user.LastName,
-        'KELA_PIN': user.Pin
+        'KELA_PIN_OK': true
       },
       dialogAction: {
-        type: 'Delegate'
+        type: 'Delegate',
+        slots: {
+          'KELA_PIN': user.Pin
+        }
       }
     }
   }

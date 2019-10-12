@@ -10,15 +10,17 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   console.log(event.currentIntent);
 
   const slots = event.currentIntent.slots;
-  const response = new Response();
+  const sessionAttributes = event.sessionAttributes;
 
+  const response = new Response();
+  
   /**
    * 1. SCENARIO
    * 
    * User has been verified (by PIN). Slots which'll be given,
    * will be now validated individually.
    */
-  if (event.sessionAttributes['Kela_PIN_confirmed']) {
+  if (sessionAttributes && sessionAttributes['KELA_PIN_OK']) {
     if (event.currentIntent.confirmationStatus === 'Confirmed' &&
       event.currentIntent.slots.Kela_PIN) {
   
@@ -40,16 +42,16 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   else if (slots.KELA_PIN) {
 
     const pinValidator = new ValidatePin();
-    const dynamoDB = new DynamoDB();
-
+    
     pinValidator.validatePin(slots.KELA_PIN);
     
     // User's provided PIN is invalid
     if (pinValidator.invalidPin) {
       return response.returnInvalidPin(pinValidator.pin);
     }
-
     const pin: string = pinValidator.pin;
+    
+    const dynamoDB = new DynamoDB();
 
     await dynamoDB.searchUserByPin(pin).then((res: GetItemOutput) => {
       if (!res.Item) {

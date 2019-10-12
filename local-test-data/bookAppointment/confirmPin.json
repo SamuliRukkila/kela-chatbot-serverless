@@ -4,12 +4,12 @@
   "userId": "ug57haxcvlerxgq9ximbxrt57om59p3k",
   "sessionAttributes": {},
   "requestAttributes": null,
-  "bot": { "name": "KelaChatBot", "alias": "$LATEST", "version": "$LATEST" },
+  "bot": { "name": "KELAChatBot", "alias": "$LATEST", "version": "$LATEST" },
   "outputDialogMode": "Text",
   "currentIntent": {
     "name": "Kela_BookAppointment",
     "slots": {
-      "KELA_PIN": null,
+      "KELA_PIN": "sure, it's 123123-123F",
       "KELA_START_DATE": null,
       "KELA_REASON": null,
       "KELA_LENGTH": null,
@@ -17,7 +17,10 @@
       "KELA_INFORMATION": null
     },
     "slotDetails": {
-      "KELA_PIN": { "resolutions": [], "originalValue": null },
+      "KELA_PIN": {
+        "resolutions": [],
+        "originalValue": "sure, it's 123123-123F"
+      },
       "KELA_START_DATE": {
         "resolutions": [],
         "originalValue": null
@@ -41,6 +44,5 @@
     },
     "confirmationStatus": "None"
   },
-  "inputTranscript": "i need an appoinment",
-  "recentIntentSummaryView": null
+  "inputTranscript": "Sure, my pin is 123123-123F"
 }
