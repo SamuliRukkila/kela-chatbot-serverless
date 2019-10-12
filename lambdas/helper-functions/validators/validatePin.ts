@@ -12,17 +12,23 @@ export class ValidatePin {
   /**
    * Main function which validates PIN by calling other functions.
    * 
+   * @param {string} Pin Given PIN which'll be validated and parsed
    * @return validated PIN and variables which holds information if 
    * PIN is invalid
    */
   public validatePin(pin: string): void {
 
-    console.log('Given string which should contain PIN: ' + pin);
-    pin = pin.replace(/ /g, '').toUpperCase();
-    this.pin = pin.substr(pin.length - 11);
+    this.pin = pin;
 
-    this.convertHyphon();
+    console.log('VALIDATEPIN: Unparsed string: ' + this.pin);
     
+    this.parsePinFromString();
+
+    console.log('VALIDATEPIN: Parsed PIN without validation: ' + this.pin);
+
+    // Add validations here, for every method call, check if invalidPin 
+    // -property is already true because in this case, PIN won't be accepted
+    // no matter what.
     if (!this.invalidPin) {
       this.isCenturySymbolInvalid();
     }
@@ -30,6 +36,15 @@ export class ValidatePin {
     console.log('Validated PIN: ' + this.pin);
   }
 
+  /**
+   * Parses the potent PIN from the string which user mutterances
+   * to the bot.
+   */
+  private parsePinFromString(): void {
+    this.pin = this.pin.replace(/ /g, '').toUpperCase();
+    this.convertHyphon();
+    this.pin = this.pin.substr(this.pin.length - 11);
+  }
 
   /**
    * Converts hyphon (-) into a "-" -symbol. This symbol has 

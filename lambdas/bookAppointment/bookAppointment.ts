@@ -16,23 +16,65 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   
   /**
    * 1. SCENARIO
+   * ------------
    * 
    * User has been verified (by PIN). Slots which'll be given,
    * will be now validated individually.
+   * 
+   * Slots which has been verified will have the verification 
+   * saved into @sessionAttributes -variable.
    */
-  if (sessionAttributes && sessionAttributes['KELA_PIN_OK']) {
-    if (event.currentIntent.confirmationStatus === 'Confirmed' &&
-      event.currentIntent.slots.Kela_PIN) {
-  
+  if (sessionAttributes && sessionAttributes.KELA_PIN_OK) {
+    
+    /**
+     * 
+     */
+    if (!sessionAttributes.KELA_DATE_OK && slots.KELA_DATE) {
+      console.log('Validating date: ' + slots.KELA_DATE);
+      console.log(typeof slots.KELA_DATE);
+      return response.returnDelegate();
+    } 
+
+    /**
+     * 
+     */
+    else if (!sessionAttributes.KELA_LENGTH_OK && slots.KELA_LENGTH ) {
+
     }
-  
-  
-    else if (event.invocationSource === 'DialogCodeHook' && slots.KELA_PIN) {
+
+    /**
+     * 
+     */
+    else if (!sessionAttributes.KELA_START_TIME_OK && slots.KELA_START_TIME) {
+
+    }
+
+    /**
+     * 
+     */
+    else if (!sessionAttributes.KELA_REASON_OK && slots.KELA_REASON) {
+
+    }
+
+    /**
+     * 
+     */
+    else if (!sessionAttributes.KELA_INFORMATION_OK && slots.KELA_INFORMATION) {
+
+    } 
+
+    /**
+     * 
+     */
+    else {
+
     }
   }
 
+
   /**
    * 2. SCENARIO
+   * ------------
    * 
    * User hasn't been verified yet but the PIN is provided. In this
    * condition the PIN will be verified (before the actual appointment
@@ -53,22 +95,29 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     
     const dynamoDB = new DynamoDB();
 
+    // Search user by the provided pin from database
     await dynamoDB.searchUserByPin(pin).then((res: GetItemOutput) => {
+      // User not found
       if (!res.Item) {
         console.error('Could not find user with PIN: ' + pin);
         callback(null, response.returnNotFoundPin(pin));
-      } else {
+      } 
+      // User found
+      else {
         console.log('Found user via PIN: ' + res.Item);
         callback(null, response.returnPinSuccess(res.Item));
       }
+    // Error while searching for user
     }).catch((err: Error) => {
       console.error(err);
       callback(null, response.returnPinError(pin));
     });
   }
 
+
   /**
    * 3. SCENARIO
+   * ------------
    *
    * This will (and should) only happen when Lex is doing
    * initialization call.

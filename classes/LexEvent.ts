@@ -26,7 +26,7 @@ export class LexEvent {
   public invocationSource: string;
   public outputDialogMode: string;
   public messageVersion: string;
-  public sessionAttributes?: Object;
+  public sessionAttributes?: any;
   public requestAttributes?: Object;
   public recentIntentSummaryView?: [{
     intentName?: string;
