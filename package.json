@@ -19,6 +19,7 @@
   "homepage": "https://github.com/SamuliRukkila/kela-chatbot-serverless#readme",
   "dependencies": {
     "aws-sdk": "^2.538.0",
+    "moment": "^2.24.0",
     "serverless-ignore": "^0.1.5"
   },
   "devDependencies": {

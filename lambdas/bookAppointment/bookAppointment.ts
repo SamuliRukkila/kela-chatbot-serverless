@@ -3,6 +3,7 @@ import { Response } from './response';
 import { ValidatePin } from '../helper-functions/validators/validatePin';
 import { DynamoDB } from '../helper-functions/database/dynamodb';
 import { GetItemOutput } from 'aws-sdk/clients/dynamodb';
+import { ValidateDate } from '../helper-functions/validators/validateDate';
 
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
 
@@ -27,11 +28,15 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   if (sessionAttributes && sessionAttributes.KELA_PIN_OK) {
     
     /**
+     * 1.1 SCENARIO
      * 
+     * User has provided date when the appointment should take
+     * place. This date will now be validated.
      */
     if (!sessionAttributes.KELA_DATE_OK && slots.KELA_DATE) {
       console.log('Validating date: ' + slots.KELA_DATE);
-      console.log(typeof slots.KELA_DATE);
+      const dateValidator = new ValidateDate();
+      dateValidator.validateDate(slots.KELA_DATE);
       return response.returnDelegate();
     } 
 
