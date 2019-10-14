@@ -36,12 +36,9 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     if (!sessionAttributes.KELA_DATE_OK && slots.KELA_DATE) {
       const dateValidator = new ValidateDate();
       dateValidator.validateDate(slots.KELA_DATE);
-      if (dateValidator.invalidDate) {
-        return response.returnInvalidSlot('KELA_DATE', dateValidator.message);
-      } 
-      else {
-        return response.returnValidSlot('KELA_DATE', dateValidator.date);
-      }
+      return dateValidator.invalidDate ? 
+        response.returnInvalidSlot('KELA_DATE', dateValidator.message) :
+        response.returnValidSlot('KELA_DATE', dateValidator.date);
     } 
 
     /**
