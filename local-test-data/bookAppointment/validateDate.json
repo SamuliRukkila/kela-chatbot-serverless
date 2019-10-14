@@ -14,7 +14,7 @@
     "name": "Kela_BookAppointment",
     "slots": {
       "KELA_PIN": "123123-123F",
-      "KELA_DATE": "2019-10-11",
+      "KELA_DATE": "2019-11-14",
       "KELA_REASON": null,
       "KELA_LENGTH": null,
       "KELA_START_TIME": null,

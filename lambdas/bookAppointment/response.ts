@@ -28,6 +28,7 @@ export class Response {
    * why it has failed.
    *
    * @param {string} pin Invalid PIN
+   * @returns Error message that the provided PIN is invalid
    */
   public returnInvalidPin(pin: string): DialogElicitSlot {
     return {
@@ -100,8 +101,12 @@ export class Response {
 
 
   /**
+   * If PIN was valid and user was found with it. OK -mark
+   * and full name will be saved into session-attributes.
+   * Lex is informed to continue to appointment slots.
    * 
-   * @param item 
+   * @param {any | User} item Item which'll include user's information 
+   * @returns specified session-attributes + information to tell Lex to continue
    */
   public returnPinSuccess(item: any): DialogDelegate {
     const user: User = item;
@@ -115,6 +120,59 @@ export class Response {
         type: 'Delegate',
         slots: {
           'KELA_PIN': user.Pin
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Provided value for the slot is invalid. This is 
+   * generic function which'll work with every slot 
+   * (excluding PIN). Lex is informed to ask for
+   * the slot value again.
+   * 
+   * @param {string} slot Slot which'll be asked again
+   * @param {string} message Error message on why the slot failed
+   * @returns error message telling why the slot was invalid
+   */
+  public returnInvalidSlot(slot: string, message: string): DialogElicitSlot {
+    return {
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: message
+        },
+        intentName: 'Kela_BookAppointment',
+        slots: {
+          [slot]: null 
+        },
+        slotToElicit: slot
+      }
+    };
+  }
+
+
+  /**
+   * Provided value for the slot is valid and will 
+   * be saved. OK-mark will included in the session-attributes
+   * so further lambda-requests know easily which slots are valid.
+   * Lex is informed to continue to next course of action.
+   * 
+   * @param {slot} slot Slot which'll be saved 
+   * @param {string | number} value Valid data for the slot
+   * @returns information to tell for Lex to continue
+   */
+  public returnValidSlot(slot: string, value: string | number): DialogDelegate {
+    return {
+      sessionAttributes: {
+        [slot + "_OK"]: true
+      },
+      dialogAction: {
+        type: 'Delegate',
+        slots: {
+          [slot]: value
         }
       }
     }
