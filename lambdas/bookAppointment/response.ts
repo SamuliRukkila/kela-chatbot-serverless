@@ -7,6 +7,9 @@ import DynamoDB = require('aws-sdk/clients/dynamodb');
 
 export class Response {
   
+  public sessionAttributes: Object;
+  public slots: Object;
+
   /**
    * Return empty response. Lex's bot will continue
    * according to it's configuration.
@@ -165,15 +168,13 @@ export class Response {
    * @returns information to tell for Lex to continue
    */
   public returnValidSlot(slot: string, value: string | number): DialogDelegate {
+    this.sessionAttributes[slot + "_OK"] = true;
+    this.slots[slot] = value;
     return {
-      sessionAttributes: {
-        [slot + "_OK"]: true
-      },
+      sessionAttributes: this.sessionAttributes,
       dialogAction: {
         type: 'Delegate',
-        slots: {
-          [slot]: value
-        }
+        slots: this.slots    
       }
     }
   }
