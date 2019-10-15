@@ -1,6 +1,7 @@
 README.md
 node_modules/*
 !node_modules/moment
+!node_modules/moment-timezone
 .git/*
 lex/*
 lambda-receive-json/*

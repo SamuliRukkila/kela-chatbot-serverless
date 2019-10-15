@@ -106,12 +106,13 @@ export class Response {
   /**
    * If PIN was valid and user was found with it. OK -mark
    * and full name will be saved into session-attributes.
-   * Lex is informed to continue to appointment slots.
+   * Lex is informed to continue to appointment slots (KELA_DATE 
+   * at this moment).
    * 
    * @param {any | User} item Item which'll include user's information 
    * @returns specified session-attributes + information to tell Lex to continue
    */
-  public returnPinSuccess(item: any): DialogDelegate {
+  public returnPinSuccess(item: any): DialogElicitSlot {
     const user: User = item;
     return {
       sessionAttributes: {
@@ -120,10 +121,17 @@ export class Response {
         'KELA_PIN_OK': true
       },
       dialogAction: {
-        type: 'Delegate',
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Hello, ${user.FirstName}. What day would you 
+            like to book the appointment?`
+        },
+        intentName: 'Kela_BookAppointment',
         slots: {
           'KELA_PIN': user.Pin
-        }
+        },
+        slotToElicit: 'KELA_DATE'
       }
     }
   }
@@ -140,17 +148,20 @@ export class Response {
    * @returns error message telling why the slot was invalid
    */
   public returnInvalidSlot(slot: string, message: string): DialogElicitSlot {
+
+    // Older slots + session-attributes needs to be included or they'll disappear
+    this.slots[slot] = null;
+
     return {
+      sessionAttributes: this.sessionAttributes,
       dialogAction: {
         type: 'ElicitSlot',
         message: {
           contentType: 'PlainText',
-          content: message
+          content: `I'm sorry. ${message}`
         },
         intentName: 'Kela_BookAppointment',
-        slots: {
-          [slot]: null 
-        },
+        slots: this.slots,
         slotToElicit: slot
       }
     };
@@ -168,8 +179,11 @@ export class Response {
    * @returns information to tell for Lex to continue
    */
   public returnValidSlot(slot: string, value: string | number): DialogDelegate {
+
+    // Older slots + session-attributes needs to be included or they'll disappear
     this.sessionAttributes[slot + "_OK"] = true;
     this.slots[slot] = value;
+
     return {
       sessionAttributes: this.sessionAttributes,
       dialogAction: {

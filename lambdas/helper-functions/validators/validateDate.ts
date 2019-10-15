@@ -1,4 +1,5 @@
 const moment = require('moment');
+const timezone = require('moment-timezone');
 
 /**
  * Validation class which'll completely validate
@@ -93,7 +94,7 @@ export class ValidateDate {
    *  false if local time is 15.45 or later
    */
   private isTodayInvalid(): boolean {
-
+    /// TODO::: ADD TIMEZONES
     const today: string = moment().format();
     
     // If date isn't preserved for today, function will simply return false
@@ -101,7 +102,8 @@ export class ValidateDate {
 
       console.log('Checking today\'s date is not too late (15:45 ->): ' + this.date);
 
-      const hours: number = moment().hour();
+      // We need to add + 3h because aws 
+      const hours: number = moment().hour() + 3;
       const minutes: number = moment().minutes();
 
       // Local time is 15.45 or later
@@ -110,7 +112,7 @@ export class ValidateDate {
           Last valid time: 15:45 | Actual time: ${hours}:${minutes}`);
 
         this.invalidDate = true;
-        this.message = 'There aren\'t any times left for today.';
+        this.message = 'It is too late to book appointments for today.';
         return true;
       }
     }
