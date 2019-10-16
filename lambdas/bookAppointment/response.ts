@@ -158,7 +158,7 @@ export class Response {
         type: 'ElicitSlot',
         message: {
           contentType: 'PlainText',
-          content: `I'm sorry. ${message}`
+          content: `I'm sorry. ${message} Please try again.`
         },
         intentName: 'Kela_BookAppointment',
         slots: this.slots,

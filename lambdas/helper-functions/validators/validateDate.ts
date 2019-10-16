@@ -1,5 +1,6 @@
-const moment = require('moment');
-const timezone = require('moment-timezone');
+import { Moment } from "moment";
+
+const moment = require('moment-timezone');
 
 /**
  * Validation class which'll completely validate
@@ -19,7 +20,7 @@ export class ValidateDate {
    */
   public validateDate(date: string): void {
 
-    this.date = date;
+    this.date = moment(date).tz('Europe/Helsinki').format();
 
     console.log('Validating date: ' + this.date);
 
@@ -29,7 +30,7 @@ export class ValidateDate {
       if (this.isDayInvalid()) return;
       if (this.isWeekDayInvalid()) return;
       if (this.isTodayInvalid()) return;
-      this.date = moment(this.date).format('DD.MM.YYYY');
+      this.date = moment(this.date).tz('Europe/Helsinki').format('DD.MM.YYYY');
     } else {
       this.invalidDate = true;
       this.message = 'Provided date is invalid.';
@@ -48,7 +49,7 @@ export class ValidateDate {
 
     console.log('Checking that date is today or later: ' + this.date);
     
-    const today: string = moment().format();
+    const today: string = moment().tz('Europe/Helsinki').format();
 
     if (!moment(this.date).isSameOrAfter(today, 'day')) {
       console.error('Error: Provided date is not today or later.');
@@ -71,7 +72,7 @@ export class ValidateDate {
 
     console.log('Checking that date is not saturday/sunday: ' + this.date);
 
-    const day: number = moment(this.date).day();
+    const day: number = moment(this.date).tz('Europe/Helsinki').day();
 
     // sunday(0) & saturday(6)
     if (day === 0 || day === 6) {
@@ -95,16 +96,15 @@ export class ValidateDate {
    */
   private isTodayInvalid(): boolean {
     /// TODO::: ADD TIMEZONES
-    const today: string = moment().format();
+    const today: Moment = moment().tz('Europe/Helsinki');
     
     // If date isn't preserved for today, function will simply return false
-    if (moment(this.date).isSame(today, 'day')) {
+    if (moment(this.date).isSame(today.format(), 'day')) {
 
       console.log('Checking today\'s date is not too late (15:45 ->): ' + this.date);
 
-      // We need to add + 3h because aws 
-      const hours: number = moment().hour() + 3;
-      const minutes: number = moment().minutes();
+      const hours: number = today.hour();
+      const minutes: number = today.minutes();
 
       // Local time is 15.45 or later
       if (hours > 15 || (hours === 15 && minutes >= 45)) {

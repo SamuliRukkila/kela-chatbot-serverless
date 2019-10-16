@@ -135,7 +135,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       } 
       // User found
       else {
-        console.log('Found user via PIN: ' + res.Item);
+        console.log('Found user via PIN: ' + pin);
         callback(null, response.returnPinSuccess(res.Item));
       }
     // Error while searching for user
