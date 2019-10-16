@@ -30,6 +30,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    */
   if (sessionAttributes && sessionAttributes.KELA_PIN_OK) {
     
+
     /**
      * 1.1 SCENARIO
      * ------------------------------------------------------------------------
@@ -38,12 +39,17 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * place. This date will now be validated.
      */
     if (!sessionAttributes.KELA_DATE_OK && slots.KELA_DATE) {
+
+      console.log('KELA_DATE > Received value: ' + slots.KELA_DATE);
+
       const validator = new ValidateDate();
       validator.validateDate(slots.KELA_DATE);
+
       return validator.invalidDate ? 
         response.returnInvalidSlot('KELA_DATE', validator.message) :
         response.returnValidSlot('KELA_DATE', validator.date);
     } 
+
 
     /**
      * 1.2 SCENARIO
@@ -54,12 +60,17 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * only the ending -time (as UTC-type).
      */
     else if (!sessionAttributes.KELA_LENGTH_OK && slots.KELA_LENGTH ) {
+
+      console.log('KELA_LENGTH > Received value: ' + slots.KELA_LENGTH);
+
       const validator = new ValidateLength();
       validator.validateLength(slots.KELA_LENGTH);
+      console.log(validator.invalidLength, validator.message);
       return validator.invalidLength ?
         response.returnInvalidSlot('KELA_LENGTH', validator.message) :
         response.returnValidSlot('KELA_LENGTH', validator.length);
     }
+
 
     /**
      * 1.3 SCENARIO
@@ -71,6 +82,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
     }
 
+
     /**
      * 1.4 SCENARIO
      * ------------------------------------------------------------------------
@@ -81,6 +93,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
     }
 
+
     /**
      * 1.5 SCENARIO
      * ------------------------------------------------------------------------
@@ -90,6 +103,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     else if (!sessionAttributes.KELA_INFORMATION_OK && slots.KELA_INFORMATION) {
 
     } 
+
 
     /**
      * 1.6 SCENARIO
@@ -114,8 +128,9 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    */
   else if (slots.KELA_PIN) {
 
+    console.log('KELA_PIN > Received value: ' + slots.KELA_PIN);
+
     const pinValidator = new ValidatePin();
-    
     pinValidator.validatePin(slots.KELA_PIN);
     
     // User's provided PIN is invalid
@@ -154,7 +169,6 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * initialization call.
    */
   else {
-    console.log('DELEGATED :D YEAH');
     return response.returnDelegate();
   }
 

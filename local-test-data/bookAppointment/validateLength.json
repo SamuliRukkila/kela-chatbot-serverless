@@ -2,10 +2,11 @@
   "messageVersion": "1.0",
   "invocationSource": "DialogCodeHook",
   "userId": "ug57haxcvlerxgq9ximbxrt57om59p3k",
-  "sessionAttributes": { 
+  "sessionAttributes": {
     "KELA_FIRSTNAME": "Katariina",
     "KELA_PIN_OK": true,
-    "KELA_LASTNAME": "Kotola" 
+    "KELA_LASTNAME": "Kotola",
+    "KELA_DATE_OK": true
   },
   "requestAttributes": null,
   "bot": { "name": "KELAChatBot", "alias": "$LATEST", "version": "$LATEST" },
@@ -14,9 +15,9 @@
     "name": "Kela_BookAppointment",
     "slots": {
       "KELA_PIN": "123123-123F",
-      "KELA_DATE": "2019-11-14",
+      "KELA_DATE": "15.11.2019",
       "KELA_REASON": null,
-      "KELA_LENGTH": null,
+      "KELA_LENGTH": "ASD",
       "KELA_START_TIME": null,
       "KELA_INFORMATION": null
     },
@@ -35,7 +36,7 @@
       },
       "KELA_LENGTH": {
         "resolutions": [],
-        "originalValue": null
+        "originalValue": "16 minutes"
       },
       "KELA_START_TIME": {
         "resolutions": [],
