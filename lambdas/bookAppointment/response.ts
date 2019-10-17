@@ -113,7 +113,9 @@ export class Response {
    * @returns specified session-attributes + information to tell Lex to continue
    */
   public returnPinSuccess(item: any): DialogElicitSlot {
+
     const user: User = item;
+    
     return {
       sessionAttributes: {
         'KELA_FIRSTNAME': user.FirstName,

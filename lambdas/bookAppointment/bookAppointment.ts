@@ -65,7 +65,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
       const validator = new ValidateLength();
       validator.validateLength(slots.KELA_LENGTH);
-      console.log(validator.invalidLength, validator.message);
+      
       return validator.invalidLength ?
         response.returnInvalidSlot('KELA_LENGTH', validator.message) :
         response.returnValidSlot('KELA_LENGTH', validator.length);
