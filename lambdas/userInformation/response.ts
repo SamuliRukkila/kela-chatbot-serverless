@@ -24,7 +24,7 @@ export class Response {
    * 
    * @returns Empty response, which won't do anything
    */
-  public returnDelegate (): DialogDelegate {
+  public returnDelegate(): DialogDelegate {
     return {
       dialogAction: {
         type: 'Delegate',
@@ -86,12 +86,12 @@ export class Response {
    * @param {string} pin User's provided PIN
    * @returns Error message why search failed and data to close current intent
    */
-  public returnFailedSearch (unknownPin: boolean, pin: string): DialogClose {
+  public returnFailedSearch(unknownPin: boolean, pin: string): DialogClose {
 
     const content = unknownPin
       ? `Could not find user via provided PIN: ${pin}`
       : `Seems like there were an error while fetching 
-          your data with provided PIN: ${pin}. My apologies.`;  
+          your data with provided PIN: ${pin}. My apologies.`;
 
     return {
       dialogAction: {
@@ -112,16 +112,24 @@ export class Response {
    * @param {any/string} res Response, which contains user's information
    * @returns User information and data to close current intent 
    */
-  public returnUserInformation (res: any): DialogClose {
-    
+  public returnUserInformation(res: any): DialogClose {
+
     const user: User = res;
-    const content = `Here's your information:\n
-                     PIN: ${user.Pin}\n
-                     Date of birth: ${user.DateOfBirth}\n
-                     Full name: ${user.FirstName} ${user.LastName}\n
-                     City: ${user.City}`;
+    // const content = `Here's your information:\n
+    //                  PIN: ${user.Pin}\n
+    //                  Date of birth: ${user.DateOfBirth}\n
+    //                  Full name: ${user.FirstName} ${user.LastName}\n
+    //                  City: ${user.City}`;
+    const content = "Here's your information";
 
     return {
+      sessionAttributes: {
+        'KELA_FIRSTNAME': user.FirstName,
+        'KELA_LASTNAME': user.LastName,
+        'KELA_PIN': user.Pin,
+        'KELA_DATE_OF_BIRTH': user.DateOfBirth,
+        'KELA_CITY': user.City
+      },
       dialogAction: {
         type: 'Close',
         fulfillmentState: 'Fulfilled',
