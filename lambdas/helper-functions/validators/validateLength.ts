@@ -11,6 +11,7 @@ export class ValidateLength {
   public message: string;
   private isMinutes: boolean;
 
+
   /**
    * Main function which will call other private-functions
    * to validate the length
@@ -25,6 +26,7 @@ export class ValidateLength {
     if (!this.isValidLength()) return;
   }
 
+
   /**
    * Checks that provided number can be converted
    * into an actual number.
@@ -34,10 +36,7 @@ export class ValidateLength {
    */
   private isLengthNumber(length: string): boolean {
     
-    // If user didn't give time as hours (PT15/30/45M)
-    // Example prompt "1 hour"
-    if (!length.includes('H')) this.isMinutes = true;
-    
+    // If length -string has any numberic values
     if (length.match(/\d+/g)) {
       this.length = Number(length.match(/\d+/g)[0]);
       return true;
@@ -49,6 +48,7 @@ export class ValidateLength {
       return false;
     }
   }
+
 
   /**
    * Checks that provided number is one of predetermined 

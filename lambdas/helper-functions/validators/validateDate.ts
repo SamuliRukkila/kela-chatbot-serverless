@@ -24,7 +24,7 @@ export class ValidateDate {
     console.log('Validating date: ' + this.date);
 
     /* If any of the function -calls will return 
-       false, validation will be stopped */
+       true, validation will be stopped */
     if (moment(this.date).isValid()) {
       if (this.isDayInvalid()) return;
       if (this.isWeekDayInvalid()) return;
@@ -105,8 +105,8 @@ export class ValidateDate {
       const hours: number = today.hour();
       const minutes: number = today.minutes();
 
-      // Local time is 15.45 or later
-      if (hours > 15 || (hours === 15 && minutes >= 30)) {
+      // Local time is 15.30 or later
+      if (hours > 15 || (hours === 15 && minutes > 30)) {
         console.log(`Error: It's too for today to reserver appointments.
           Last valid time: 15:30 | Actual time: ${hours}:${minutes}`);
 

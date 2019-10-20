@@ -78,14 +78,15 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * 1.3 SCENARIO
      * ------------------------------------------------------------------------
      * 
-     * 
+     * User has provided the wanted start-time for the appointment.
+     * This date will now be valited.
      */
     else if (!sessionAttributes.KELA_START_TIME_OK && slots.KELA_START_TIME) {
 
       console.log('KELA_START_TIME > Received value: ' + slots.KELA_START_TIME);
       console.log(typeof slots.KELA_START_TIME);
       const validator = new ValidateStartTime();
-      validator.validateStartTime(slots.KELA_START_TIME);
+      validator.validateStartTime(slots.KELA_START_TIME, slots.KELA_LENGTH);
 
       return validator.invalidTime ?
         response.returnInvalidSlot('KELA_START_TIME', validator.message) :

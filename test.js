@@ -1,5 +1,5 @@
-let length = 'PTM';
+const moment = require('moment-timezone');
 
-if (length.match(/\d+/g)) {
-  console.log("MOI");
-}
+const time = '08:00';
+
+console.log(moment(time, 'HH:mm').tz('Europe/Helsinki').format());
