@@ -1,4 +1,5 @@
-const number = "asd";
+let length = 'PTM';
 
-console.log(parseInt(number, 10) != NaN);
-console.log(parseInt(number, 10) == NaN);
+if (length.match(/\d+/g)) {
+  console.log("MOI");
+}

@@ -17,7 +17,7 @@
       "KELA_PIN": "123123-123F",
       "KELA_DATE": "15.11.2019",
       "KELA_REASON": null,
-      "KELA_LENGTH": "15.1",
+      "KELA_LENGTH": "PT1H",
       "KELA_START_TIME": null,
       "KELA_INFORMATION": null
     },

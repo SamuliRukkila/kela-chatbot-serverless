@@ -100,15 +100,15 @@ export class ValidateDate {
     // If date isn't preserved for today, function will simply return false
     if (moment(this.date).isSame(today.format(), 'day')) {
 
-      console.log('Checking today\'s date is not too late (15:45 ->): ' + this.date);
+      console.log('Checking today\'s date is not too late (15:30 ->): ' + this.date);
 
       const hours: number = today.hour();
       const minutes: number = today.minutes();
 
       // Local time is 15.45 or later
-      if (hours > 15 || (hours === 15 && minutes >= 45)) {
+      if (hours > 15 || (hours === 15 && minutes >= 30)) {
         console.log(`Error: It's too for today to reserver appointments.
-          Last valid time: 15:45 | Actual time: ${hours}:${minutes}`);
+          Last valid time: 15:30 | Actual time: ${hours}:${minutes}`);
 
         this.invalidDate = true;
         this.message = 'It is too late to book appointments for today.';

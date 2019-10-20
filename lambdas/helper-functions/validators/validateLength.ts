@@ -9,6 +9,7 @@ export class ValidateLength {
   public length: number;
   public invalidLength: boolean;
   public message: string;
+  private isMinutes: boolean;
 
   /**
    * Main function which will call other private-functions
@@ -33,11 +34,14 @@ export class ValidateLength {
    */
   private isLengthNumber(length: string): boolean {
     
-    if (!isNaN(Number(length))) {
-      this.length = Number(length);
+    // If user didn't give time as hours (PT15/30/45M)
+    // Example prompt "1 hour"
+    if (!length.includes('H')) this.isMinutes = true;
+    
+    if (length.match(/\d+/g)) {
+      this.length = Number(length.match(/\d+/g)[0]);
       return true;
     }
-
     else {
       console.error('ERROR: Provided length isn\'t convertable to number: ' + length)
       this.invalidLength = true;
@@ -53,11 +57,16 @@ export class ValidateLength {
    * @returns true if valid length -number | false if isn't
    */
   private isValidLength(): boolean {
+
     const validLengths: number[] = [15, 30, 45, 60];
+
+    // If user provided length in hours instead of minutes
+    if (this.length === 1 && !this.isMinutes) this.length = 60;
+
     for (let i = 0; i < validLengths.length; i++) {
       if (this.length === validLengths[i]) {
         return true;
-      }
+      } 
     }
     console.error(`ERROR: Provided length: ${this.length} isn't right value: [15, 30, 45, 60]`);
     this.invalidLength = true;
