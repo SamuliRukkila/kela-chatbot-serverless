@@ -1,5 +1,4 @@
 
-const moment = require('moment');
 
 /**
  * Validation class which'll completely validate
@@ -37,13 +36,13 @@ export class ValidateLength {
     if (!isNaN(Number(length))) {
       this.length = Number(length);
       return true;
-    } 
+    }
 
     else {
       console.error('ERROR: Provided length isn\'t convertable to number: ' + length)
       this.invalidLength = true;
       this.message = 'Length you provided isn\'t number.'
-      return false; 
+      return false;
     }
   }
 
@@ -54,7 +53,7 @@ export class ValidateLength {
    * @returns true if valid length -number | false if isn't
    */
   private isValidLength(): boolean {
-    const validLengths: number[] = [15, 30, 45, 60];
+    const validLengths: number[] = [15, 30, 45, 60];
     for (let i = 0; i < validLengths.length; i++) {
       if (this.length === validLengths[i]) {
         return true;

@@ -35,7 +35,7 @@ export class ValidateDate {
       this.message = 'Provided date is invalid.';
     }
   }
-  
+
 
   /**
    * Private function which'll check that preserved date is either
@@ -47,7 +47,7 @@ export class ValidateDate {
   private isDayInvalid(): boolean {
 
     console.log('Checking that date is today or later: ' + this.date);
-    
+
     const today: string = moment().tz('Europe/Helsinki').format();
 
     if (!moment(this.date).isSameOrAfter(today, 'day')) {
@@ -82,7 +82,7 @@ export class ValidateDate {
     }
     return false;
   }
-  
+
 
   /**
    * Private function which'll check that today isn't
@@ -94,9 +94,9 @@ export class ValidateDate {
    *  false if local time is 15.45 or later
    */
   private isTodayInvalid(): boolean {
-    /// TODO::: ADD TIMEZONES
+
     const today: Moment = moment().tz('Europe/Helsinki');
-    
+
     // If date isn't preserved for today, function will simply return false
     if (moment(this.date).isSame(today.format(), 'day')) {
 
@@ -106,7 +106,7 @@ export class ValidateDate {
       const minutes: number = today.minutes();
 
       // Local time is 15.45 or later
-      if (hours > 15 || (hours === 15 && minutes >= 45)) {
+      if (hours > 15 || (hours === 15 && minutes >= 45)) {
         console.log(`Error: It's too for today to reserver appointments.
           Last valid time: 15:45 | Actual time: ${hours}:${minutes}`);
 
