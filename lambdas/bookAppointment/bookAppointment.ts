@@ -5,6 +5,7 @@ import { DynamoDB } from '../helper-functions/database/dynamodb';
 import { GetItemOutput } from 'aws-sdk/clients/dynamodb';
 import { ValidateDate } from '../helper-functions/validators/validateDate';
 import { ValidateLength } from '../helper-functions/validators/validateLength';
+import { ValidateStartTime } from '../helper-functions/validators/validateStartTime';
 
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
 
@@ -13,6 +14,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   const slots = event.currentIntent.slots;
   const sessionAttributes = event.sessionAttributes;
+  const slotDetails = event.currentIntent.slotDetails;
 
   const response = new Response();
   response.sessionAttributes = sessionAttributes;
@@ -59,8 +61,8 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * This value will now be validated. The length won't be saved to DynamoDB,
      * only the ending -time (as UTC-type).
      */
-    else if (!sessionAttributes.KELA_LENGTH_OK && slots.KELA_LENGTH ) {
-
+    else if (!sessionAttributes.KELA_LENGTH_OK && (slots.KELA_LENGTH || slotDetails.KELA_LENGTH.originalValue)) {
+      
       console.log('KELA_LENGTH > Received value: ' + slots.KELA_LENGTH);
 
       const validator = new ValidateLength();
@@ -79,6 +81,15 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * 
      */
     else if (!sessionAttributes.KELA_START_TIME_OK && slots.KELA_START_TIME) {
+
+      console.log('KELA_START_TIME > Received value: ' + slots.KELA_START_TIME);
+      console.log(typeof slots.KELA_START_TIME);
+      const validator = new ValidateStartTime();
+      validator.validateStartTime(slots.KELA_START_TIME);
+
+      return validator.invalidTime ?
+        response.returnInvalidSlot('KELA_START_TIME', validator.message) :
+        response.returnValidSlot('KELA_START_TIME', validator.time);
 
     }
 
@@ -112,7 +123,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * 
      */
     else {
-
+      return response.returnDelegate();
     }
   }
 

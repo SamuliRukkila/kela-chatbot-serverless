@@ -17,9 +17,13 @@ export class Response {
    * @returns Empty response, which won't do anything
    */
   public returnDelegate(): DialogDelegate {
+
+
     return {
+      sessionAttributes: this.sessionAttributes,
       dialogAction: {
         type: 'Delegate',
+        slots: this.slots
       }
     };
   }

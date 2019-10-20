@@ -33,7 +33,7 @@ export class ValidateLength {
    * @returns true if value is number | false if isn't 
    */
   private isLengthNumber(length: string): boolean {
-
+    
     if (!isNaN(Number(length))) {
       this.length = Number(length);
       return true;
@@ -57,12 +57,12 @@ export class ValidateLength {
     const validLengths: number[] = [15, 30, 45, 60];
     for (let i = 0; i < validLengths.length; i++) {
       if (this.length === validLengths[i]) {
-        console.log('Oha se totta');
         return true;
       }
     }
+    console.error(`ERROR: Provided length: ${this.length} isn't right value: [15, 30, 45, 60]`);
     this.invalidLength = true;
-    this.message = 'Provided length isn\'t valid. Possible times are [15, 30, 45 & 60] minutes';
+    this.message = 'Provided length isn\'t valid. Possible times are [15, 30, 45 & 60] minutes.';
     return false;
   }
 

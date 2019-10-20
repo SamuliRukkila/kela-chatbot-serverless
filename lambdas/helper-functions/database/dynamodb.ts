@@ -14,6 +14,7 @@ export class DynamoDB {
    * @retuns Promise which'll return user information/error
    */
   public async searchUserByPin(pin: string): Promise<GetItemOutput> {
+    
     const params = {
       TableName: 'kela-Customers',
       Key: {
