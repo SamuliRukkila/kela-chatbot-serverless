@@ -30,6 +30,34 @@ export class Response {
 
 
   /**
+   * This return-function is called usually when unknown error 
+   * happens while Lex calls lambda. This usually happens when 
+   * user doesn't provide a correct value for the slot which 
+   * is restricted.
+   * 
+   * Latest empty slot will be asked again by the Lex.
+   * 
+   * @param {string} slot Slot which'll be asked again
+   * @returns Prompt for Lex to ask for the latest empty slot again 
+   */
+  public returnUnknownElicitSlot(slot: string): DialogElicitSlot {
+    return {
+      sessionAttributes: this.sessionAttributes,
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Seems like you provided an incorrect value. Please try again.`
+        },
+        intentName: 'Kela_BookAppointment',
+        slots: this.slots,
+        slotToElicit: slot
+      }
+    };
+  }
+
+
+  /**
    * If PIN is invalid by it's length/value,
    * return an error message to Lex's bot telling
    * why it has failed.
@@ -130,14 +158,14 @@ export class Response {
         type: 'ElicitSlot',
         message: {
           contentType: 'PlainText',
-          content: `Hello, ${user.FirstName}. What day would you 
-            like to book the appointment?`
+          content: `Hello, ${user.FirstName}. Would you want
+          book an office (45 min) or phone (30 min) appointment?`
         },
         intentName: 'Kela_BookAppointment',
         slots: {
           'KELA_PIN': user.Pin
         },
-        slotToElicit: 'KELA_DATE'
+        slotToElicit: 'KELA_TYPE'
       }
     }
   }

@@ -4,8 +4,10 @@
   "userId": "ug57haxcvlerxgq9ximbxrt57om59p3k",
   "sessionAttributes": {
     "KELA_FIRSTNAME": "Katariina",
-    "KELA_PIN_OK": true,
     "KELA_LASTNAME": "Kotola",
+    "KELA_LENGTH": 45,
+    "KELA_PIN_OK": true,
+    "KELA_TYPE_OK": true,
     "KELA_DATE_OK": true
   },
   "requestAttributes": null,
@@ -17,7 +19,7 @@
       "KELA_PIN": "123123-123F",
       "KELA_DATE": "15.11.2019",
       "KELA_REASON": null,
-      "KELA_LENGTH": "15 minutes",
+      "KELA_TYPE": "",
       "KELA_START_TIME": "08:00",
       "KELA_INFORMATION": null
     },
@@ -34,9 +36,9 @@
         "resolutions": [],
         "originalValue": null
       },
-      "KELA_LENGTH": {
+      "KELA_TYPE": {
         "resolutions": [],
-        "originalValue": "16 minutes"
+        "originalValue": null
       },
       "KELA_START_TIME": {
         "resolutions": [],

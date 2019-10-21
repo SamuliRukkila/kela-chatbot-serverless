@@ -29,17 +29,18 @@ export class ValidateStartTime {
    */
   public validateStartTime(startTime: string, appointmentLength: number): void {
     
-    this.appointmentLength = appointmentLength;
-    this.dateTime = moment(startTime, 'HH:mm').tz('Europe/Helsinki');
-    this.hours = this.dateTime.hours();
-    this.minutes = this.dateTime.minutes();
-    this.time = startTime;
-
     console.log('Validating time' + startTime);
-
+    
     /* If any of the function -calls will return
        true, validation will be stopped */
     if (moment(this.time).isValid()) {
+      
+      this.appointmentLength = appointmentLength;
+      this.dateTime = moment(startTime, 'HH:mm').tz('Europe/Helsinki');
+      this.hours = this.dateTime.hours();
+      this.minutes = this.dateTime.minutes();
+      this.time = startTime;
+
       if (this.isTimeTooEarly()) return;
       if (this.isTimeTooLate()) return;
     } else {
@@ -90,5 +91,6 @@ export class ValidateStartTime {
   }
 
 
+  private is
 }
 

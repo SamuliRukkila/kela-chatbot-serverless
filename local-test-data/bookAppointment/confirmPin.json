@@ -12,7 +12,7 @@
       "KELA_PIN": "sure, it's 101095-391E",
       "KELA_DATE": null,
       "KELA_REASON": null,
-      "KELA_LENGTH": null,
+      "KELA_TYPE": null,
       "KELA_START_TIME": null,
       "KELA_INFORMATION": null
     },
@@ -29,7 +29,7 @@
         "resolutions": [],
         "originalValue": null
       },
-      "KELA_LENGTH": {
+      "KELA_TYPE": {
         "resolutions": [],
         "originalValue": null
       },

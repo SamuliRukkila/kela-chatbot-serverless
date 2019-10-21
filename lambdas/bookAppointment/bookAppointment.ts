@@ -4,7 +4,7 @@ import { ValidatePin } from '../helper-functions/validators/validatePin';
 import { DynamoDB } from '../helper-functions/database/dynamodb';
 import { GetItemOutput } from 'aws-sdk/clients/dynamodb';
 import { ValidateDate } from '../helper-functions/validators/validateDate';
-import { ValidateLength } from '../helper-functions/validators/validateLength';
+import { ValidateType } from '../helper-functions/validators/validateType';
 import { ValidateStartTime } from '../helper-functions/validators/validateStartTime';
 
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
@@ -14,7 +14,6 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   const slots = event.currentIntent.slots;
   const sessionAttributes = event.sessionAttributes;
-  const slotDetails = event.currentIntent.slotDetails;
 
   const response = new Response();
   response.sessionAttributes = sessionAttributes;
@@ -37,6 +36,30 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * 1.1 SCENARIO
      * ------------------------------------------------------------------------
      * 
+     * User has been validated and will now choose the 
+     * appointment type which is either office (45 min) or
+     * phone -meeting.
+     */
+    if (!sessionAttributes.KELA_TYPE_OK && slots.KELA_TYPE) {
+
+      console.log('KELA_TYPE > Received value: ' + slots.KELA_TYPE);
+
+      const validator = new ValidateType();
+      validator.validateType(slots.KELA_TYPE);
+
+      if (validator.invalidType) {
+        return response.returnInvalidSlot('KELA_TYPE', validator.message);
+      } else {
+        response.sessionAttributes['length'] = validator.length;
+        response.returnValidSlot('KELA_TYPE', validator.type);
+      }
+    }
+
+
+    /**
+     * 1.2 SCENARIO
+     * ------------------------------------------------------------------------
+     * 
      * User has provided date when the appointment should take
      * place. This date will now be validated.
      */
@@ -52,26 +75,6 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
         response.returnValidSlot('KELA_DATE', validator.date);
     } 
 
-
-    /**
-     * 1.2 SCENARIO
-     * ------------------------------------------------------------------------
-     * 
-     * User has provided the wanted length for the meeting (15, 30, 40, 60 mins).
-     * This value will now be validated. The length won't be saved to DynamoDB,
-     * only the ending -time (as UTC-type).
-     */
-    else if (!sessionAttributes.KELA_LENGTH_OK && (slots.KELA_LENGTH || slotDetails.KELA_LENGTH.originalValue)) {
-      
-      console.log('KELA_LENGTH > Received value: ' + slots.KELA_LENGTH);
-
-      const validator = new ValidateLength();
-      validator.validateLength(slots.KELA_LENGTH);
-      
-      return validator.invalidLength ?
-        response.returnInvalidSlot('KELA_LENGTH', validator.message) :
-        response.returnValidSlot('KELA_LENGTH', validator.length);
-    }
 
 
     /**
@@ -121,10 +124,28 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * 1.6 SCENARIO
      * ------------------------------------------------------------------------
      * 
+     * Something went wrong while validating or giving values
+     * to Lex. All the slots are quickly checked and latest empty 
+     * slot will asked again.
      * 
+     * This usually happens when user provides an incorrect value 
+     * for restricted slot.
      */
     else {
-      return response.returnDelegate();
+
+      const attributes: any[] = [
+        { session: sessionAttributes.KELA_TYPE_OK, name: 'KELA_TYPE' },
+        { session: sessionAttributes.KELA_DATE_OK, name: 'KELA_DATE' },
+        { session: sessionAttributes.KELA_START_TIME_OK, name: 'KELA_START_TIME' },
+        { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' },
+        { session: sessionAttributes.KELA_INFORMATION_OK, name: 'KELA_INFORMATION' }
+      ];
+
+      for (let i = 0; i < attributes.length; i++) {
+        if (!attributes[i].session) {
+          return response.returnUnknownElicitSlot(attributes[i].name);
+        }
+      }
     }
   }
 
