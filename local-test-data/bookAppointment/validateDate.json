@@ -18,7 +18,7 @@
       "KELA_PIN": "123123-123F",
       "KELA_DATE": "2019-11-14",
       "KELA_REASON": null,
-      "KELA_TYPE": null,
+      "KELA_TYPE": "phone",
       "KELA_START_TIME": null,
       "KELA_INFORMATION": null
     },

@@ -29,8 +29,9 @@ export class ValidateDate {
       if (this.isDayInvalid()) return;
       if (this.isWeekDayInvalid()) return;
       if (this.isTodayInvalid()) return;
-      this.date = moment(this.date).tz('Europe/Helsinki').format('DD.MM.YYYY');
-    } else {
+      this.date = moment(this.date).tz('Europe/Helsinki').format('YYYY-MM-DD');
+    } 
+    else {
       this.invalidDate = true;
       this.message = 'Provided date is invalid.';
     }
