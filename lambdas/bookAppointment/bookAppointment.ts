@@ -50,8 +50,8 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       if (validator.invalidType) {
         return response.returnInvalidSlot('KELA_TYPE', validator.message);
       } else {
-        response.sessionAttributes['length'] = validator.length;
-        response.returnValidSlot('KELA_TYPE', validator.type);
+        response.sessionAttributes['KELA_LENGTH'] = validator.length;
+        return response.returnValidSlot('KELA_TYPE', validator.type);
       }
     }
 
@@ -87,7 +87,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     else if (!sessionAttributes.KELA_START_TIME_OK && slots.KELA_START_TIME) {
 
       console.log('KELA_START_TIME > Received value: ' + slots.KELA_START_TIME);
-      console.log(typeof slots.KELA_START_TIME);
+
       const validator = new ValidateStartTime();
       validator.validateStartTime(slots.KELA_START_TIME, slots.KELA_LENGTH);
 

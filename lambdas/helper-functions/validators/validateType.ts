@@ -18,7 +18,7 @@ export class ValidateType {
    */
   public validateType(type: string): void {
 
-    this.type = type;
+    this.type = type.toLowerCase();
     if (this.typeIsValid()) this.addLengthByType();
   }
 
@@ -30,7 +30,7 @@ export class ValidateType {
    * @returns true if type is valid, false if type is invalid
    */
   private typeIsValid(): boolean {
-
+    
     if (this.type.includes('office')) {
       this.type = 'office';
       return true;
