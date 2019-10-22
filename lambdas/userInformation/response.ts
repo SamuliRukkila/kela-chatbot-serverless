@@ -115,12 +115,7 @@ export class Response {
   public returnUserInformation(res: any): DialogClose {
 
     const user: User = res;
-    // const content = `Here's your information:\n
-    //                  PIN: ${user.Pin}\n
-    //                  Date of birth: ${user.DateOfBirth}\n
-    //                  Full name: ${user.FirstName} ${user.LastName}\n
-    //                  City: ${user.City}`;
-    const content = "Here's your information";
+    const content = "Here's your information. You can say \"Close info\" to close your information";
 
     return {
       sessionAttributes: {
