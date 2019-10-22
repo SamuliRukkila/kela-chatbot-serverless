@@ -4,18 +4,22 @@
   "userId": "9m3jh84wpjtcfnjj8mrgcvarig4lyc05",
   "sessionAttributes": {},
   "requestAttributes": null,
-  "bot": { "name": "KelaChatBot", "alias": "$LATEST", "version": "$LATEST" },
+  "bot": {
+    "name": "KelaChatBot",
+    "alias": "$LATEST",
+    "version": "$LATEST"
+  },
   "outputDialogMode": "Text",
   "currentIntent": {
     "name": "Kela_UserInformation",
-    "slots": { 
-      "Kela_PIN": "123123-123F" 
+    "slots": {
+      "Kela_PIN": "121212-121F"
     },
-    "slotDetails": { 
-      "Kela_PIN": { 
-        "resolutions": [], 
-        "originalValue": "123123-123F" 
-      } 
+    "slotDetails": {
+      "Kela_PIN": {
+        "resolutions": [],
+        "originalValue": "121212-121F"
+      }
     },
     "confirmationStatus": "Confirmed"
   },
