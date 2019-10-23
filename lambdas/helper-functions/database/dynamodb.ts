@@ -1,7 +1,8 @@
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB.DocumentClient();
-import { GetItemOutput, ScanInput, QueryInput } from 'aws-sdk/clients/dynamodb';
+import { GetItemOutput, ScanInput, QueryInput, QueryOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
 import { DynamoDBAction } from 'aws-sdk/clients/iot';
+import { Moment } from 'moment';
 
 /**
  * Connects to AWS's DynamoDB to create queries
@@ -32,7 +33,7 @@ export class DynamoDB {
    * @param {string} pin PIN which identifies the appointments
    * @retuns Promise which'll return user appointments/error
    */
-  public async searchAppointmentsByPin(pin: string) {
+  public async searchAppointmentsByPin(pin: string): Promise<QueryOutput> {
 
     const params = {
       TableName: 'kela-Appointments',
@@ -54,13 +55,15 @@ export class DynamoDB {
    * 
    * @param startDate 
    */
-  public async checkAppointmentsForDate(startDate: string): Promise<GetItemOutput> {
+  public async checkAppointmentsForDateTime(startDateTime: Moment): Promise<GetItemOutput> {
 
-    console.log('Fetching appointments for: ' + startDate);
+    const appointmentTime = startDateTime.format().substr(0, 16);
+
+    console.log('Fetching appointments for: ' + appointmentTime);
 
     const params: QueryInput = {
       TableName: 'kela-Appointments',
-      KeyConditionExpression: `contains (StartDateTime, ${startDate})`,
+      KeyConditionExpression: `contains (StartDateTime, ${appointmentTime})`,
       AttributesToGet: [
         'StartDateTime',
         'EndDateTime'

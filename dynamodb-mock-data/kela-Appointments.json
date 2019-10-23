@@ -3,6 +3,7 @@
     {
       "PutRequest": {
         "Item": {
+          "Type": {"S": "phone" },
           "StartDateTime": {"S": "2019-08-09T17:00:00" },
           "EndDateTime": {"S": "2019-08-09T17:30:00" },
           "FirstName": {"S": "Samuli" },
@@ -16,8 +17,9 @@
     {
       "PutRequest": {
         "Item": {
+          "Type": {"S": "office" },
           "StartDateTime": {"S": "2019-08-09T17:30:00" },
-          "EndDateTime": {"S": "2019-08-09T18:00:00" },
+          "EndDateTime": {"S": "2019-08-09T18:15:00" },
           "FirstName": {"S": "Jeela" },
           "LastName": {"S": "Anne" },
           "Pin": {"S": "122599-125F" },

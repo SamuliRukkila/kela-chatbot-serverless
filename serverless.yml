@@ -74,14 +74,14 @@ resources:
       Properties:
         TableName: kela-Appointments
         AttributeDefinitions:
-          - AttributeName: StartDateTime
+          - AttributeName: Type
             AttributeType: S
-          - AttributeName: EndDateTime
+          - AttributeName: StartDateTime
             AttributeType: S
         KeySchema:
-          - AttributeName: StartDateTime
+          - AttributeName: Type
             KeyType: HASH
-          - AttributeName: EndDateTime
+          - AttributeName: StartDateTime
             KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 5

@@ -1,14 +1,18 @@
+const DynamoDB = require('aws-sdk/clients/dynamodb');
+import { User } from '../../classes/User';
+
 import { DialogClose } from '../../classes/DialogClose';
 import { DialogDelegate } from '../../classes/DialogDelegate';
-import { User } from '../../classes/User';
 import { DialogConfirmIntent } from '../../classes/DialogConfirmIntent';
 import { DialogElicitSlot } from '../../classes/DialogElicitSlot';
-import DynamoDB = require('aws-sdk/clients/dynamodb');
+
+import { BookAppointmentSlots } from '../../classes/BookAppointmentsSlots';
+import { BookAppointmentAttributes } from '../../classes/BookAppointmentAttributes';
 
 export class Response {
   
-  public sessionAttributes: Object;
-  public slots: Object;
+  public sessionAttributes: BookAppointmentAttributes;
+  public slots: BookAppointmentSlots;
 
   /**
    * Return empty response. Lex's bot will continue

@@ -1,19 +1,25 @@
-import { LexEvent } from '../../classes/LexEvent';
-import { Response } from './response';
-import { ValidatePin } from '../helper-functions/validators/validatePin';
-import { DynamoDB } from '../helper-functions/database/dynamodb';
 import { GetItemOutput } from 'aws-sdk/clients/dynamodb';
+import { LexEvent } from '../../classes/LexEvent';
+import { DynamoDB } from '../helper-functions/database/dynamodb';
+import { Response } from './response';
+
+import { BookAppointmentSlots } from '../../classes/BookAppointmentsSlots';
+import { BookAppointmentAttributes } from '../../classes/BookAppointmentAttributes';
+
+import { ValidateStartTime } from '../helper-functions/validators/validateStartTime';
 import { ValidateDate } from '../helper-functions/validators/validateDate';
 import { ValidateType } from '../helper-functions/validators/validateType';
-import { ValidateStartTime } from '../helper-functions/validators/validateStartTime';
+import { ValidatePin } from '../helper-functions/validators/validatePin';
+
+
 
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
 
   console.log(event);
   console.log(event.currentIntent);
 
-  const slots = event.currentIntent.slots;
-  const sessionAttributes = event.sessionAttributes;
+  const slots: BookAppointmentSlots = event.currentIntent.slots;
+  const sessionAttributes: BookAppointmentAttributes = event.sessionAttributes;
 
   const response = new Response();
   response.sessionAttributes = sessionAttributes;
@@ -70,9 +76,10 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       const validator = new ValidateDate();
       validator.validateDate(slots.KELA_DATE);
 
-      return validator.invalidDate ? 
-        response.returnInvalidSlot('KELA_DATE', validator.message) :
-        response.returnValidSlot('KELA_DATE', validator.date);
+      callback(null, (validator.invalidDate ? 
+          response.returnInvalidSlot('KELA_DATE', validator.message) :
+          response.returnValidSlot('KELA_DATE', validator.date)
+      ));
     } 
 
 
@@ -82,16 +89,15 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * ------------------------------------------------------------------------
      * 
      * User has provided the wanted start-time for the appointment.
-     * This date will now be validated.
+     * This date-time will now be validated. Other previous attributes
+     * need to be 
      */
     else if (!sessionAttributes.KELA_START_TIME_OK && slots.KELA_START_TIME) {
 
       console.log('KELA_START_TIME > Received value: ' + slots.KELA_START_TIME);
 
       const validator = new ValidateStartTime();
-      validator.validateStartTime(
-        slots.KELA_START_TIME, slots.KELA_LENGTH, slots.KELA_DATE, slots.TYPE
-      );
+      validator.validateStartTime(slots.KELA_START_TIME, slots.KELA_DATE, slots.KELA_TYPE);
 
       return validator.invalidTime ?
         response.returnInvalidSlot('KELA_START_TIME', validator.message) :
