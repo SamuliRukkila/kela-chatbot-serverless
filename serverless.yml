@@ -40,6 +40,12 @@ functions:
     name: kela-bookAppointment
     description: Books an appointment for the user 
 
+  # Book a new time for Kela meeting
+  KelaCheckAppointments:
+    handler: lambdas/checkAppointments/checkAppointments.handler
+    name: kela-checkAppointments
+    description: Checks all user's appointments 
+
   # Locate nearest Kela -apartment
   KelaLocateNearestBuilding:
     handler: lambdas/locateNearestBuilding/locateNearestBuilding.handler

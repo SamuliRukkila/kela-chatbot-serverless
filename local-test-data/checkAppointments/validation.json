@@ -1,0 +1,27 @@
+{
+    "messageVersion": "1.0",
+    "invocationSource": "DialogCodeHook",
+    "userId": "8py13j7ymtjscxxmu1sk6b6ntox0g49s",
+    "sessionAttributes": {},
+    "requestAttributes": null,
+    "bot": {
+        "name": "KelaChatBot",
+        "alias": "$LATEST",
+        "version": "$LATEST"
+    },
+    "outputDialogMode": "Text",
+    "currentIntent": {
+        "name": "Kela_CheckAppointments",
+        "slots": {
+            "Kela_PIN": "121212hyp hoN121F"
+        },
+        "slotDetails": {
+            "Kela_PIN": {
+                "resolutions": [],
+                "originalValue": ""
+            }
+        },
+        "confirmationStatus": "None"
+    },
+    "inputTranscript": ""
+}
