@@ -1,5 +1,5 @@
 const moment = require('moment-timezone');
 
-const time = '08:00';
+const time = moment('2019-01-01T17:30:00').utc().format();
 
-console.log(moment(time, 'HH:mm').tz('Europe/Helsinki').format());
+console.log(time);

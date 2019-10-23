@@ -1,4 +1,6 @@
 import { Moment } from "moment";
+import { DynamoDB } from '../database/dynamodb';
+
 const moment = require('moment-timezone');
 
 /**
@@ -14,9 +16,11 @@ export class ValidateStartTime {
   public invalidTime: boolean;
   public message: string;
 
-  private hours: number;
-  private minutes: number;
-  private appointmentLength: number;
+  private _hours: number;
+  private _minutes: number;
+  private _length: number;
+  private _date: string;
+  private _type: string;
 
   /**
    * Main function which'll use other private-functions to
@@ -25,30 +29,42 @@ export class ValidateStartTime {
    * @param {string} startTime Start-time for the appointment 
    * @param {number} appointmentLength The length of the appointment which'll
    *  be used to validate start-time (this function is already validated in 
-   *  previous functions) 
+   *  previous functions)
+   * @param {string} date The date of the appointment which'll be used
+   *  to get that day's appointments to functions (with this one can check 
+   *  if specific time -appointments are already taken)
+   * @param {string} type The type of the appointment (phone / office -meeting)
    */
-  public validateStartTime(startTime: string, appointmentLength: number): void {
+  public validateStartTime(startTime: string, length: number, date: string, type: string): void {
     
     console.log('Validating time' + startTime);
     
-    /* If any of the function -calls will return
-       true, validation will be stopped */
     if (moment(this.time).isValid()) {
       
-      this.appointmentLength = appointmentLength;
-      this.dateTime = moment(startTime, 'HH:mm').tz('Europe/Helsinki');
-      this.hours = this.dateTime.hours();
-      this.minutes = this.dateTime.minutes();
       this.time = startTime;
+      this.dateTime = moment(startTime, 'HH:mm').tz('Europe/Helsinki');
+      
+      this._hours = this.dateTime.hours();
+      this._minutes = this.dateTime.minutes();
 
+      this._length = length;
+      this._date = date;
+      this._type = type;
+      
+      /* If any of the function -calls will return
+         true, validation will be stopped */
       if (this.isTimeTooEarly()) return;
       if (this.isTimeTooLate()) return;
-    } else {
+      if (this.isTimeTaken()) return;
+
+    } 
+    else {
       this.invalidTime = true;
       this.message = 'Provided time is invalid.'
     }
   }
   
+
   /**
    * Private function which'll check that the wanted
    * time for the meeting is at 08:00 or later.
@@ -60,7 +76,7 @@ export class ValidateStartTime {
     console.log(`Checking that time isn't too 
       early (lower than 08:00): ${this.time}`);
 
-    if (this.hours < 8) {
+    if (this._hours < 8) {
       console.error('Error: Provided time is earlier than 08:00');
       this.invalidTime = true;
       this.message = 'Please provide a time at 08:00 or after.';
@@ -81,7 +97,7 @@ export class ValidateStartTime {
     console.log(`Checking that time isn't too 
       late (higher than 15:30): ${this.time}`);
 
-    if (this.hours > 15 || (this.hours === 15 && this.minutes > 30)) {
+    if (this._hours > 15 || (this._hours === 15 && this._minutes > 30)) {
       console.error('Error: Provided time is later than 15:30');
       this.invalidTime = true;
       this.message = 'Please provide a time at 15:30 or before that.';
@@ -91,6 +107,33 @@ export class ValidateStartTime {
   }
 
 
-  private is
+  /**
+   * 
+   */
+  private async isTimeTaken() {
+
+    const dynamoDB = new DynamoDB();
+
+    console.log(this._date);
+
+    return await dynamoDB.checkAppointmentsForDate(this._date)
+      .then(res => {
+        if (!res.Item) {
+          console.log('No appointments found for date:' + this._date);
+          return false;
+        }
+        console.log(res.Item);
+        return false;
+      })
+      .catch(err => {
+        console.error(err);
+        this.invalidTime = true;
+        this.message = `There were an error while searching for other appointments.`;
+        return true;
+      });
+  }
+
+
+
 }
 
