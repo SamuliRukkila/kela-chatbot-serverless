@@ -112,14 +112,14 @@ export class ValidateStartTime {
 
     const dynamoDB = new DynamoDB();
 
-    return await dynamoDB.checkAppointmentsForDateTime(this.dateTime)
+    return await dynamoDB.checkAppointmentsForDateTime(this.dateTime, this._type)
       .then(res => {
-        if (!res.Item) {
+        if (!res.Items) {
           console.log('No appointments found for date:' + this._date);
           return callback(true, null);
         }
-        console.log(res.Item);
-        return callback(null, res.Item);
+        console.log(res.Items);
+        return callback(null, res.Items);
       })
       .catch(err => {
         this.invalidTime = true;

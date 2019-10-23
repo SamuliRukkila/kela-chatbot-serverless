@@ -11,8 +11,8 @@ import { BookAppointmentAttributes } from '../../classes/BookAppointmentAttribut
 
 export class Response {
   
-  public sessionAttributes: BookAppointmentAttributes;
   public slots: BookAppointmentSlots;
+  public sessionAttributes: BookAppointmentAttributes;
 
   /**
    * Return empty response. Lex's bot will continue

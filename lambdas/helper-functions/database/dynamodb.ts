@@ -53,24 +53,28 @@ export class DynamoDB {
 
   /**
    * 
-   * @param startDate 
+   * @param {Moment} startDate 
+   * @param {string} type
    */
-  public async checkAppointmentsForDateTime(startDateTime: Moment): Promise<GetItemOutput> {
+  public async checkAppointmentsForDateTime(startDateTime: Moment, type: string): Promise<QueryOutput> {
 
-    const appointmentTime = startDateTime.format().substr(0, 16);
+    const datetime = startDateTime.format();
 
-    console.log('Fetching appointments for: ' + appointmentTime);
+    console.log('Fetching appointments for: ' + datetime);
 
     const params: QueryInput = {
       TableName: 'kela-Appointments',
-      KeyConditionExpression: `(StartDateTime, ${appointmentTime})`,
       AttributesToGet: [
-        'StartDateTime',
-        'EndDateTime'
-      ]
-    }
+        'StartDateTime', 'Type'
+      ],
+      // ExpressionAttributeValues: {
+      //   ':t': { 'S': type },
+      //   ':dt': { 'S': datetime }
+      // },
+      KeyConditionExpression: `Type = ${type} AND begins_with(StartDatetime, ${datetime})`
+    };
 
-    return await dynamo.scan(params).promise();
+    return await dynamo.getItem(params).promise();
   }
 
 }
