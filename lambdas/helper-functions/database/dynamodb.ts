@@ -63,7 +63,7 @@ export class DynamoDB {
 
     const params: QueryInput = {
       TableName: 'kela-Appointments',
-      KeyConditionExpression: `contains (StartDateTime, ${appointmentTime})`,
+      KeyConditionExpression: `(StartDateTime, ${appointmentTime})`,
       AttributesToGet: [
         'StartDateTime',
         'EndDateTime'
