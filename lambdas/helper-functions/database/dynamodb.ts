@@ -39,12 +39,7 @@ export class DynamoDB {
 
     const params = {
       TableName: 'kela-Appointments',
-      ProjectionExpression: '#stime, #etime, FirstName, LastName, AppointmentReason',
       FilterExpression: 'Pin = :pin',
-      ExpressionAttributeNames: {
-        "#stime": "StartDateTime",
-        "#etime": "EndDateTime"
-      },
       ExpressionAttributeValues: {
         ':pin': { S: pin }
       }
