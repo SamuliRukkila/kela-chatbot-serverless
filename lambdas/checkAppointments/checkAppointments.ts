@@ -29,6 +29,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
         const pin: string = slots.Kela_PIN;
 
         await dynamoDB.searchAppointmentsByPin(pin).then(res => {
+
             // res.Count === 0 if there are no appointments in dynamodb via given PIN
             if (res.Count === 0) {
                 console.error('No appointments found via PIN: ' + pin);

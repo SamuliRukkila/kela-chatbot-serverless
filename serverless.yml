@@ -34,7 +34,7 @@ functions:
     name: kela-bookAppointment
     description: Books an appointment for the user 
 
-  # Book a new time for Kela meeting
+  # Get user's appointments
   KelaCheckAppointments:
     handler: lambdas/checkAppointments/checkAppointments.handler
     name: kela-checkAppointments

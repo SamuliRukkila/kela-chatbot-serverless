@@ -89,8 +89,7 @@ export class Response {
 
         const content = unknownPin
             ? `You don't have any appointments via provided PIN: ${pin}`
-            : `Seems like there were an error while fetching 
-          your appointments with provided PIN: ${pin}. My apologies.`;
+            : `Seems like there was an error while fetching your appointments`;
 
         return {
             dialogAction: {
@@ -113,15 +112,20 @@ export class Response {
      */
     public returnAppointments(res: any): DialogClose {
 
-        const appointments: Appointment = res;
-        const content = "Here's your appointments. You can say \"Close appointments\" to close your appointments list";
+        const appointments = res;
+        const content = `Here are your appointments ${appointments[0].FirstName}. You can say "Close appointments" to close your appointments view`;
+        let appointmentsString = '';
+
+        appointments.forEach(element => {
+            appointmentsString += JSON.stringify(element);
+        });
 
         console.log("Appointments:");
-        console.dir(res);
+        console.log(appointments);
 
         return {
             sessionAttributes: {
-                'APPOINTMENTS': appointments,
+                'APPOINTMENTS': appointmentsString
             },
             dialogAction: {
                 type: 'Close',
