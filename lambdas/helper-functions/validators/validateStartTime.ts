@@ -14,14 +14,13 @@ const moment = require('moment-timezone');
  * 
  * Appointments are in two types: phone & office:
  * 
- * Phone -meetings are 30 minutes long and times are available  
- * every half hour:
- * @Example 08:00-08:30 | 08:30-09:00 | ... | 15:30-16:00
+ *  Phone -meetings are 30 minutes long and times are available  
+ *  every half hour:
+ *  @Example 08:00-08:30 | 08:30-09:00 | ... | 15:30-16:00
  * 
- * Office -meetings are 45 minutes long and times are available
- * for appointments for every hour:
- * @Example 08:00-08:45 | 09:00-09:45 | ... | 15:00-15:45
- * 
+ *  Office -meetings are 45 minutes long and times are available
+ *  for appointments for every hour:
+ *  @Example 08:00-08:45 | 09:00-09:45 | ... | 15:00-15:45
  * 
  */
 export class ValidateStartTime {
@@ -53,11 +52,10 @@ export class ValidateStartTime {
     if (moment(this.time).isValid()) {
       this.time = startTime;
       this.dateTime = moment(date + startTime, 'YYYY-MM-DD HH:mm');
-      console.log(this.dateTime.format());
       
       this._hours = this.dateTime.hours();
       this._minutes = this.dateTime.minutes();
-
+      
       this._date = date;
       this._type = type;
 
@@ -65,6 +63,7 @@ export class ValidateStartTime {
          true, validation will be stopped */
       if (this.isTimeTooEarly()) return;
       if (this.isTimeTooLate()) return;
+      if (this.isTimeInvalid()) return;
     }
     else {
       this.invalidTime = true;
@@ -113,6 +112,44 @@ export class ValidateStartTime {
     return false;
   }
 
+  /**
+   * Private function which'll check that the provided time
+   * is valid via validating minutes provided. 
+   * 
+   * Office -appointments can start hourly (08:00, 09:00 -> 15:00).
+   * Phone -appointments can start every half hour (08:30, 08:30, 09:00 -> 15:30).
+   * 
+   * @returns True if time is valid, false if it isn't
+   */
+  private isTimeInvalid(): boolean {
+
+    console.log(`Checking that the ${this._type} 
+      -appointment's time is right' + ${this._minutes}`);
+
+    // Office -appointments
+    if (this._type === 'office') {
+      if (this._minutes !== 0) {
+        console.error(`Office appointment's time is invalid (should be every :00 minutes): ${this._minutes}`);
+        this.invalidTime = true;
+        this.message = 'Provided time is invalid. Valid time for the office -appointment is hourly (08.00, 09:00 ->).';
+        return false;
+      } 
+      return true;
+    } 
+    // Phone -appointments
+    else {
+      if (this._minutes !== 0 && this._minutes !== 30) {
+        console.error(`Phone meeting's time is invalid (should be every :00/:30 minutes): ${this._minutes}`);
+        this.invalidTime = true;
+        this.message = 'Provided time is invalid for the phone -appointment. Valid time for the appoinment is every half hour.';
+        return false;
+      }
+      return true;
+    }
+
+
+  }
+
 
   /**
    * Public function which'll (with the help of DynamoDB-class) check
@@ -121,9 +158,12 @@ export class ValidateStartTime {
    * Function is isolated from other functions because it uses a lot of
    * asyncronious methods for implementing.
    * 
+   * @param {string} pin User's PIN so function can check (in case the wanted
+   *  time for appointment is already reserved) if it was the same user who
+   *  reserved it
    * @returns Empty promise. Error handling is done in the function already
    */
-  public async isTimeTaken(): Promise<null> {
+  public async isTimeTaken(pin: string): Promise<null> {
 
     const dynamoDB = new DynamoDB();
 
@@ -134,13 +174,16 @@ export class ValidateStartTime {
         // No overlapping appointments found
         if (res.Items.length === 0) {
           console.log('No appointments found for date:' + this._date);
-          await resolve();
+          resolve();
         }
         // Found overlapping appointments
         else {
+          if (res.Items[0].Pin.S = pin) {
+            console.log('Seems like you have already booked this time.');
+          } 
           this.message = 'Unfortunately this appointment is already reserved.';
           this.invalidTime = true;
-          await resolve();
+          resolve();
         }
 
       }
@@ -149,7 +192,7 @@ export class ValidateStartTime {
         console.error('Error while searching appointments: ' + err);
         this.invalidTime = true;
         this.message = `There were an error while searching for other appointments.`;
-        await resolve();
+        resolve();
       }
     })
 

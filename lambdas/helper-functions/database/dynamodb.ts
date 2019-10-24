@@ -68,6 +68,7 @@ export class DynamoDB {
    */
   public async checkAppointmentsForTime(startDateTime: Moment, type: string): Promise<QueryOutput> {
 
+    // Bug? Includes timezone in the formatted string. Temporary fix.
     const datetime = startDateTime.format().substring(0, 19);
 
     console.log('Fetching appointments from DynamoDB with: ' + datetime);
