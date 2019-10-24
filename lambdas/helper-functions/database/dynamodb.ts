@@ -1,7 +1,6 @@
 const AWS = require('aws-sdk');
-const dynamo = new AWS.DynamoDB.DocumentClient();
-import { GetItemOutput, ScanInput, QueryInput, QueryOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
-import { DynamoDBAction } from 'aws-sdk/clients/iot';
+const dynamo = new AWS.DynamoDB();
+import { GetItemOutput, QueryInput, QueryOutput } from 'aws-sdk/clients/dynamodb';
 import { Moment } from 'moment';
 
 /**
@@ -17,6 +16,8 @@ export class DynamoDB {
    */
   public async searchUserByPin(pin: string): Promise<GetItemOutput> {
 
+    console.log('Fetching customer from DynamoDB with: ' + pin);
+
     const params = {
       TableName: 'kela-Customers',
       Key: {
@@ -26,6 +27,7 @@ export class DynamoDB {
 
     return await dynamo.get(params).promise();
   }
+
 
   /**
    * Gets user's appointments by their PIN
@@ -51,30 +53,41 @@ export class DynamoDB {
     return await dynamo.scan(params).promise();
   }
 
+
   /**
+   * DynamoDB-function which'll check if there's appointments taken
+   * for the user's desired time. It'll only return one value. PIN
+   * is returned so we can check if it's the same user who tried to 
+   * book the appointment at the same time.
    * 
-   * @param {Moment} startDate 
-   * @param {string} type
+   * @param {Moment} startDateTime Date (with time) when the user would
+   *  want to book the appointment
+   * @param {string} type The type of appointment (office/phone). These
+   *  types won't overlap each other's appointments so it need to be included.
+   * @returns Promise which will return 0-1 overlapping appointment, error if something went wrong 
    */
-  public async checkAppointmentsForDateTime(startDateTime: Moment, type: string): Promise<QueryOutput> {
+  public async checkAppointmentsForTime(startDateTime: Moment, type: string): Promise<QueryOutput> {
 
-    const datetime = startDateTime.format();
+    const datetime = startDateTime.format().substring(0, 19);
 
-    console.log('Fetching appointments for: ' + datetime);
+    console.log('Fetching appointments from DynamoDB with: ' + datetime);
 
     const params: QueryInput = {
       TableName: 'kela-Appointments',
-      AttributesToGet: [
-        'StartDateTime', 'Type'
-      ],
-      // ExpressionAttributeValues: {
-      //   ':t': { 'S': type },
-      //   ':dt': { 'S': datetime }
-      // },
-      KeyConditionExpression: `Type = ${type} AND begins_with(StartDatetime, ${datetime})`
+      ProjectionExpression: '#sdt, #p',
+      ExpressionAttributeNames: {
+        '#t': 'Type',
+        '#sdt': 'StartDateTime',
+        '#p': 'Pin'
+      },
+      ExpressionAttributeValues: {
+        ':t': { S: type },
+        ':dt': { S: datetime }
+      },
+      KeyConditionExpression: '#t = :t AND #sdt = :dt'
     };
 
-    return await dynamo.getItem(params).promise();
+    return await dynamo.query(params).promise();
   }
 
 }

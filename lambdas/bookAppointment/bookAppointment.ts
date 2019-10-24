@@ -10,6 +10,7 @@ import { ValidateStartTime } from '../helper-functions/validators/validateStartT
 import { ValidateDate } from '../helper-functions/validators/validateDate';
 import { ValidateType } from '../helper-functions/validators/validateType';
 import { ValidatePin } from '../helper-functions/validators/validatePin';
+import moment = require('moment');
 
 
 
@@ -90,7 +91,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * 
      * User has provided the wanted start-time for the appointment.
      * This date-time will now be validated. Other previous attributes
-     * need to be 
+     * need to be included in the validation in order to do it properly.
      */
     else if (!sessionAttributes.KELA_START_TIME_OK && slots.KELA_START_TIME) {
 
@@ -99,9 +100,19 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       const validator = new ValidateStartTime();
       validator.validateStartTime(slots.KELA_START_TIME, slots.KELA_DATE, slots.KELA_TYPE);
 
-      return validator.invalidTime ?
-        response.returnInvalidSlot('KELA_START_TIME', validator.message) :
-        response.returnValidSlot('KELA_START_TIME', validator.time);
+      if (validator.invalidTime) {
+        return response.returnInvalidSlot('KELA_START_TIME', validator.message);
+      }
+      // Asyncronous validations/checks are separated from synchronous checks 
+      // since async -checks need more configuration. 
+      else {
+        await validator.isTimeTaken().then(() => {
+          callback(validator.invalidTime ?
+            response.returnInvalidSlot('KELA_START_TIME', validator.message) :
+            response.returnValidSlot('KELA_START_TIME', slots.KELA_START_TIME)
+          )
+        });
+      }
     }
 
 

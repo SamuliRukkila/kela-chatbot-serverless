@@ -4,11 +4,26 @@ import { DynamoDB } from '../database/dynamodb';
 const moment = require('moment-timezone');
 
 /**
- * This object is purposed to validate every ascept of PIN.
+ * This class will completely validate appointment's start-time.
+ * It'll also check if there's reserved appointments already
+ * in place in the time user wants the appointment.
  * 
- * TODO: Add validation for valid DATES
+ * Appointment-types won't overlap each other, so other user 
+ * can have, for example, phone-appointment at 08:00-08:30, and 
+ * another one have an office-appointment at 08:00-08:45.
+ * 
+ * Appointments are in two types: phone & office:
+ * 
+ * Phone -meetings are 30 minutes long and times are available  
+ * every half hour:
+ * @Example 08:00-08:30 | 08:30-09:00 | ... | 15:30-16:00
+ * 
+ * Office -meetings are 45 minutes long and times are available
+ * for appointments for every hour:
+ * @Example 08:00-08:45 | 09:00-09:45 | ... | 15:00-15:45
+ * 
+ * 
  */
-
 export class ValidateStartTime {
 
   public time: string;
@@ -50,18 +65,12 @@ export class ValidateStartTime {
          true, validation will be stopped */
       if (this.isTimeTooEarly()) return;
       if (this.isTimeTooLate()) return;
-      this.isTimeTaken((err: string, res: string) => {
-        if (err) console.error(err);
-        else console.log(res);
-      });
-
     }
     else {
       this.invalidTime = true;
       this.message = 'Provided time is invalid.'
     }
   }
-
 
   /**
    * Private function which'll check that the wanted
@@ -106,26 +115,44 @@ export class ValidateStartTime {
 
 
   /**
+   * Public function which'll (with the help of DynamoDB-class) check
+   * if the user's desired appointment-time is already taken.
    * 
+   * Function is isolated from other functions because it uses a lot of
+   * asyncronious methods for implementing.
+   * 
+   * @returns Empty promise. Error handling is done in the function already
    */
-  private async isTimeTaken(callback: Function): Promise<Function> {
+  public async isTimeTaken(): Promise<null> {
 
     const dynamoDB = new DynamoDB();
 
-    return await dynamoDB.checkAppointmentsForDateTime(this.dateTime, this._type)
-      .then(res => {
-        if (!res.Items) {
+    return new Promise(async (resolve) => {
+      try {
+        const res = await dynamoDB.checkAppointmentsForTime(this.dateTime, this._type);
+
+        // No overlapping appointments found
+        if (res.Items.length === 0) {
           console.log('No appointments found for date:' + this._date);
-          return callback(true, null);
+          await resolve();
         }
-        console.log(res.Items);
-        return callback(null, res.Items);
-      })
-      .catch(err => {
+        // Found overlapping appointments
+        else {
+          this.message = 'Unfortunately this appointment is already reserved.';
+          this.invalidTime = true;
+          await resolve();
+        }
+
+      }
+      // Error while checking for appointments
+      catch (err) {
+        console.error('Error while searching appointments: ' + err);
         this.invalidTime = true;
         this.message = `There were an error while searching for other appointments.`;
-        return callback(true, null)
-      });
+        await resolve();
+      }
+    })
+
 }
 
 
