@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB();
-import { GetItemOutput, QueryInput, QueryOutput } from 'aws-sdk/clients/dynamodb';
+import { GetItemOutput, QueryInput, QueryOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
 import { Moment } from 'moment';
 
 /**
@@ -35,7 +35,7 @@ export class DynamoDB {
    * @param {string} pin PIN which identifies the appointments
    * @retuns Promise which'll return user appointments/error
    */
-  public async searchAppointmentsByPin(pin: string): Promise<QueryOutput> {
+  public async searchAppointmentsByPin(pin: string): Promise<ScanOutput> {
 
     const params = {
       TableName: 'kela-Appointments',
@@ -46,7 +46,7 @@ export class DynamoDB {
         "#etime": "EndDateTime"
       },
       ExpressionAttributeValues: {
-        ':pin': pin
+        ':pin': { S: pin }
       }
     };
 

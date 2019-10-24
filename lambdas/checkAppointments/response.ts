@@ -113,20 +113,29 @@ export class Response {
     public returnAppointments(res: any): DialogClose {
 
         const appointments = res;
-        const content = `Here are your appointments ${appointments[0].FirstName}. You can say "Close appointments" to close your appointments view`;
-        let appointmentsString = '';
+        const content = `Here are your appointments. You can say "Close appointments" to close your appointments view`;
+        let attributes = {};
 
-        appointments.forEach(element => {
-            appointmentsString += JSON.stringify(element);
-        });
+        if (appointments.length === 1) {
+            const appointmentOne = JSON.stringify(appointments[0]);
+            attributes = {
+                'APPOINTMENT_ONE': appointmentOne,
+                'APPOINTMENT_TWO': null
+            };
+        } else {
+            const appointmentOne = JSON.stringify(appointments[0]);
+            const appointmentTwo = JSON.stringify(appointments[1]);
+            attributes = {
+                'APPOINTMENT_ONE': appointmentOne,
+                'APPOINTMENT_TWO': appointmentTwo
+            };
+        }
 
         console.log("Appointments:");
         console.log(appointments);
 
         return {
-            sessionAttributes: {
-                'APPOINTMENTS': appointmentsString
-            },
+            sessionAttributes: attributes,
             dialogAction: {
                 type: 'Close',
                 fulfillmentState: 'Fulfilled',
