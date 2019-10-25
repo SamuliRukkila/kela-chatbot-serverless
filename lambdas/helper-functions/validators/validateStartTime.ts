@@ -103,10 +103,18 @@ export class ValidateStartTime {
     console.log(`Checking that time isn't too 
       late (higher than 15:30): ${this.time}`);
 
-    if (this._hours > 15 || (this._hours === 15 && this._minutes > 30)) {
-      console.error('Error: Provided time is later than 15:30');
+    // Office -appointments
+    if (this._type === 'office' && this._hours > 15) {
+      console.error(`Error: Provided time for office -appointment is later than 15:00: ${this.time}`);
       this.invalidTime = true;
-      this.message = 'Please provide a time at 15:30 or before that.';
+      this.message = 'Latest time for the office -appointment is 15:00';
+      return true;
+    }
+  // Phone -appointments
+    else if (this._type === 'phone' && (this._hours > 15 || (this._hours === 15 && this._minutes === 30))) {
+      console.error(`Error: Provided time for phone -appointment is later than 15:30: ${this.time}`);
+      this.invalidTime = true;
+      this.message = 'Latest time for the phone -appointment is 15:30.';
       return true;
     }
     return false;
@@ -127,27 +135,20 @@ export class ValidateStartTime {
       -appointment's time is right' + ${this._minutes}`);
 
     // Office -appointments
-    if (this._type === 'office') {
-      if (this._minutes !== 0) {
-        console.error(`Office appointment's time is invalid (should be every :00 minutes): ${this._minutes}`);
-        this.invalidTime = true;
-        this.message = 'Provided time is invalid. Valid time for the office -appointment is hourly (08.00, 09:00 ->).';
-        return false;
-      } 
+    if (this._type === 'office' && this._minutes !== 0) {
+      console.error(`Office appointment's time is invalid (should be every :00 minutes): ${this._minutes}`);
+      this.invalidTime = true;
+      this.message = 'Provided time is invalid. Valid time for the office -appointment is hourly (08.00, 09:00 ->).';
       return true;
     } 
     // Phone -appointments
-    else {
-      if (this._minutes !== 0 && this._minutes !== 30) {
-        console.error(`Phone meeting's time is invalid (should be every :00/:30 minutes): ${this._minutes}`);
-        this.invalidTime = true;
-        this.message = 'Provided time is invalid for the phone -appointment. Valid time for the appoinment is every half hour.';
-        return false;
-      }
+    else if (this._minutes !== 0 && this._minutes !== 30) {
+      console.error(`Phone meeting's time is invalid (should be every :00/:30 minutes): ${this._minutes}`);
+      this.invalidTime = true;
+      this.message = 'Provided time is invalid for the phone -appointment. Valid time for the appoinment is every half hour.';
       return true;
     }
-
-
+    return false;
   }
 
 
@@ -178,14 +179,12 @@ export class ValidateStartTime {
         }
         // Found overlapping appointments
         else {
-          if (res.Items[0].Pin.S = pin) {
-            console.log('Seems like you have already booked this time.');
-          } 
-          this.message = 'Unfortunately this appointment is already reserved.';
+          this.message = res.Items[0].Pin.S === pin ? 
+            this.message = 'Seems like you have already booked for this time.' :
+            this.message = 'Unfortunately this appointment is already reserved.';
           this.invalidTime = true;
           resolve();
         }
-
       }
       // Error while checking for appointments
       catch (err) {
@@ -193,12 +192,8 @@ export class ValidateStartTime {
         this.invalidTime = true;
         this.message = `There were an error while searching for other appointments.`;
         resolve();
-      }
-    })
+      };
+    });
+  }
 
 }
-
-
-
-}
-
