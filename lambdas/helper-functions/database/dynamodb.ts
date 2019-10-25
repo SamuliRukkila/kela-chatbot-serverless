@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB();
-import { GetItemOutput, QueryInput, QueryOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
+import { GetItemOutput, QueryInput, QueryOutput, ScanOutput, ScanInput } from 'aws-sdk/clients/dynamodb';
 import { Moment } from 'moment';
 
 /**
@@ -14,18 +14,19 @@ export class DynamoDB {
    * @param {string} pin PIN which identifies the user
    * @retuns Promise which'll return user information/error
    */
-  public async searchUserByPin(pin: string): Promise<GetItemOutput> {
+  public async searchUserByPin(pin: string): Promise<ScanOutput> {
 
     console.log('Fetching customer from DynamoDB with: ' + pin);
 
-    const params = {
+    const params: ScanInput = {
       TableName: 'kela-Customers',
-      Key: {
-        Pin: pin
+      FilterExpression: 'Pin = :pin',
+      ExpressionAttributeValues: {
+        ':pin': { S: pin }
       }
     };
 
-    return await dynamo.get(params).promise();
+    return await dynamo.scan(params).promise();
   }
 
 
