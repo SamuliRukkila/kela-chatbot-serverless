@@ -1,3 +1,4 @@
+import { ScanOutput } from 'aws-sdk/clients/dynamodb';
 import { ValidatePin } from '../helper-functions/validators/validatePin';
 import { Response } from './response';
 import { DynamoDB } from '../helper-functions/database/dynamodb';
@@ -31,16 +32,16 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
     const pin: string = slots.Kela_PIN;
 
-    await dynamoDB.searchUserByPin(pin).then(res => {
+    await dynamoDB.searchUserByPin(pin).then((res: ScanOutput) => {
 
       console.log('-------');
       console.log(res);
 
-      if (!res.Items) {
+      if (!res.Items[0]) {
         console.error('Could not find user with PIN: ' + pin);
         callback(null, response.returnFailedSearch(true, pin));
       } else {
-        console.log('Found user via PIN: ' + res.Items[0].Pin.S);
+        console.log('Found user via PIN: ' + pin);
         callback(null, response.returnUserInformation(res.Items[0]));
       }
     }).catch(err => {

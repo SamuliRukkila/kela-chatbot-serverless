@@ -1,3 +1,4 @@
+import { ScanOutput } from 'aws-sdk/clients/dynamodb';
 import { ValidatePin } from '../helper-functions/validators/validatePin';
 import { Response } from './response';
 import { DynamoDB } from '../helper-functions/database/dynamodb';
@@ -28,14 +29,14 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
         const pin: string = slots.Kela_PIN;
 
-        await dynamoDB.searchAppointmentsByPin(pin).then(res => {
+        await dynamoDB.searchAppointmentsByPin(pin).then((res: ScanOutput) => {
 
             // res.Count === 0 if there are no appointments in dynamodb via given PIN
             if (res.Count === 0) {
                 console.error('No appointments found via PIN: ' + pin);
                 callback(null, response.returnFailedSearch(true, pin));
             } else {
-                console.log('Found appointments via PIN: ' + res.Items);
+                console.log('Found appointments via PIN: ' + pin);
                 callback(null, response.returnAppointments(res.Items));
             }
         }).catch(err => {

@@ -10,7 +10,7 @@ import { BookAppointmentSlots } from '../../classes/BookAppointmentsSlots';
 import { BookAppointmentAttributes } from '../../classes/BookAppointmentAttributes';
 
 export class Response {
-  
+
   public slots: BookAppointmentSlots;
   public sessionAttributes: BookAppointmentAttributes;
 
@@ -151,23 +151,23 @@ export class Response {
   public returnPinSuccess(item: any): DialogElicitSlot {
 
     const user: User = item;
-    
+
     return {
       sessionAttributes: {
-        'KELA_FIRSTNAME': user.FirstName,
-        'KELA_LASTNAME': user.LastName,
+        'KELA_FIRSTNAME': user.FirstName.S,
+        'KELA_LASTNAME': user.LastName.S,
         'KELA_PIN_OK': true
       },
       dialogAction: {
         type: 'ElicitSlot',
         message: {
           contentType: 'PlainText',
-          content: `Hello, ${user.FirstName}. Would you want
+          content: `Hello, ${user.FirstName.S}. Would you want
           book an office (45 min) or phone (30 min) appointment?`
         },
         intentName: 'Kela_BookAppointment',
         slots: {
-          'KELA_PIN': user.Pin
+          'KELA_PIN': user.Pin.S
         },
         slotToElicit: 'KELA_TYPE'
       }
@@ -216,7 +216,7 @@ export class Response {
    * @param {string | number} value Valid data for the slot
    * @returns information to tell for Lex to continue
    */
-  public returnValidSlot(slot: string, value: string | number): DialogDelegate {
+  public returnValidSlot(slot: string, value: string | number): DialogDelegate {
 
     // Older slots + session-attributes needs to be included or they'll disappear
     this.sessionAttributes[slot + "_OK"] = true;
@@ -226,7 +226,7 @@ export class Response {
       sessionAttributes: this.sessionAttributes,
       dialogAction: {
         type: 'Delegate',
-        slots: this.slots    
+        slots: this.slots
       }
     }
   }

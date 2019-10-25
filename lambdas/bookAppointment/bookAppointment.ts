@@ -1,4 +1,4 @@
-import { GetItemOutput } from 'aws-sdk/clients/dynamodb';
+import { GetItemOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
 import { LexEvent } from '../../classes/LexEvent';
 import { DynamoDB } from '../helper-functions/database/dynamodb';
 import { Response } from './response';
@@ -25,7 +25,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   const response = new Response();
   response.sessionAttributes = sessionAttributes;
   response.slots = slots;
-  
+
   /**
    * 1. SCENARIO
    * ========================================================
@@ -37,7 +37,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * saved into @sessionAttributes -variable.
    */
   if (sessionAttributes && sessionAttributes.KELA_PIN_OK) {
-    
+
 
     /**
      * 1.1 SCENARIO
@@ -77,11 +77,11 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       const validator = new ValidateDate();
       validator.validateDate(slots.KELA_DATE);
 
-      callback(null, (validator.invalidDate ? 
-          response.returnInvalidSlot('KELA_DATE', validator.message) :
-          response.returnValidSlot('KELA_DATE', validator.date)
+      callback(null, (validator.invalidDate ?
+        response.returnInvalidSlot('KELA_DATE', validator.message) :
+        response.returnValidSlot('KELA_DATE', validator.date)
       ));
-    } 
+    }
 
 
 
@@ -135,7 +135,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      */
     else if (!sessionAttributes.KELA_INFORMATION_OK && slots.KELA_INFORMATION) {
 
-    } 
+    }
 
 
     /**
@@ -150,13 +150,13 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * for restricted slot.
      */
     else {
-      
+
       // All the possible SLOT -values
       const attributes: any[] = [
         { session: sessionAttributes.KELA_TYPE_OK, name: 'KELA_TYPE' },
-        { session: sessionAttributes.KELA_DATE_OK, name: 'KELA_DATE' },
+        { session: sessionAttributes.KELA_DATE_OK, name: 'KELA_DATE' },
         { session: sessionAttributes.KELA_START_TIME_OK, name: 'KELA_START_TIME' },
-        { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' },
+        { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' },
         { session: sessionAttributes.KELA_INFORMATION_OK, name: 'KELA_INFORMATION' }
       ];
 
@@ -184,28 +184,28 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
     const pinValidator = new ValidatePin();
     pinValidator.validatePin(slots.KELA_PIN);
-    
+
     // User's provided PIN is invalid
     if (pinValidator.invalidPin) {
       return response.returnInvalidPin(pinValidator.pin);
     }
     const pin: string = pinValidator.pin;
-    
+
     const dynamoDB = new DynamoDB();
 
     // Search user by the provided pin from database
-    await dynamoDB.searchUserByPin(pin).then((res: GetItemOutput) => {
+    await dynamoDB.searchUserByPin(pin).then((res: ScanOutput) => {
       // User not found
-      if (!res.Item) {
+      if (!res.Items[0]) {
         console.error('Could not find user with PIN: ' + pin);
         callback(null, response.returnNotFoundPin(pin));
-      } 
+      }
       // User found
       else {
         console.log('Found user via PIN: ' + pin);
-        callback(null, response.returnPinSuccess(res.Item));
+        callback(null, response.returnPinSuccess(res.Items[0]));
       }
-    // Error while searching for user
+      // Error while searching for user
     }).catch((err: Error) => {
       console.error(err);
       callback(null, response.returnPinError(pin));
