@@ -49,7 +49,8 @@ export class ValidateStartTime {
 
     console.log('Validating time: ' + startTime);
 
-    if (moment(this.time).isValid()) {
+    if (moment().isValid()) {
+
       this.time = startTime;
       this.dateTime = moment(date + startTime, 'YYYY-MM-DD HH:mm');
       
@@ -105,13 +106,17 @@ export class ValidateStartTime {
 
     // Office -appointments
     if (this._type === 'office' && this._hours > 15) {
+
       console.error(`Error: Provided time for office -appointment is later than 15:00: ${this.time}`);
       this.invalidTime = true;
       this.message = 'Latest time for the office -appointment is 15:00';
       return true;
     }
-  // Phone -appointments
-    else if (this._type === 'phone' && (this._hours > 15 || (this._hours === 15 && this._minutes === 30))) {
+
+    // Phone -appointments
+    else if (this._type === 'phone' && 
+      (this._hours > 15 || (this._hours === 15 && this._minutes === 30))) {
+
       console.error(`Error: Provided time for phone -appointment is later than 15:30: ${this.time}`);
       this.invalidTime = true;
       this.message = 'Latest time for the phone -appointment is 15:30.';
@@ -120,6 +125,7 @@ export class ValidateStartTime {
     return false;
   }
 
+  
   /**
    * Private function which'll check that the provided time
    * is valid via validating minutes provided. 

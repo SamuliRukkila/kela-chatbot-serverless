@@ -107,7 +107,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       // since async -checks need more configuration. 
       else {
         await validator.isTimeTaken(slots.KELA_PIN).then(() => {
-          callback(validator.invalidTime ?
+          return callback(validator.invalidTime ?
             response.returnInvalidSlot('KELA_START_TIME', validator.message) :
             response.returnValidSlot('KELA_START_TIME', slots.KELA_START_TIME)
           )

@@ -60,7 +60,8 @@ export class DynamoDB {
    *  want to book the appointment
    * @param {string} type The type of appointment (office/phone). These
    *  types won't overlap each other's appointments so it need to be included.
-   * @returns Promise which will return 0-1 overlapping appointment, error if something went wrong 
+   * @returns Promise which will return 0-1 overlapping appointment, 
+   *  error if something went wrong 
    */
   public async checkAppointmentsForTime(startDateTime: Moment, type: string): Promise<QueryOutput> {
 
