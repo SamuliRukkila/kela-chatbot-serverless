@@ -9,7 +9,7 @@
   "currentIntent": {
     "name": "Kela_BookAppointment",
     "slots": {
-      "KELA_PIN": "sure, it's 101095-391E",
+      "KELA_PIN": "121212121F",
       "KELA_DATE": null,
       "KELA_REASON": null,
       "KELA_TYPE": null,

@@ -26,6 +26,6 @@
 //   else console.log(res);
 // })
 const moment = require('moment-timezone');
-const time = '08:0o0';
-const date = '2019-01-01T';
-console.log(moment(date + time).isValid());
+const time = '1';
+// const date = '2019-01-01T';
+console.log(moment(time, 'HH:mm').isValid());

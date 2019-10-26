@@ -49,7 +49,7 @@ export class ValidateStartTime {
 
     console.log('Validating time: ' + startTime);
 
-    if (moment().isValid()) {
+    if (moment(startTime, 'HH:mm').isValid()) {
 
       this.time = startTime;
       this.dateTime = moment(date + startTime, 'YYYY-MM-DD HH:mm');

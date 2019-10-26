@@ -43,7 +43,7 @@ export class ValidatePin {
   private parsePinFromString(): void {
     this.pin = this.pin.replace(/ /g, '').toUpperCase();
     this.convertHyphon();
-    this.pin = this.pin.substr(this.pin.length - 11);
+    if (this.pin.length > 10) this.pin = this.pin.substr(this.pin.length - 11);
   }
 
   /**
