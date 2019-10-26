@@ -22,18 +22,19 @@ export class ValidateReason {
   private isReasonInvalid(): boolean {
 
     const reasons: string[] = [
-      'Studies', 'Pension', 'Death of relative',
-      'Housing benefits', 'Emigration or immigration',
-      'Illness', 'Disability allowance or service', 
-      'Military service', 'Rehabilitation', 'Income support',
-      'Unemployment', 'Family with kids'
+      'studies', 'pension', 'death of relative',
+      'housing benefits', 'emigration or immigration',
+      'illness', 'disability allowance or service', 
+      'military service', 'rehabilitation', 'income support',
+      'unemployment', 'family with kids'
     ];
 
     for (let i = 0; i < reasons.length; i++) {
-      if (this.reason.includes(reasons[i])) {
+      if (this.reason.toLowerCase().localeCompare(reasons[i])) {
         return false;
       }
     }
+    console.error(`ERROR: Provided reason isn't valid: ${this.reason}`);
     this.invalidReason = true;
     this.message = 'Provided reason is not valid.';
     return true;

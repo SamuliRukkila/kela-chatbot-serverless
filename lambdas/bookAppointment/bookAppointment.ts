@@ -129,7 +129,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       console.log('KELA_REASON > Received value: ' + slots.KELA_REASON);
 
       const validator = new ValidateReason();
-      validator.validateReason(slots.KELA_DATE);
+      validator.validateReason(slots.KELA_REASON);
 
       return validator.invalidReason ?
         response.returnInvalidSlot('KELA_REASON', validator.message) :

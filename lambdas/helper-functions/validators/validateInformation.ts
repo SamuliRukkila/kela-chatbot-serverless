@@ -9,12 +9,32 @@ export class ValidateInformation {
 
     this.information = information;
 
-    if (this.isInformationInvalid()) return;
-
+    if (this.isInformationTooShort()) return;
+    if (this.isInformationTooLong()) return;
   }
 
-  private isInformationInvalid(): boolean {
-
+  /**
+   * Check's that the information is atleast 
+   * 25 characters long.
+   * 
+   * @returns true if information is too short, false if it long enough
+   */
+  private isInformationTooShort(): boolean {
+    if (this.information.length < 25) {
+      this.message = 'Your provided informatio is too short. Include atleast 25 characters.';
+      this.invalidInformation = true;
+      return true;
+    }
+    return false;
   }
 
+
+  private isInformationTooLong(): boolean {
+    if (this.information.length > 1000) {
+      this.message = 'Your provided informatio is too long. Include at maximum 1000 characters.';
+      this.invalidInformation = true;
+      return true;
+    }
+    return false;
+  }
 }
