@@ -1,4 +1,4 @@
-import { GetItemOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
+import { ScanOutput } from 'aws-sdk/clients/dynamodb';
 import { LexEvent } from '../../classes/LexEvent';
 import { DynamoDB } from '../helper-functions/database/dynamodb';
 import { Response } from './response';
@@ -10,8 +10,8 @@ import { ValidateStartTime } from '../helper-functions/validators/validateStartT
 import { ValidateDate } from '../helper-functions/validators/validateDate';
 import { ValidateType } from '../helper-functions/validators/validateType';
 import { ValidatePin } from '../helper-functions/validators/validatePin';
-import moment = require('moment');
-
+import { ValidateReason } from '../helper-functions/validators/validateReason';
+import { ValidateInformation } from '../helper-functions/validators/validateInformation';
 
 
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
