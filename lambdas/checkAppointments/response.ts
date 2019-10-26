@@ -17,7 +17,7 @@ import { DialogConfirmIntent } from '../../classes/DialogConfirmIntent';
 import { DialogElicitSlot } from '../../classes/DialogElicitSlot';
 
 export class Response {
-  
+
   /**
    * Return empty response. Lex's bot will continue
    * according to it's configuration.
@@ -119,28 +119,12 @@ export class Response {
 
     const appointments = res;
     const content = `Here are your appointments. You can say "Close appointments" to close your appointments view`;
-    let attributes = {};
-
-    if (appointments.length === 1) {
-      const appointmentOne = JSON.stringify(appointments[0]);
-      attributes = {
-        'APPOINTMENT_ONE': appointmentOne,
-        'APPOINTMENT_TWO': null
-      };
-    } else {
-      const appointmentOne = JSON.stringify(appointments[0]);
-      const appointmentTwo = JSON.stringify(appointments[1]);
-      attributes = {
-        'APPOINTMENT_ONE': appointmentOne,
-        'APPOINTMENT_TWO': appointmentTwo
-      };
-    }
 
     console.log("Appointments:");
     console.log(appointments);
 
     return {
-      sessionAttributes: attributes,
+      sessionAttributes: appointments,
       dialogAction: {
         type: 'Close',
         fulfillmentState: 'Fulfilled',
