@@ -115,7 +115,7 @@ export class ValidateStartTime {
 
     // Phone -appointments
     else if (this._type === 'phone' && 
-      (this._hours > 15 || (this._hours === 15 && this._minutes === 30))) {
+      (this._hours > 15 || (this._hours === 15 && this._minutes > 30))) {
 
       console.error(`Error: Provided time for phone -appointment is later than 15:30: ${this.time}`);
       this.invalidTime = true;
@@ -138,7 +138,7 @@ export class ValidateStartTime {
   private isTimeInvalid(): boolean {
 
     console.log(`Checking that the ${this._type} 
-      -appointment's time is right' + ${this._minutes}`);
+      -appointment's minutes is right:' + ${this._minutes} minutes`);
 
     // Office -appointments
     if (this._type === 'office' && this._minutes !== 0) {

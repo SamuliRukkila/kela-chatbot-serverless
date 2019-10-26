@@ -77,10 +77,9 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       const validator = new ValidateDate();
       validator.validateDate(slots.KELA_DATE);
 
-      callback(null, (validator.invalidDate ?
+      return validator.invalidDate ?
         response.returnInvalidSlot('KELA_DATE', validator.message) :
-        response.returnValidSlot('KELA_DATE', validator.date)
-      ));
+        response.returnValidSlot('KELA_DATE', validator.date);
     }
 
 
@@ -107,10 +106,11 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       // since async -checks need more configuration. 
       else {
         await validator.isTimeTaken(slots.KELA_PIN).then(() => {
-          return callback(validator.invalidTime ?
+          console.log(validator.invalidTime);
+          callback(null, validator.invalidTime ?
             response.returnInvalidSlot('KELA_START_TIME', validator.message) :
             response.returnValidSlot('KELA_START_TIME', slots.KELA_START_TIME)
-          )
+          );
         });
       }
     }
@@ -120,10 +120,20 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * 1.4 SCENARIO
      * ------------------------------------------------------------------------
      * 
+     * User has provided the reason for the appointment. The reason is one 
+     * of already provided reasons. Reasn will be quickly validated.
      * 
      */
     else if (!sessionAttributes.KELA_REASON_OK && slots.KELA_REASON) {
 
+      console.log('KELA_REASON > Received value: ' + slots.KELA_REASON);
+
+      const validator = new ValidateReason();
+      validator.validateReason(slots.KELA_DATE);
+
+      return validator.invalidReason ?
+        response.returnInvalidSlot('KELA_REASON', validator.message) :
+        response.returnValidSlot('KELA_REASON', validator.reason);
     }
 
 
@@ -135,6 +145,14 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      */
     else if (!sessionAttributes.KELA_INFORMATION_OK && slots.KELA_INFORMATION) {
 
+      console.log('KELA_INFORMATION > Received value: ' + slots.KELA_INFORMATION);
+
+      const validator = new ValidateInformation();
+      validator.validateInformation(slots.KELA_INFORMATION);
+
+      return validator.invalidInformation ?
+        response.returnInvalidSlot('KELA_INFORMATION', validator.message) :
+        response.returnValidSlot('KELA_INFORMATION', validator.information);
     }
 
 
