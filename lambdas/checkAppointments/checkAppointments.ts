@@ -43,8 +43,8 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
         for (let i = 0; i < res.Items.length; i++) {
           console.log(res.Items[i].StartDateTime.S)
 
-          res.Items[i].StartDateTime.S = moment(res.Items[i].StartDateTime.S).format('D.MM.YYYY, h:mm');
-          res.Items[i].EndDateTime.S = moment(res.Items[i].EndDateTime.S).format('D.MM.YYYY, h:mm');
+          res.Items[i].StartDateTime.S = moment(res.Items[i].StartDateTime.S).format('D.MM.YYYY, H:mm');
+          res.Items[i].EndDateTime.S = moment(res.Items[i].EndDateTime.S).format('D.MM.YYYY, H:mm');
           attributes.push(res.Items[i]);
         }
         callback(null, response.returnAppointments(JSON.stringify(attributes)));
