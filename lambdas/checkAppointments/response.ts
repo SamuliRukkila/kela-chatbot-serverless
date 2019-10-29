@@ -124,7 +124,9 @@ export class Response {
     console.log(appointments);
 
     return {
-      sessionAttributes: appointments,
+      sessionAttributes: {
+        'APPOINTMENTS': appointments
+      },
       dialogAction: {
         type: 'Close',
         fulfillmentState: 'Fulfilled',

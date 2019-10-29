@@ -36,7 +36,7 @@ export class DynamoDB {
    * @param {string} pin PIN which identifies the appointments
    * @retuns Promise which'll return user appointments/error
    */
-  public async searchAppointmentsByPin(pin: string, dateTime: string): Promise<ScanOutput> {
+  public async searchAppointmentsByPin(pin: string, dateTime: Moment): Promise<ScanOutput> {
 
     const params = {
       TableName: 'kela-Appointments',

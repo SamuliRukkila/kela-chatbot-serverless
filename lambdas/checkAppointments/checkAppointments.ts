@@ -28,10 +28,8 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.Kela_PIN) {
 
     const dynamoDB = new DynamoDB();
-
     const pin: string = slots.Kela_PIN;
-
-    const date: string = moment().tz('Europe/Helsinki').format();
+    const date: Moment = moment().tz('Europe/Helsinki').format();
 
     await dynamoDB.searchAppointmentsByPin(pin, date).then((res: ScanOutput) => {
 
@@ -41,19 +39,15 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
         callback(null, response.returnFailedSearch(true, pin));
       } else {
         console.log('Found appointments via PIN: ' + pin);
-        let attributes = {};
-        if (res.Count === 1) {
-          attributes = {
-            'APPOINTMENT_ONE': JSON.stringify(res.Items[0]),
-            'APPOINTMENT_TWO': null
-          };
-        } else {
-          attributes = {
-            'APPOINTMENT_ONE': JSON.stringify(res.Items[0]),
-            'APPOINTMENT_TWO': JSON.stringify(res.Items[1])
-          };
+        const attributes = [];
+        for (let i = 0; i < res.Items.length; i++) {
+          console.log(res.Items[i].StartDateTime.S)
+
+          res.Items[i].StartDateTime.S = moment(res.Items[i].StartDateTime.S).format('D.MM.YYYY, h:mm');
+          res.Items[i].EndDateTime.S = moment(res.Items[i].EndDateTime.S).format('D.MM.YYYY, h:mm');
+          attributes.push(res.Items[i]);
         }
-        callback(null, response.returnAppointments(attributes));
+        callback(null, response.returnAppointments(JSON.stringify(attributes)));
       }
     }).catch(err => {
       console.error(err);
