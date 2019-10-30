@@ -5,6 +5,21 @@ export class ValidateReason {
   public invalidReason: boolean;
   public message: string;
 
+  private reasons: string[] = [
+    'studies',
+    'pension',
+    'death of relative',
+    'housing benefits',
+    'emigration or immigration',
+    'illness',
+    'disability allowance or service',
+    'military service',
+    'rehabilitation',
+    'income support',
+    'unemployment',
+    'family with kids'
+  ];
+
   public validateReason(reason: string): void {
 
     this.reason = reason;
@@ -21,16 +36,8 @@ export class ValidateReason {
    */
   private isReasonInvalid(): boolean {
 
-    const reasons: string[] = [
-      'studies', 'pension', 'death of relative',
-      'housing benefits', 'emigration or immigration',
-      'illness', 'disability allowance or service', 
-      'military service', 'rehabilitation', 'income support',
-      'unemployment', 'family with kids'
-    ];
-
-    for (let i = 0; i < reasons.length; i++) {
-      if (this.reason.toLowerCase().localeCompare(reasons[i])) {
+    for (let i = 0; i < this.reasons.length; i++) {
+      if (this.reason.toLowerCase().includes(this.reasons[i])) {
         return false;
       }
     }

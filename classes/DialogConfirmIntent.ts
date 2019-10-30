@@ -16,7 +16,6 @@
  * the intent. The responseCard field is optional.
  * 
  * @example fullfillmentState = "Fullfilled" / "Failed"
- * @example contentType = "PlainText" / "SSML" / "CustomPayload"
  */
 
 export class DialogConfirmIntent {
@@ -25,7 +24,7 @@ export class DialogConfirmIntent {
   public dialogAction: {
     type: 'ConfirmIntent';
     message?: {
-      contentType: string,
+      contentType: 'PlainText' | 'SSML' | 'CustomPayload',
       content: string;
     };
     intentName: string;

@@ -1,4 +1,5 @@
-const DynamoDB = require('aws-sdk/clients/dynamodb');
+const moment = require('moment-timezone');
+
 import { User } from '../../classes/User';
 
 import { DialogClose } from '../../classes/DialogClose';
@@ -185,8 +186,9 @@ export class Response {
    */
   public returnInvalidSlot(slot: string, message: string): DialogElicitSlot {
 
-    // Older slots + session-attributes needs to be included or they'll disappear
+    // Older slots + session-attributes needs to be inclu   console.log(this.slots);ded or they'll disappear
     this.slots[slot] = null;
+       console.log(this.slots);
 
     return {
       sessionAttributes: this.sessionAttributes,
@@ -227,6 +229,36 @@ export class Response {
         slots: this.slots
       }
     }
+  }
+
+
+  /**
+   * 
+   */
+  public returnConfirmAppointment(): DialogConfirmIntent {
+
+    const msg: string = `
+      Here's your appointment: 
+      Type: ${this.slots.KELA_TYPE}
+      Date: ${moment(this.slots.KELA_DATE).format('DD.MM.YYYY')}
+      Time: ${this.slots.KELA_START_TIME} - ${moment(this.slots.KELA_START_TIME, 'HH:mm')
+        .add(this.slots.KELA_TYPE === 'office' ? 45 : 30, 'minutes').format('HH:mm')}
+      Reason: ${this.slots.KELA_REASON}.
+      Please say "yes" if this information seems OK. 
+    `;
+
+    return {
+      sessionAttributes: this.sessionAttributes,
+      dialogAction: {
+        message: {
+          contentType: 'PlainText',
+          content: msg
+        },
+        type: 'ConfirmIntent',
+        intentName: 'Kela_BookAppointment',
+        slots: this.slots
+      }
+    };
   }
 }
 

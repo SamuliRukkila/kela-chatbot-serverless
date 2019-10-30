@@ -11,7 +11,6 @@ import { ValidateDate } from '../helper-functions/validators/validateDate';
 import { ValidateType } from '../helper-functions/validators/validateType';
 import { ValidatePin } from '../helper-functions/validators/validatePin';
 import { ValidateReason } from '../helper-functions/validators/validateReason';
-import { ValidateInformation } from '../helper-functions/validators/validateInformation';
 
 
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
@@ -22,9 +21,23 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   const slots: BookAppointmentSlots = event.currentIntent.slots;
   const sessionAttributes: BookAppointmentAttributes = event.sessionAttributes;
 
+  const attributes: { session: string, name: string } [] = [
+    { session: sessionAttributes.KELA_TYPE_OK, name: 'KELA_TYPE' },
+    { session: sessionAttributes.KELA_DATE_OK, name: 'KELA_DATE' },
+    { session: sessionAttributes.KELA_START_TIME_OK, name: 'KELA_START_TIME' },
+    { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' },
+  ];
+
   const response = new Response();
   response.sessionAttributes = sessionAttributes;
   response.slots = slots;
+
+
+  if () {
+
+  }
+
+
 
   /**
    * 1. SCENARIO
@@ -36,7 +49,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * Slots which has been verified will have the verification 
    * saved into @sessionAttributes -variable.
    */
-  if (sessionAttributes && sessionAttributes.KELA_PIN_OK) {
+  else if (sessionAttributes && sessionAttributes.KELA_PIN_OK) {
 
 
     /**
@@ -54,12 +67,9 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       const validator = new ValidateType();
       validator.validateType(slots.KELA_TYPE);
 
-      if (validator.invalidType) {
-        return response.returnInvalidSlot('KELA_TYPE', validator.message);
-      } else {
-        response.sessionAttributes['KELA_LENGTH'] = validator.length;
-        return response.returnValidSlot('KELA_TYPE', validator.type);
-      }
+      return validator.invalidType ? 
+        response.returnInvalidSlot('KELA_TYPE', validator.message) :
+        response.returnValidSlot('KELA_TYPE', validator.type);
     }
 
 
@@ -106,7 +116,6 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       // since async -checks need more configuration. 
       else {
         await validator.isTimeTaken(slots.KELA_PIN).then(() => {
-          console.log(validator.invalidTime);
           callback(null, validator.invalidTime ?
             response.returnInvalidSlot('KELA_START_TIME', validator.message) :
             response.returnValidSlot('KELA_START_TIME', slots.KELA_START_TIME)
@@ -122,7 +131,6 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * 
      * User has provided the reason for the appointment. The reason is one 
      * of already provided reasons. Reasn will be quickly validated.
-     * 
      */
     else if (!sessionAttributes.KELA_REASON_OK && slots.KELA_REASON) {
 
@@ -136,25 +144,15 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
         response.returnValidSlot('KELA_REASON', validator.reason);
     }
 
-
     /**
      * 1.5 SCENARIO
-     * ------------------------------------------------------------------------
      * 
-     * 
+     * Every slot has been validated and has been accepted as a valid value.
+     * This will send a confirm prompt for the user so it can be to DynamoDB.
      */
-    else if (!sessionAttributes.KELA_INFORMATION_OK && slots.KELA_INFORMATION) {
-
-      console.log('KELA_INFORMATION > Received value: ' + slots.KELA_INFORMATION);
-
-      const validator = new ValidateInformation();
-      validator.validateInformation(slots.KELA_INFORMATION);
-
-      return validator.invalidInformation ?
-        response.returnInvalidSlot('KELA_INFORMATION', validator.message) :
-        response.returnValidSlot('KELA_INFORMATION', validator.information);
+    else if (attributes.every(attr => attr.session)) {
+      return response.returnConfirmAppointment();
     }
-
 
     /**
      * 1.6 SCENARIO
@@ -168,15 +166,6 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * for restricted slot.
      */
     else {
-
-      // All the possible SLOT -values
-      const attributes: any[] = [
-        { session: sessionAttributes.KELA_TYPE_OK, name: 'KELA_TYPE' },
-        { session: sessionAttributes.KELA_DATE_OK, name: 'KELA_DATE' },
-        { session: sessionAttributes.KELA_START_TIME_OK, name: 'KELA_START_TIME' },
-        { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' },
-        { session: sessionAttributes.KELA_INFORMATION_OK, name: 'KELA_INFORMATION' }
-      ];
 
       for (let i = 0; i < attributes.length; i++) {
         if (!attributes[i].session) {

@@ -1,0 +1,55 @@
+{
+  "messageVersion": "1.0",
+  "invocationSource": "DialogCodeHook",
+  "userId": "ug57haxcvlerxgq9ximbxrt57om59p3k",
+  "sessionAttributes": {
+    "KELA_FIRSTNAME": "Katariina",
+    "KELA_LASTNAME": "Kotola",
+    "KELA_PIN_OK": true,
+    "KELA_TYPE_OK": true,
+    "KELA_DATE_OK": true,
+    "KELA_START_TIME_OK": true,
+    "KELA_REASON_OK": true
+  },
+  "requestAttributes": null,
+  "bot": { "name": "KELAChatBot", "alias": "$LATEST", "version": "$LATEST" },
+  "outputDialogMode": "Text",
+  "currentIntent": {
+    "name": "Kela_BookAppointment",
+    "slots": {
+      "KELA_PIN": "123123-123F",
+      "KELA_DATE": "2019-08-09",
+      "KELA_REASON": "Rehabilitation",
+      "KELA_TYPE": "phone",
+      "KELA_START_TIME": "08:30"
+    },
+    "slotDetails": {
+      "KELA_PIN": {
+        "resolutions": [],
+        "originalValue": "123123-123F"
+      },
+      "KELA_DATE": {
+        "resolutions": [],
+        "originalValue": "2019-08-09"
+      },
+      "KELA_REASON": {
+        "resolutions": [],
+        "originalValue": null
+      },
+      "KELA_TYPE": {
+        "resolutions": [],
+        "originalValue": null
+      },
+      "KELA_START_TIME": {
+        "resolutions": [],
+        "originalValue": null
+      },
+      "KELA_INFORMATION": {
+        "resolutions": [],
+        "originalValue": null
+      }
+    },
+    "confirmationStatus": "None"
+  },
+  "inputTranscript": "2019-10-11"
+}
