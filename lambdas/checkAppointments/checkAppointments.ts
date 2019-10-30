@@ -17,15 +17,54 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   console.log(event.currentIntent);
 
   const slots = event.currentIntent.slots;
+  const sessionAttributes = event.sessionAttributes
   const response = new Response();
 
   /**
    * 1. SCENARIO
    * 
+   * PIN already exists from previous intents.
+   * Appointments will be searched according to 
+   * that user by it's PIN from DynamoDB.
+   */
+  if (sessionAttributes.KELA_PIN) {
+    const dynamoDB = new DynamoDB();
+    const pin: string = sessionAttributes.KELA_PIN;
+    const date: Moment = moment().tz('Europe/Helsinki').format();
+
+    await dynamoDB.searchAppointmentsByPin(pin, date).then((res: ScanOutput) => {
+
+      // res.Count === 0 if there are no appointments in dynamodb via given PIN
+      if (res.Count === 0) {
+        console.error('No appointments found via PIN: ' + pin);
+        callback(null, response.returnFailedSearch(true, pin));
+      } else {
+        console.log('Found appointments via PIN: ' + pin);
+        const attributes = [];
+        for (let i = 0; i < res.Items.length; i++) {
+          console.log(res.Items[i].StartDateTime.S)
+
+          res.Items[i].StartDateTime.S = moment(res.Items[i].StartDateTime.S).format('D.MM.YYYY, H:mm');
+          res.Items[i].EndDateTime.S = moment(res.Items[i].EndDateTime.S).format('D.MM.YYYY, H:mm');
+          attributes.push(res.Items[i]);
+        }
+        callback(null, response.returnAppointments(JSON.stringify(attributes)));
+      }
+    }).catch(err => {
+      console.error(err);
+      callback(null, response.returnFailedSearch(false, pin));
+    });
+  }
+
+
+
+  /**
+   * 2. SCENARIO
+   * 
    * User PIN is confirmed and appointments will be searched 
    * according to that user by it's PIN from DynamoDB
    */
-  if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.Kela_PIN) {
+  else if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.Kela_PIN) {
 
     const dynamoDB = new DynamoDB();
     const pin: string = slots.Kela_PIN;
@@ -57,7 +96,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 2. SCENARIO
+   * 3. SCENARIO
    * 
    * If Lex is doing a validation call for the PIN.
    * Validated PIN will be sent back to LEX in the end.
@@ -80,7 +119,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 3. SCENARIO
+   * 4. SCENARIO
    * 
    * This will (and should) only happen when Lex is doing
    * initialization call.

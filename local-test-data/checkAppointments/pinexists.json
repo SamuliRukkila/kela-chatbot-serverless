@@ -1,0 +1,29 @@
+{
+    "messageVersion": "1.0",
+    "invocationSource": "DialogCodeHook",
+    "userId": "eaue3kyr1gkn4l499szp7zdvj27r2i86",
+    "sessionAttributes": {
+        "KELA_PIN": "121212-121F"
+    },
+    "requestAttributes": null,
+    "bot": {
+        "name": "KelaChatBot",
+        "alias": "$LATEST",
+        "version": "$LATEST"
+    },
+    "outputDialogMode": "Text",
+    "currentIntent": {
+        "name": "Kela_CheckAppointments",
+        "slots": {
+            "slotOne": null
+        },
+        "slotDetails": {
+            "slotOne": {
+                "resolutions": [],
+                "originalValue": null
+            }
+        },
+        "confirmationStatus": "None"
+    },
+    "inputTranscript": "my appointments"
+}
