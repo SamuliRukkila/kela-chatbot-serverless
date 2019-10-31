@@ -41,6 +41,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       } else {
         console.log('Found appointments via PIN: ' + pin);
         const attributes = [];
+
         for (let i = 0; i < res.Items.length; i++) {
           console.log(res.Items[i].StartDateTime.S)
 
@@ -48,7 +49,12 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
           res.Items[i].EndDateTime.S = moment(res.Items[i].EndDateTime.S).format('D.MM.YYYY, H:mm');
           attributes.push(res.Items[i]);
         }
-        callback(null, response.returnAppointments(JSON.stringify(attributes)));
+        callback(null, response.returnAppointments(
+          {
+            appointments: JSON.stringify(attributes),
+            pin: pin
+          }
+        ));
       }
     }).catch(err => {
       console.error(err);
@@ -86,7 +92,12 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
           res.Items[i].EndDateTime.S = moment(res.Items[i].EndDateTime.S).format('D.MM.YYYY, H:mm');
           attributes.push(res.Items[i]);
         }
-        callback(null, response.returnAppointments(JSON.stringify(attributes)));
+        callback(null, response.returnAppointments(
+          {
+            appointments: JSON.stringify(attributes),
+            pin: pin
+          }
+        ));
       }
     }).catch(err => {
       console.error(err);

@@ -117,7 +117,8 @@ export class Response {
    */
   public returnAppointments(res: any): DialogClose {
 
-    const appointments = res;
+    const appointments = res.appointments;
+    const pin = res.pin;
     const content = `Here are your appointments. You can say "Close appointments" to close your appointments view`;
 
     console.log("Appointments:");
@@ -125,7 +126,8 @@ export class Response {
 
     return {
       sessionAttributes: {
-        'APPOINTMENTS': appointments
+        'APPOINTMENTS': appointments,
+        'KELA_PIN': pin
       },
       dialogAction: {
         type: 'Close',
