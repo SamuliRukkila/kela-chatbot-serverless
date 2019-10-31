@@ -233,7 +233,11 @@ export class Response {
 
 
   /**
+   * Function that tells Lex that user is prompted to give 
+   * "yes/no" -answer for the appointment which will be 
+   * shown completely for the user.
    * 
+   * @returns Confirmation prompt for the user to confirm the appointment
    */
   public returnConfirmAppointment(): DialogConfirmIntent {
 
@@ -260,5 +264,32 @@ export class Response {
       }
     };
   }
+
+
+  /**
+   * Function that tells Lex that the booking of the appointment has been
+   * successful. User is not expected to answer for this - it
+   * is merely a informative message.
+   * 
+   * @returns DialogClose -object telling that appointment was successful
+   */
+  public returnSuccessfulAppointment(): DialogClose {
+    return {
+      dialogAction: {
+      type: 'Close',
+        fulfillmentState: 'Fulfilled',
+        message: {
+          contentType: 'PlainText',
+          content: 'Your appointment has been received successfully. Thank you!'
+        }
+      }
+    }
+  }
+
+
+  public returnFailedAppointment() {
+
+  }
+
 }
 

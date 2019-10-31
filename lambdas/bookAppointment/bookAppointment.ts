@@ -33,19 +33,32 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   response.slots = slots;
 
 
+  /**
+   * 1. SCENARIO
+   * ========================================================
+   * 
+   * User has confirmed the appointment and all the slots are fullfilled 
+   * + valid. Appointment will be saved into DynamoDB. All the slots 
+   * and session-attributes will be forwarded aswell.
+   */
   if (event.currentIntent.confirmationStatus === 'Confirmed' && 
       attributes.every(attr => attr.session)) {
     
+    const dynamoDB = new DynamoDB();
     console.log('User has confirmed the appointment. Saving now..');
 
-    
-    
+    await dynamoDB.createAppointment(slots, sessionAttributes).then((res) => {
+      console.log(res);
+      callback(null, response.returnSuccessfulAppointment());
+    }).catch((err: Error) => {
+      console.error(err);
+      callback(null, response.returnFailedAppointment());
+    });
   }
 
 
-
   /**
-   * 1. SCENARIO
+   * 2. SCENARIO
    * ========================================================
    * 
    * User has been verified (by PIN). Slots which'll be given,
@@ -56,9 +69,8 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    */
   else if (sessionAttributes && sessionAttributes.KELA_PIN_OK) {
 
-
     /**
-     * 1.1 SCENARIO
+     * 2.1 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * User has been validated and will now choose the 
@@ -79,7 +91,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
     /**
-     * 1.2 SCENARIO
+     * 2.2 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * User has provided date when the appointment should take
@@ -100,7 +112,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
     /**
-     * 1.3 SCENARIO
+     * 2.3 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * User has provided the wanted start-time for the appointment.
@@ -131,11 +143,14 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
     /**
-     * 1.4 SCENARIO
+     * 2.4 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * User has provided the reason for the appointment. The reason is one 
      * of already provided reasons. Reasn will be quickly validated.
+     * 
+     * Since this is the last slot, the confirmation prompt for the appointment
+     * will also be asked (if all the previous slots are validated).
      */
     else if (!sessionAttributes.KELA_REASON_OK && slots.KELA_REASON) {
 
@@ -149,19 +164,29 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       } 
       else {
 
+        // Since this condition can also do the confirmation, add
+        // these variables before returning anything
         attributes[3].session = true;
-
         response.slots['KELA_REASON'] = validator.reason;
         response.sessionAttributes['KELA_REASON_OK'] = true;
 
         return attributes.every(attr => attr.session) ?
+          // Confirmation
           response.returnConfirmAppointment() :
+          // Just return validated slot
           response.returnValidSlot('KELA_REASON', validator.reason); 
       }
     }
 
+
     /**
-     * 1.5 SCENARIO
+     * 2.5 SCENARIO
+     * ------------------------------------------------------------------------
+     * 
+     * In theory, this condition should (almost) never occur, because previous
+     * slot validation will also call for the confirm of the appointment.
+     * However, if it doesn't (in rare occurances), this condition will ensure
+     * the proper confirmation from the user will be done.
      * 
      * Every slot has been validated and has been accepted as a valid value.
      * This will send a confirm prompt for the user so it can be to DynamoDB.
@@ -170,8 +195,9 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       return response.returnConfirmAppointment();
     }
 
+
     /**
-     * 1.6 SCENARIO
+     * 2.6 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * Something went wrong while validating or giving values
