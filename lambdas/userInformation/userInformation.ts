@@ -55,7 +55,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * User PIN is confirmed and information will be searched 
    * according to that user by it's PIN from DynamoDB
    */
-  if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.KELA_PIN) {
+  else if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.KELA_PIN) {
 
     const dynamoDB = new DynamoDB();
 
@@ -83,12 +83,12 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * If Lex is doing a validation call for the PIN.
    * Validated PIN will be sent back to LEX in the end.
    */
-  else if (event.invocationSource === 'DialogCodeHook' && slots.Kela_PIN) {
+  else if (event.invocationSource === 'DialogCodeHook' && slots.KELA_PIN) {
 
     const validator = new ValidatePin();
 
     // Validate PIN
-    validator.validatePin(slots.Kela_PIN);
+    validator.validatePin(slots.KELA_PIN);
 
     // PIN is invalid
     if (validator.invalidPin) {
