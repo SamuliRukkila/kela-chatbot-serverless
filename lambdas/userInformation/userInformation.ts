@@ -23,19 +23,17 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   /**
    * 1. SCENARIO
    * 
-   * User PIN is confirmed and information will be searched 
-   * according to that user by it's PIN from DynamoDB
+   * PIN already exists from previous intent.
+   * User information will be searched according 
+   * to that user by it's PIN from DynamoDB
    */
-  if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.Kela_PIN) {
+  if (event.sessionAttributes.KELA_PIN) {
 
     const dynamoDB = new DynamoDB();
 
-    const pin: string = slots.Kela_PIN;
+    const pin: string = event.sessionAttributes.KELA_PIN;
 
     await dynamoDB.searchUserByPin(pin).then((res: ScanOutput) => {
-
-      console.log('-------');
-      console.log(res);
 
       if (!res.Items[0]) {
         console.error('Could not find user with PIN: ' + pin);
@@ -53,6 +51,34 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   /**
    * 2. SCENARIO
+   * 
+   * User PIN is confirmed and information will be searched 
+   * according to that user by it's PIN from DynamoDB
+   */
+  if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.KELA_PIN) {
+
+    const dynamoDB = new DynamoDB();
+
+    const pin: string = slots.KELA_PIN;
+
+    await dynamoDB.searchUserByPin(pin).then((res: ScanOutput) => {
+
+      if (!res.Items[0]) {
+        console.error('Could not find user with PIN: ' + pin);
+        callback(null, response.returnFailedSearch(true, pin));
+      } else {
+        console.log('Found user via PIN: ' + pin);
+        callback(null, response.returnUserInformation(res.Items[0]));
+      }
+    }).catch(err => {
+      console.error(err);
+      callback(null, response.returnFailedSearch(false, pin));
+    });
+  }
+
+
+  /**
+   * 3. SCENARIO
    * 
    * If Lex is doing a validation call for the PIN.
    * Validated PIN will be sent back to LEX in the end.
@@ -75,7 +101,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 3. SCENARIO
+   * 4. SCENARIO
    * 
    * This will (and should) only happen when Lex is doing
    * initialization call.

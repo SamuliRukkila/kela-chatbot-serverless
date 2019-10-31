@@ -13,7 +13,7 @@
   "currentIntent": {
     "name": "Kela_UserInformation",
     "slots": {
-      "Kela_PIN": "121212-121F"
+      "KELA_PIN": "121212-121F"
     },
     "slotDetails": {
       "Kela_PIN": {
