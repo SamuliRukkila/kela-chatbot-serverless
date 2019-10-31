@@ -21,11 +21,11 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   const slots: BookAppointmentSlots = event.currentIntent.slots;
   const sessionAttributes: BookAppointmentAttributes = event.sessionAttributes;
 
-  const attributes: { session: string, name: string } [] = [
+  const attributes: { session: boolean, name: string } [] = [
     { session: sessionAttributes.KELA_TYPE_OK, name: 'KELA_TYPE' },
     { session: sessionAttributes.KELA_DATE_OK, name: 'KELA_DATE' },
     { session: sessionAttributes.KELA_START_TIME_OK, name: 'KELA_START_TIME' },
-    { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' },
+    { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' }
   ];
 
   const response = new Response();
@@ -33,8 +33,13 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   response.slots = slots;
 
 
-  if () {
+  if (event.currentIntent.confirmationStatus === 'Confirmed' && 
+      attributes.every(attr => attr.session)) {
+    
+    console.log('User has confirmed the appointment. Saving now..');
 
+    
+    
   }
 
 
@@ -139,9 +144,20 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       const validator = new ValidateReason();
       validator.validateReason(slots.KELA_REASON);
 
-      return validator.invalidReason ?
-        response.returnInvalidSlot('KELA_REASON', validator.message) :
-        response.returnValidSlot('KELA_REASON', validator.reason);
+      if (validator.invalidReason) { 
+        return response.returnInvalidSlot('KELA_REASON', validator.message);
+      } 
+      else {
+
+        attributes[3].session = true;
+
+        response.slots['KELA_REASON'] = validator.reason;
+        response.sessionAttributes['KELA_REASON_OK'] = true;
+
+        return attributes.every(attr => attr.session) ?
+          response.returnConfirmAppointment() :
+          response.returnValidSlot('KELA_REASON', validator.reason); 
+      }
     }
 
     /**

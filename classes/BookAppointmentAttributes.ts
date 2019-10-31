@@ -1,10 +1,10 @@
 export class BookAppointmentAttributes {
-  KELA_PIN_OK?: string;
-  KELA_TYPE_OK?: string;
-  KELA_DATE_OK?: string;
-  KELA_START_TIME_OK?: string;
-  KELA_REASON_OK?: string;
-  KELA_INFORMATION_OK?: string;
-  KELA_FIRSTNAME?: string;
-  KELA_LASTNAME?: string;
+  KELA_PIN_OK?: boolean;
+  KELA_TYPE_OK?: boolean;
+  KELA_DATE_OK?: boolean;
+  KELA_START_TIME_OK?: boolean;
+  KELA_REASON_OK?: boolean;
+  KELA_INFORMATION_OK?: boolean;
+  KELA_FIRSTNAME?: boolean;
+  KELA_LASTNAME?: boolean;
 }
