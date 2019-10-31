@@ -70,10 +70,10 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * User PIN is confirmed and appointments will be searched 
    * according to that user by it's PIN from DynamoDB
    */
-  else if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.Kela_PIN) {
+  else if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.KELA_PIN) {
 
     const dynamoDB = new DynamoDB();
-    const pin: string = slots.Kela_PIN;
+    const pin: string = slots.KELA_PIN;
     const date: Moment = moment().tz('Europe/Helsinki').format();
 
     await dynamoDB.searchAppointmentsByPin(pin, date).then((res: ScanOutput) => {
@@ -112,12 +112,12 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * If Lex is doing a validation call for the PIN.
    * Validated PIN will be sent back to LEX in the end.
    */
-  else if (event.invocationSource === 'DialogCodeHook' && slots.Kela_PIN) {
+  else if (event.invocationSource === 'DialogCodeHook' && slots.KELA_PIN) {
 
     const validator = new ValidatePin();
 
     // Validate PIN
-    validator.validatePin(slots.Kela_PIN);
+    validator.validatePin(slots.KELA_PIN);
 
     // PIN is invalid
     if (validator.invalidPin) {
