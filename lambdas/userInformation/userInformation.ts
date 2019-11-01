@@ -20,6 +20,14 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   const slots = event.currentIntent.slots;
   const response = new Response();
 
+  let pinExists: boolean = false;
+
+  if (event.sessionAttributes) {
+    if (event.sessionAttributes.hasOwnProperty('KELA_PIN')) {
+      pinExists = true;
+    }
+  }
+
   /**
    * 1. SCENARIO
    * 
@@ -27,7 +35,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * User information will be searched according 
    * to that user by it's PIN from DynamoDB
    */
-  if (event.sessionAttributes.KELA_PIN) {
+  if (pinExists) {
 
     const dynamoDB = new DynamoDB();
 

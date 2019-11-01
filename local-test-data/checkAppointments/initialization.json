@@ -1,27 +1,38 @@
 {
     "messageVersion": "1.0",
     "invocationSource": "DialogCodeHook",
-    "userId": "eaue3kyr1gkn4l499szp7zdvj27r2i86",
-    "sessionAttributes": {},
+    "userId": "eu-west-1: 947df1e5-712a-49e4-a7e0-daa074610598",
+    "sessionAttributes": null,
     "requestAttributes": null,
     "bot": {
         "name": "KelaChatBot",
-        "alias": "$LATEST",
-        "version": "$LATEST"
+        "alias": "kelachatbot",
+        "version": "21"
     },
     "outputDialogMode": "Text",
     "currentIntent": {
         "name": "Kela_CheckAppointments",
         "slots": {
-            "slotOne": null
+            "KELA_PIN": null
         },
         "slotDetails": {
-            "slotOne": {
+            "KELA_PIN": {
                 "resolutions": [],
                 "originalValue": null
             }
         },
         "confirmationStatus": "None"
     },
-    "inputTranscript": "my appointments"
+    "inputTranscript": "my times",
+    "recentIntentSummaryView": [
+        {
+            "intentName": "Kela_Greeting",
+            "checkpointLabel": null,
+            "slots": {},
+            "confirmationStatus": "None",
+            "dialogActionType": "Close",
+            "fulfillmentState": "Fulfilled",
+            "slotToElicit": null
+        }
+    ]
 }

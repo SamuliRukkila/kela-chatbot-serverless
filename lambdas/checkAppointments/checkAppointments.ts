@@ -17,8 +17,15 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   console.log(event.currentIntent);
 
   const slots = event.currentIntent.slots;
-  const sessionAttributes = event.sessionAttributes
   const response = new Response();
+
+  let pinExists: boolean = false;
+
+  if (event.sessionAttributes) {
+    if (event.sessionAttributes.hasOwnProperty('KELA_PIN')) {
+      pinExists = true;
+    }
+  }
 
   /**
    * 1. SCENARIO
@@ -27,9 +34,10 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * Appointments will be searched according to 
    * that user by it's PIN from DynamoDB.
    */
-  if (sessionAttributes.KELA_PIN) {
+  if (pinExists) {
+    console.log('SCENARIO 1.');
     const dynamoDB = new DynamoDB();
-    const pin: string = sessionAttributes.KELA_PIN;
+    const pin: string = event.sessionAttributes.KELA_PIN;
     const date: Moment = moment().tz('Europe/Helsinki').format();
 
     await dynamoDB.searchAppointmentsByPin(pin, date).then((res: ScanOutput) => {
@@ -71,7 +79,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * according to that user by it's PIN from DynamoDB
    */
   else if (event.currentIntent.confirmationStatus === 'Confirmed' && slots.KELA_PIN) {
-
+    console.log('SCENARIO 2.');
     const dynamoDB = new DynamoDB();
     const pin: string = slots.KELA_PIN;
     const date: Moment = moment().tz('Europe/Helsinki').format();
@@ -113,6 +121,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * Validated PIN will be sent back to LEX in the end.
    */
   else if (event.invocationSource === 'DialogCodeHook' && slots.KELA_PIN) {
+    console.log('SCENARIO 3.');
 
     const validator = new ValidatePin();
 
@@ -136,6 +145,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * initialization call.
    */
   else {
+    console.log('SCENARIO 4.');
     return response.returnDelegate();
   }
 
