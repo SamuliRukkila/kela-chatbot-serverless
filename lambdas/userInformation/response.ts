@@ -49,15 +49,15 @@ export class Response {
         },
         intentName: 'Kela_UserInformation',
         slots: {
-          Kela_PIN: null
+          KELA_PIN: null
         },
-        slotToElicit: 'Kela_PIN'
+        slotToElicit: 'KELA_PIN'
       }
     };
   }
 
   /**
-   * PIN is valid and it'll be added to Kela_PIN -slot.
+   * PIN is valid and it'll be added to KELA_PIN -slot.
    * Confirmation will be sent to Lex's bot and if user
    * says "Yes". Data will be searched.
    *
@@ -70,7 +70,7 @@ export class Response {
         type: 'ConfirmIntent',
         intentName: 'Kela_UserInformation',
         slots: {
-          Kela_PIN: pin
+          KELA_PIN: pin
         }
       }
     };

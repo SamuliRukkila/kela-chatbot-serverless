@@ -13,7 +13,7 @@
   "currentIntent": {
     "name": "Kela_UserInformation",
     "slots": {
-      "Kela_PIN": "201295hyp hoN105E"
+      "KELA_PIN": "201295hyp hoN105E"
     },
     "slotDetails": {
       "KELA_PIN": {

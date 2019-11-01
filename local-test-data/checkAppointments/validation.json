@@ -13,10 +13,10 @@
     "currentIntent": {
         "name": "Kela_CheckAppointments",
         "slots": {
-            "Kela_PIN": "121212hyp hoN121F"
+            "KELA_PIN": "121212hyp hoN121F"
         },
         "slotDetails": {
-            "Kela_PIN": {
+            "KELA_PIN": {
                 "resolutions": [],
                 "originalValue": ""
             }
