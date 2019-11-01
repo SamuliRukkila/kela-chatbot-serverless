@@ -1,0 +1,48 @@
+{
+    "messageVersion": 1.0,
+    "invocationSource": "DialogCodeHook",
+    "userId": "eu-west-1:947df1e5-712a-49e4-a7e0-daa074610598",
+    "sessionAttributes": null,
+    "requestAttributes": null,
+    "bot": {
+        "name": "KelaChatBot",
+        "alias": "kelachatbot",
+        "version": 21
+    },
+    "outputDialogMode": "Text",
+    "currentIntent": {
+        "name": "Kela_BookAppointment",
+        "slots": {
+            "KELA_DATE": null,
+            "KELA_PIN": null,
+            "KELA_REASON": null,
+            "KELA_START_TIME": null,
+            "KELA_TYPE": null
+        },
+        "slotDetails": {
+            "KELA_DATE": {
+                "resolutions": [],
+                "originalValue": null
+            },
+            "KELA_PIN": {
+                "resolutions": [],
+                "originalValue": null
+            },
+            "KELA_REASON": {
+                "resolutions": [],
+                "originalValue": null
+            },
+            "KELA_START_TIME": {
+                "resolutions": [],
+                "originalValue": null
+            },
+            "KELA_TYPE": {
+                "resolutions": [],
+                "originalValue": null
+            }
+        },
+        "confirmationStatus": "None"
+    },
+    "inputTranscript": "book appointment",
+    "recentIntentSummaryView": null
+}
