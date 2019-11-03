@@ -8,6 +8,7 @@ serverless_sdk/
 
 # Temporary test files
 s_*
+test.js
 
 # Typescript maps
 .build/
