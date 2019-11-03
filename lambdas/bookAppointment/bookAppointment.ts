@@ -47,8 +47,8 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     const dynamoDB = new DynamoDB();
     console.log('User has confirmed the appointment. Saving now..');
 
-    await dynamoDB.createAppointment(slots, sessionAttributes).then((res) => {
-      console.log(res);
+    await dynamoDB.createAppointment(slots, sessionAttributes).then(() => {
+      console.log('Appointment has been created.');
       callback(null, response.returnSuccessfulAppointment());
     }).catch((err: Error) => {
       console.error(err);
@@ -129,8 +129,8 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       if (validator.invalidTime) {
         return response.returnInvalidSlot('KELA_START_TIME', validator.message);
       }
-      // Asyncronous validations/checks are separated from synchronous checks 
-      // since async -checks need more configuration. 
+      /* Asyncronous validations/checks are separated from synchronous checks 
+      since async -checks need more configuration. */ 
       else {
         await validator.isTimeTaken(slots.KELA_PIN).then(() => {
           callback(null, validator.invalidTime ?

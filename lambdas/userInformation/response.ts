@@ -15,7 +15,6 @@ import { DialogDelegate } from '../../classes/DialogDelegate';
 import { User } from '../../classes/User';
 import { DialogConfirmIntent } from '../../classes/DialogConfirmIntent';
 import { DialogElicitSlot } from '../../classes/DialogElicitSlot';
-import DynamoDB = require('aws-sdk/clients/dynamodb');
 
 export class Response {
   /**

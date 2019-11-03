@@ -20,16 +20,13 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   const slots = event.currentIntent.slots;
   const response = new Response();
 
-  let pinExists: boolean = false;
-
-  if (event.sessionAttributes) {
-    if (event.sessionAttributes.hasOwnProperty('KELA_PIN')) {
-      pinExists = true;
-    }
-  }
+  const pinExists: boolean = event.sessionAttributes && 
+    event.sessionAttributes.hasOwnProperty('KELA_PIN') ?
+      true : false; 
 
   /**
    * 1. SCENARIO
+   * =========================================================
    * 
    * PIN already exists from previous intent.
    * User information will be searched according 
@@ -59,6 +56,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   /**
    * 2. SCENARIO
+   * =========================================================
    * 
    * User PIN is confirmed and information will be searched 
    * according to that user by it's PIN from DynamoDB
@@ -87,6 +85,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   /**
    * 3. SCENARIO
+   * =========================================================
    * 
    * If Lex is doing a validation call for the PIN.
    * Validated PIN will be sent back to LEX in the end.
@@ -110,6 +109,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   /**
    * 4. SCENARIO
+   * =========================================================
    * 
    * This will (and should) only happen when Lex is doing
    * initialization call.

@@ -52,8 +52,8 @@ export class ValidateStartTime {
     if (moment(startTime, 'HH:mm').isValid()) {
 
       this.time = startTime;
-      this.dateTime = moment(date + startTime, 'YYYY-MM-DD HH:mm');
-      
+      this.dateTime = moment(date + ' ' + startTime).tz('Europe/Helsinki');
+
       this._hours = this.dateTime.hours();
       this._minutes = this.dateTime.minutes();
       
@@ -61,7 +61,7 @@ export class ValidateStartTime {
       this._type = type;
 
       /* If any of the function -calls will return
-         true, validation will be stopped */
+      true, validation will be stopped */
       if (this.isTimeTooEarly()) return;
       if (this.isTimeTooLate()) return;
       if (this.isTimeInvalid()) return;
@@ -180,7 +180,7 @@ export class ValidateStartTime {
 
         // No overlapping appointments found
         if (res.Items.length === 0) {
-          console.log('No appointments found for date:' + this._date);
+          console.log('No appointments found for date-time:' + this.dateTime.format());
           resolve();
         }
         // Found overlapping appointments

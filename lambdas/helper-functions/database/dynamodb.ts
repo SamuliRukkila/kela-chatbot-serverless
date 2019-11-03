@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB();
 const moment = require('moment-timezone');
 
-import { QueryInput, QueryOutput, ScanOutput, ScanInput } from 'aws-sdk/clients/dynamodb';
+import { QueryInput, QueryOutput, ScanOutput, ScanInput, PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { Moment } from 'moment';
 import { BookAppointmentSlots } from '../../../classes/BookAppointmentsSlots';
 import { BookAppointmentAttributes } from '../../../classes/BookAppointmentAttributes';
@@ -71,8 +71,7 @@ export class DynamoDB {
    */
   public async checkAppointmentsForTime(startDateTime: Moment, type: string): Promise<QueryOutput> {
 
-    // Bug? Includes timezone in the formatted string. Temporary fix.
-    const datetime = startDateTime.format().substring(0, 19);
+    const datetime = startDateTime.format('YYYY-MM-DDTHH:mm:ss');
 
     console.log('Fetching appointments from DynamoDB with: ' + datetime);
 
@@ -101,26 +100,23 @@ export class DynamoDB {
    * @param {BookAppointmentSlots} slots All slots
    * @param {BookAppointmentAttributes} slots Attributes which 
    *  includes first- & last name
-   * @returns Promise for returning if insertion was successful
+   * @returns Empty promise for if creation was successful
    */
   public async createAppointment(slots: BookAppointmentSlots, 
-      attributes: BookAppointmentAttributes): Promise<any> {
+      attributes: BookAppointmentAttributes): Promise<null> {
     
     // Convert date-times for the DynamoDB
     const startDateTime = moment(
-      slots.KELA_DATE + 'T' + slots.KELA_START_TIME).format();
-    const endDateTime = moment(
-      slots.KELA_DATE + 'T' + slots.KELA_START_TIME)
-        .add(slots.KELA_TYPE === 'office' ? 45 : 30, 'minutes').format();
+      slots.KELA_DATE + ' ' + slots.KELA_START_TIME)
+        .format('YYYY-MM-DDTHH:mm:ss');
 
-    const params = {
+    const params: any = {
       TableName: 'kela-Appointments',
       Item: {
         'Type': { S: slots.KELA_TYPE },
         'Pin': { S: slots.KELA_PIN },
         'AppointmentReason': { S: slots.KELA_REASON }, 
         'StartDateTime': { S: startDateTime },
-        'EndDateTime': { S: endDateTime },
         'FirstName': { S: attributes.KELA_FIRSTNAME },
         'LastName': { S: attributes.KELA_LASTNAME },
       }

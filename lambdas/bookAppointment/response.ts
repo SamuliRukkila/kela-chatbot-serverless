@@ -287,8 +287,26 @@ export class Response {
   }
 
 
-  public returnFailedAppointment() {
-
+  /**
+   * Function that tell's Lex that the saving of the appointment were a failure.
+   * User will be prompted to say if the want the bot to retry.
+   * 
+   * @returns DialoConfirmIntent -object telling that user should say "yes"/"no"
+   */
+  public returnFailedAppointment(): DialogConfirmIntent {
+    return {
+      sessionAttributes: this.sessionAttributes,
+      dialogAction: {
+        message: {
+          contentType: 'PlainText',
+          content: `I'm sorry - there were a problem 
+            while trying to save your appointment. Would you like me to try again?`
+        },
+        type: 'ConfirmIntent',
+        intentName: 'Kela_BookAppointment',
+        slots: this.slots
+      }
+    };
   }
 
 }

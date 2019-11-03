@@ -3,28 +3,36 @@
     {
       "PutRequest": {
         "Item": {
-          "Type": {"S": "phone" },
-          "StartDateTime": {"S": "2019-08-09T17:00:00" },
-          "EndDateTime": {"S": "2019-08-09T17:30:00" },
-          "FirstName": {"S": "Samuli" },
-          "LastName": {"S": "Rukkila" },
-          "Pin": {"S": "101095-391E" },
-          "AppointmentReason": {"S": "Military service" },
-          "Information": {"S": "My military service is starting at this moment and I think I need some additional help for my house payments" }
+          "Type": { "S": "phone" },
+          "StartDateTime": { "S": "2019-08-09T15:30:00" },
+          "FirstName": { "S": "Samuli" },
+          "LastName": { "S": "Rukkila" },
+          "Pin": { "S": "101095-391E" },
+          "AppointmentReason": { "S": "Military service" }
         }
       }
     },
     {
       "PutRequest": {
         "Item": {
-          "Type": {"S": "office" },
-          "StartDateTime": {"S": "2019-08-09T17:30:00" },
-          "EndDateTime": {"S": "2019-08-09T18:15:00" },
-          "FirstName": {"S": "Jeela" },
-          "LastName": {"S": "Anne" },
-          "Pin": {"S": "122599-125F" },
-          "AppointmentReason": {"S": "Unemployment" },
-          "Information": {"S": "I'm unemployed at this moment and I'm in dire need for somey money. Please help" }
+          "Type": { "S": "office" },
+          "StartDateTime": { "S": "2019-08-09T15:00:00" },
+          "FirstName": { "S": "Jeela" },
+          "LastName": { "S": "Anne" },
+          "Pin": { "S": "122599-125F" },
+          "AppointmentReason": { "S": "Unemployment" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "Type": { "S": "phone" },
+          "StartDateTime": { "S": "2019-11-03T09:00:00" },
+          "FirstName": { "S": "Ristus" },
+          "LastName": { "S": "Ristikkä" },
+          "Pin": { "S": "122599-125F" },
+          "AppointmentReason": { "S": "Death of relative" }
         }
       }
     }

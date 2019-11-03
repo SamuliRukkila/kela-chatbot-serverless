@@ -7,7 +7,9 @@
     "KELA_LASTNAME": "Kotola",
     "KELA_PIN_OK": true,
     "KELA_TYPE_OK": true,
-    "KELA_DATE_OK": true
+    "KELA_DATE_OK": true,
+    "KELA_START_TIME_OK": true,
+    "KELA_REASON_OK": true
   },
   "requestAttributes": null,
   "bot": { "name": "KELAChatBot", "alias": "$LATEST", "version": "$LATEST" },
@@ -17,7 +19,7 @@
     "slots": {
       "KELA_PIN": "123123-123F",
       "KELA_DATE": "2019-11-04",
-      "KELA_REASON": "Family with kids",
+      "KELA_REASON": "Rehabilitation",
       "KELA_TYPE": "phone",
       "KELA_START_TIME": "08:00"
     },
@@ -43,7 +45,7 @@
         "originalValue": null
       }
     },
-    "confirmationStatus": "None"
+    "confirmationStatus": "Confirmed"
   },
   "inputTranscript": "2019-10-11"
 }
