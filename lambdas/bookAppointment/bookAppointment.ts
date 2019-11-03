@@ -19,9 +19,9 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   console.log(event.currentIntent);
 
   const slots: BookAppointmentSlots = event.currentIntent.slots;
-  const sessionAttributes: BookAppointmentAttributes = event.sessionAttributes;
+  const sessionAttributes: BookAppointmentAttributes = event.sessionAttributes || {};
 
-  const attributes: { session: boolean, name: string } [] = [
+  const attributes: { session: boolean, name: string }[] = [
     { session: sessionAttributes.KELA_TYPE_OK, name: 'KELA_TYPE' },
     { session: sessionAttributes.KELA_DATE_OK, name: 'KELA_DATE' },
     { session: sessionAttributes.KELA_START_TIME_OK, name: 'KELA_START_TIME' },
@@ -41,9 +41,9 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
    * + valid. Appointment will be saved into DynamoDB. All the slots 
    * and session-attributes will be forwarded aswell.
    */
-  if (event.currentIntent.confirmationStatus === 'Confirmed' && 
-      attributes.every(attr => attr.session)) {
-    
+  if (event.currentIntent.confirmationStatus === 'Confirmed' &&
+    attributes.every(attr => attr.session)) {
+
     const dynamoDB = new DynamoDB();
     console.log('User has confirmed the appointment. Saving now..');
 
@@ -84,7 +84,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       const validator = new ValidateType();
       validator.validateType(slots.KELA_TYPE);
 
-      return validator.invalidType ? 
+      return validator.invalidType ?
         response.returnInvalidSlot('KELA_TYPE', validator.message) :
         response.returnValidSlot('KELA_TYPE', validator.type);
     }
@@ -159,9 +159,9 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
       const validator = new ValidateReason();
       validator.validateReason(slots.KELA_REASON);
 
-      if (validator.invalidReason) { 
+      if (validator.invalidReason) {
         return response.returnInvalidSlot('KELA_REASON', validator.message);
-      } 
+      }
       else {
 
         // Since this condition can also do the confirmation, add
@@ -174,7 +174,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
           // Confirmation
           response.returnConfirmAppointment() :
           // Just return validated slot
-          response.returnValidSlot('KELA_REASON', validator.reason); 
+          response.returnValidSlot('KELA_REASON', validator.reason);
       }
     }
 
