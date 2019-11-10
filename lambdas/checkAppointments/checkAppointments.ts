@@ -29,6 +29,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   /**
    * 1. SCENARIO
+   * =========================================================
    * 
    * PIN already exists from previous intents.
    * Appointments will be searched according to 
@@ -74,6 +75,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   /**
    * 2. SCENARIO
+   * =========================================================
    * 
    * User PIN is confirmed and appointments will be searched 
    * according to that user by it's PIN from DynamoDB
@@ -116,6 +118,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   /**
    * 3. SCENARIO
+   * =========================================================
    * 
    * If Lex is doing a validation call for the PIN.
    * Validated PIN will be sent back to LEX in the end.
@@ -140,6 +143,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   /**
    * 4. SCENARIO
+   * =========================================================
    * 
    * This will (and should) only happen when Lex is doing
    * initialization call.
