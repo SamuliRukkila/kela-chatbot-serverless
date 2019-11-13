@@ -5,6 +5,14 @@ Public URL for the application:
 
 https://eu-west-1.sumerian.aws/600828200d7e417b8c08d1396e9145e2.scene
 
+For the best possible experience, use device with:
+
+- 1920 x 1080 resolution
+- 16:9 aspect ratio
+- Chrome browser
+
+For test purposes, use 121212-121F as your PIN.
+
 Kela Chatbot: Serverless
 ------------------------
 
