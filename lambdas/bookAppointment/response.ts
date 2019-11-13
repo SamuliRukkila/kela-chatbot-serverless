@@ -32,6 +32,8 @@ export class Response {
   }
 
 
+d
+
   /**
    * This return-function is called usually when unknown error 
    * happens while Lex calls lambda. This usually happens when 
@@ -188,7 +190,7 @@ export class Response {
 
     // Older slots + session-attributes needs to be inclu   console.log(this.slots);ded or they'll disappear
     this.slots[slot] = null;
-       console.log(this.slots);
+    console.log(this.slots);
 
     return {
       sessionAttributes: this.sessionAttributes,

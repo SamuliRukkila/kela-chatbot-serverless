@@ -6,7 +6,6 @@ import { QueryInput, QueryOutput, ScanOutput, ScanInput, PutItemOutput } from 'a
 import { Moment } from 'moment';
 import { BookAppointmentSlots } from '../../../classes/BookAppointmentsSlots';
 import { BookAppointmentAttributes } from '../../../classes/BookAppointmentAttributes';
-import { PutItemInput } from 'aws-sdk/clients/iot';
 
 /**
  * Connects to AWS's DynamoDB to create queries

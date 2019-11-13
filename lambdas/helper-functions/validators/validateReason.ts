@@ -4,8 +4,7 @@ export class ValidateReason {
   public reason: string;
   public invalidReason: boolean;
   public message: string;
-
-  private reasons: string[] = [
+  private _reasons: string[] = [
     'studies',
     'pension',
     'death of relative',
@@ -20,8 +19,14 @@ export class ValidateReason {
     'family with kids'
   ];
 
+
+  /**
+   * Main function which'll call other private functions
+   * to validate send-type.
+   */
   public validateReason(reason: string): void {
 
+    console.log('Validating reason: ' + reason);    
     this.reason = reason;
 
     if (this.isReasonInvalid()) return;
@@ -36,8 +41,8 @@ export class ValidateReason {
    */
   private isReasonInvalid(): boolean {
 
-    for (let i = 0; i < this.reasons.length; i++) {
-      if (this.reason.toLowerCase().includes(this.reasons[i])) {
+    for (let i = 0; i < this._reasons.length; i++) {
+      if (this.reason.toLowerCase().includes(this._reasons[i])) {
         return false;
       }
     }

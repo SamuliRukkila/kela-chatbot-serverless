@@ -14,6 +14,7 @@ import { DialogClose } from '../../classes/DialogClose';
 import { DialogDelegate } from '../../classes/DialogDelegate';
 import { DialogConfirmIntent } from '../../classes/DialogConfirmIntent';
 import { DialogElicitSlot } from '../../classes/DialogElicitSlot';
+import { User } from '../../classes/User';
 
 export class Response {
 
@@ -35,16 +36,189 @@ export class Response {
   }
 
 
+  public returnElicitPin(): DialogElicitSlot {
+    return {
+      sessionAttributes: this.sessionAttributes,
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `In order to send the directions for you I'll need your
+            personal identification number. Could you provide it to me?`
+        },
+        intentName: 'Kela_LocateNearestKela',
+        slots: this.slots,
+        slotToElicit: 'KELA_PIN'
+      }
+    }
+  }
+
+
+
   /**
    * Returns confirmation which'll tell Sumerian to start
    * searching for user in Sumerian UI. 
    */
-  public returnStartLocating(): DialogDelegate {
+  public returnStartLocating(): DialogConfirmIntent {
     return {
       sessionAttributes: this.sessionAttributes,
       dialogAction: {
-        type: 'Delegate',
+        type: 'ConfirmIntent',
+        message: {
+          contentType: 'PlainText',
+          content: `Searching for your location now.. Would you like me to send
+          this waypoint for you?`
+        },
+        intentName: 'Kela_LocateNearestKela',
         slots: this.slots
+      }
+    }
+  }
+
+  public returnInvalidPin(pin: string): DialogElicitSlot {
+    return {
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Your provided PIN: [${pin}] is invalid. Please try again.`
+        },
+        intentName: 'Kela_LocateNearestKela',
+        slots: {
+          KELA_PIN: null
+        },
+        slotToElicit: 'KELA_PIN'
+      }
+    };
+  }
+
+  /**
+ * If lambda cannot find the user via provided PIN from 
+ * DynamoDB-database.
+ * 
+ * @param {string} pin User's provided PIN
+ * @returns Error message why search failed and data to close current intent
+ */
+  public returnNotFoundPin(pin: string): DialogElicitSlot {
+    return {
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Sorry, I couldn't find you with your 
+            provided PIN: [${pin}]. Please try again.`
+        },
+        intentName: 'Kela_LocateNearestKela',
+        slots: {
+          KELA_PIN: null
+        },
+        slotToElicit: 'KELA_PIN'
+      }
+    };
+  }
+
+
+  /**
+   * If there was an error while searching user from DynamoDB-database
+   * via provided PIN.
+   * 
+   * @param {string} pin User's provided PIN
+   * @returns Error message why search failed and data to close current intent
+   */
+  public returnPinError(pin: string): DialogElicitSlot {
+    return {
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Seems like there were an error while fetching 
+            your data with provided PIN: ${pin}. My apologies.`
+        },
+        intentName: 'Kela_LocateNearestKela',
+        slots: {
+          KELA_PIN: null
+        },
+        slotToElicit: 'KELA_PIN'
+      }
+    };
+  }
+
+
+  /**
+   * If PIN was valid and user was found with it. OK -mark
+   * and full name will be saved into session-attributes.
+   * Lex is informed to continue to appointment slots (KELA_DATE 
+   * at this moment).
+   * 
+   * @param {any | User} item Item which'll include user's information 
+   * @returns specified session-attributes + information to tell Lex to continue
+   */
+  public returnPinSuccess(item: any): DialogElicitSlot {
+
+    const user: User = item;
+
+    return {
+      sessionAttributes: {
+        'KELA_FIRSTNAME': user.FirstName.S,
+        'KELA_PHONE': user.Phone.S,
+        'KELA_PIN': this.slots['KELA_PIN'],
+        'KELA_PIN_OK': true
+      },
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Okay ${user.FirstName.S}, and would you like the directions
+            be sent to your phone or email?`
+        },
+        intentName: 'Kela_LocateNearestKela',
+        slots: {
+          'KELA_PIN': user.Pin.S
+        },
+        slotToElicit: 'KELA_SEND_TYPE'
+      }
+    }
+  }
+
+  public returnInvalidSendType(): DialogElicitSlot {
+    this.slots['KELA_SEND_TYPE'] = null;
+    return {
+      sessionAttributes: this.sessionAttributes,
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Sorry, I didn't understant. Please say "phone" or "email`
+        },
+        intentName: 'Kela_LocateNearestKela',
+        slots: this.slots,
+        slotToElicit: 'KELA_SEND_TYPE'
+      }
+    }
+  }
+
+  public returnDirectionsSent(): DialogClose {
+    return {
+      dialogAction: {
+        type: 'Close',
+        fulfillmentState: 'Fulfilled',
+        message: {
+          contentType: 'PlainText',
+          content: 'Directions has been sent to you. Thank you!'
+        }
+      }
+    }
+  }
+
+  public returnDirectionsSentFailed(): DialogClose {
+    return {
+      dialogAction: {
+        type: 'Close',
+        fulfillmentState: 'Failed',
+        message: {
+          contentType: 'PlainText',
+          content: `Unfortunately I couldn't send the directions for you. My bad!`
+        }
       }
     }
   }

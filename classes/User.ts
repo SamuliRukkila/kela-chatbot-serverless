@@ -4,4 +4,5 @@ export class User {
   public DateOfBirth?: { S: string };
   public FirstName?: { S: string };
   public LastName?: { S: string };
+  public Phone?: { S: string };
 }
