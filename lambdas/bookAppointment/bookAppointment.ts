@@ -29,6 +29,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' }
   ];
 
+  // If user is already logged in 
   if (sessionAttributes && sessionAttributes['KELA_PIN']) {
     slots.KELA_PIN = sessionAttributes['KELA_PIN'];
     pinAlreadyValidated = true;
@@ -246,7 +247,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
       const pinValidator = new ValidatePin();
       pinValidator.validatePin(slots.KELA_PIN);
-      
+
       // User's provided PIN is invalid
       if (pinValidator.invalidPin) {
         return response.returnInvalidPin(pinValidator.pin);

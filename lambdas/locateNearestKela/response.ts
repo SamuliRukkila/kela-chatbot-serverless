@@ -17,6 +17,9 @@ import { DialogElicitSlot } from '../../classes/DialogElicitSlot';
 
 export class Response {
 
+  public sessionAttributes: object;
+  public slots: object;
+
   /**
    * Return empty response. Lex's bot will continue
    * according to it's configuration.
@@ -33,15 +36,15 @@ export class Response {
 
 
   /**
-   * 
+   * Returns confirmation which'll tell Sumerian to start
+   * searching for user in Sumerian UI. 
    */
   public returnStartLocating(): DialogDelegate {
     return {
-      sessionAttributes: {
-        startLocating: true
-      },
+      sessionAttributes: this.sessionAttributes,
       dialogAction: {
-        type: 'Delegate'
+        type: 'Delegate',
+        slots: this.slots
       }
     }
   }
