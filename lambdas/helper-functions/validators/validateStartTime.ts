@@ -104,6 +104,8 @@ export class ValidateStartTime {
     console.log(`Checking that time isn't too 
       late (higher than 15:30): ${this.time}`);
 
+    console.log(this._hours > 15 || (this._hours === 15 && this._minutes > 30));
+
     // Office -appointments
     if (this._type === 'office' && this._hours > 15) {
 

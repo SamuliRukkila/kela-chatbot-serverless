@@ -208,7 +208,6 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
      * for restricted slot.
      */
     else {
-
       for (let i = 0; i < attributes.length; i++) {
         if (!attributes[i].session) {
           return response.returnUnknownElicitSlot(attributes[i].name);
@@ -219,7 +218,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 2. SCENARIO
+   * 3. SCENARIO
    * ========================================================
    * 
    * User hasn't been verified yet but the PIN is provided. In this
@@ -238,8 +237,8 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     if (pinValidator.invalidPin) {
       return response.returnInvalidPin(pinValidator.pin);
     }
+    
     const pin: string = pinValidator.pin;
-
     const dynamoDB = new DynamoDB();
 
     // Search user by the provided pin from database
@@ -254,7 +253,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
         console.log('Found user via PIN: ' + pin);
         callback(null, response.returnPinSuccess(res.Items[0]));
       }
-      // Error while searching for user
+    // Error while searching for user
     }).catch((err: Error) => {
       console.error(err);
       callback(null, response.returnPinError(pin));
@@ -263,7 +262,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 3. SCENARIO
+   * 4. SCENARIO
    * ========================================================
    *
    * This will (and should) only happen when Lex is doing

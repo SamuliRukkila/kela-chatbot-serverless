@@ -41,9 +41,9 @@ functions:
     description: Checks all user's appointments 
 
   # Locate nearest Kela -apartment
-  KelaLocateNearestBuilding:
-    handler: lambdas/locateNearestBuilding/locateNearestBuilding.handler
-    name: kela-locateNearestBuilding
+  KelaLocateNearestKela:
+    handler: lambdas/locateNearestKela/locateNearestKela.handler
+    name: kela-locateNearestKela
 
 
 resources:
