@@ -1,5 +1,5 @@
 import { LexEvent } from '../../classes/LexEvent';
-
+import { Response } from './response';
 
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
 
@@ -8,10 +8,11 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
   const response = new Response();
 
-  if ("as") {
-
+  if (event.invocationSource === 'DialogCodeHook' && !event.currentIntent.slots.KELA_SEARCHING ) {
+    return response.returnStartLocating();
   }
   else {
+    return response.returnDelegate();
   }
 
 }

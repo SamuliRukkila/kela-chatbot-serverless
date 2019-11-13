@@ -12,7 +12,6 @@
 
 import { DialogClose } from '../../classes/DialogClose';
 import { DialogDelegate } from '../../classes/DialogDelegate';
-import { Appointment } from '../../classes/Appointment';
 import { DialogConfirmIntent } from '../../classes/DialogConfirmIntent';
 import { DialogElicitSlot } from '../../classes/DialogElicitSlot';
 
@@ -32,5 +31,19 @@ export class Response {
     };
   }
 
+
+  /**
+   * 
+   */
+  public returnStartLocating(): DialogDelegate {
+    return {
+      sessionAttributes: {
+        startLocating: true
+      },
+      dialogAction: {
+        type: 'Delegate'
+      }
+    }
+  }
 
 };

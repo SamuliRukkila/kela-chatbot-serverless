@@ -18,6 +18,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   console.log(event);
   console.log(event.currentIntent);
 
+  let pinAlreadyValidated: boolean; 
   const slots: BookAppointmentSlots = event.currentIntent.slots;
   const sessionAttributes: BookAppointmentAttributes = event.sessionAttributes || {};
 
@@ -28,9 +29,15 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
     { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' }
   ];
 
+  if (sessionAttributes && sessionAttributes['KELA_PIN']) {
+    slots.KELA_PIN = sessionAttributes['KELA_PIN'];
+    pinAlreadyValidated = true;
+  }
+
   const response = new Response();
   response.sessionAttributes = sessionAttributes;
   response.slots = slots;
+
 
 
   /**
@@ -230,15 +237,24 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
     console.log('KELA_PIN > Received value: ' + slots.KELA_PIN);
 
-    const pinValidator = new ValidatePin();
-    pinValidator.validatePin(slots.KELA_PIN);
+    let pin: string;
 
-    // User's provided PIN is invalid
-    if (pinValidator.invalidPin) {
-      return response.returnInvalidPin(pinValidator.pin);
+    if (pinAlreadyValidated) {
+      pin = slots.KELA_PIN;
+    } 
+    else {
+
+      const pinValidator = new ValidatePin();
+      pinValidator.validatePin(slots.KELA_PIN);
+      
+      // User's provided PIN is invalid
+      if (pinValidator.invalidPin) {
+        return response.returnInvalidPin(pinValidator.pin);
+      }
+      pin = pinValidator.pin;
     }
+
     
-    const pin: string = pinValidator.pin;
     const dynamoDB = new DynamoDB();
 
     // Search user by the provided pin from database
