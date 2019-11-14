@@ -102,6 +102,9 @@ module.exports.handler = async (event: LexEvent,
   }
 
 
+  /**
+   *
+   */
   else if (event.currentIntent.confirmationStatus === 'Confirmed') {
     return response.returnElicitPin();
   }

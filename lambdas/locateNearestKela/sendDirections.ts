@@ -12,9 +12,9 @@ export class SendDirections {
     sendType: string, phone: string, email: string): Promise<null> {
 
     // Send directions to user via SMS
-    if (sendType === 'phone') {
+    if (sendType.toLowerCase().includes('phone')) {
       const params = {
-        Message: `Thank you for using Kela's chatbot. Here is the nearest Kela: `,
+        Message: `Hello, thank you for using Kela's chatbot. Here are your direction: `,
         PhoneNumber: phone
       };
 
