@@ -161,6 +161,7 @@ export class Response {
       sessionAttributes: {
         'KELA_FIRSTNAME': user.FirstName.S,
         'KELA_PHONE': user.Phone.S,
+        'KELA_EMAIL': user.Email.S,
         'KELA_PIN': this.slots['KELA_PIN'],
         'KELA_PIN_OK': true
       },

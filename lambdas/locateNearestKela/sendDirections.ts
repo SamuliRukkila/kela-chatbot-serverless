@@ -14,7 +14,7 @@ export class SendDirections {
     // Send directions to user via SMS
     if (sendType.toLowerCase().includes('phone')) {
       const params = {
-        Message: `Hello, thank you for using Kela's chatbot. Here are your direction: `,
+        Message: `Hello, thank you for using Kela's chatbot. Here are your directions: <DIRECTIONS>`,
         PhoneNumber: phone
       };
 

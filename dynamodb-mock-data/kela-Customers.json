@@ -8,7 +8,8 @@
           "FirstName": { "S": "Samuli" },
           "LastName": { "S": "Rukkila" },
           "Pin": { "S": "101095-391E" },
-          "Phone": { "S": "0407171717" }
+          "Phone": { "S": "+358407159358" },
+          "Email": { "S": "samuli.rukkila@hotmail.fi" }
         }
       }
     },
@@ -20,7 +21,8 @@
           "FirstName": { "S": "Eero" },
           "LastName": { "S": "Huohkola" },
           "Pin": { "S": "122599-123F" },
-          "Phone": { "S": "0405938192" }
+          "Phone": { "S": "+358407159358" },
+          "Email": { "S": "samuli.rukkila@hotmail.fi" }
         }
       }
     },
@@ -32,7 +34,8 @@
           "FirstName": { "S": "Juuso" },
           "LastName": { "S": "Jöri" },
           "Pin": { "S": "0209202A031E" },
-          "Phone": { "S": "0508129482" }
+          "Phone": { "S": "+358407159358" },
+          "Email": { "S": "samuli.rukkila@hotmail.fi" }
         }
       }
     },
@@ -44,7 +47,8 @@
           "FirstName": { "S": "Katariina" },
           "LastName": { "S": "Kotola" },
           "Pin": { "S": "010195-100E" },
-          "Phone": { "S": "0449318200" }
+          "Phone": { "S": "+358407159358" },
+          "Email": { "S": "samuli.rukkila@hotmail.fi" }
         }
       }
     },
@@ -56,7 +60,21 @@
           "FirstName": { "S": "Jeela" },
           "LastName": { "S": "Anne" },
           "Pin": { "S": "122599-125F" },
-          "Phone": { "S": "0405938192" }
+          "Phone": { "S": "+358407159358" },
+          "Email": { "S": "samuli.rukkila@hotmail.fi" }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "City": {"S": "Kouvola" },
+          "DateOfBirth": { "S": "1999-12-25" },
+          "FirstName": { "S": "Jaska" },
+          "LastName": { "S": "Jokunen" },
+          "Phone": { "S": "+358407159358" },
+          "Pin": { "S": "121212-121F" },
+          "Email": { "S": "samuli.rukkila@hotmail.fi"}
         }
       }
     }

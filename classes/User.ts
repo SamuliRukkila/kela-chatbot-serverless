@@ -5,4 +5,5 @@ export class User {
   public FirstName?: { S: string };
   public LastName?: { S: string };
   public Phone?: { S: string };
+  public Email?: { S: string };
 }
