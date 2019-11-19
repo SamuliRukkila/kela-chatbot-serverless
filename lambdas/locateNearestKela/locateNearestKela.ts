@@ -1,12 +1,12 @@
 import { LexEvent } from '../../classes/LexEvent';
-import { Response } from './response';
+import { Response } from './response';
 import { ValidatePin } from '../helper-functions/validators/validatePin';
 import { DynamoDB } from '../helper-functions/database/dynamodb';
 import { ScanOutput } from 'aws-sdk/clients/dynamodb';
 import { ValidateSendType } from '../helper-functions/validators/validateSendType';
 import { SendDirections } from './sendDirections';
 
-module.exports.handler = async (event: LexEvent, 
+module.exports.handler = async (event: LexEvent,
   context: Object, callback: Function) => {
 
   console.log(event);
@@ -14,8 +14,8 @@ module.exports.handler = async (event: LexEvent,
 
   let pinAlreadyValidated: boolean;
   const slots = event.currentIntent.slots;
-  const sessionAttributes = event.sessionAttributes || {};
-  
+  const sessionAttributes = event.sessionAttributes || {};
+
   const response = new Response();
   response.sessionAttributes = sessionAttributes;
   response.slots = slots;
@@ -38,48 +38,50 @@ module.exports.handler = async (event: LexEvent,
    * will be send for the user.
    */
   if (sessionAttributes && slots.KELA_PIN && sessionAttributes.KELA_PIN_OK &&
-      !sessionAttributes.KELA_SEND_TYPE_OK && slots.KELA_SEND_TYPE) {
-        
-      console.log('KELA_SEND_TYPE > Received value: ' + slots.KELA_SEND_TYPE);
-      
-      const dynamoDB = new DynamoDB();
-      
-      await dynamoDB.getUserLatestDirectionURL(slots.KELA_PIN).then((res: ScanOutput) => {
+    !sessionAttributes.KELA_SEND_TYPE_OK && slots.KELA_SEND_TYPE) {
 
-        // If no data were found
-        if (res.Count === 0 || !res.Items[0].LatestDirectionURL.S) {
-          callback(null, response.returnDirectionsSentFailed());
-        }
-        
-        const directionURL: string = res.Items[0].LatestDirectionURL.S;
+    console.log('KELA_SEND_TYPE > Received value: ' + slots.KELA_SEND_TYPE);
 
-        console.log(res);
+    const dynamoDB = new DynamoDB();
 
-        const validator = new ValidateSendType();
-        validator.validateSendType(slots.KELA_SEND_TYPE);
+    await dynamoDB.getUserLatestDirectionURL(slots.KELA_PIN).then((res: ScanOutput) => {
 
-        if (validator.invalidSendType) {
-          return response.returnInvalidSendType();
-        }
-        else {
-          const sendDirections = new SendDirections();
-          const send = async () => {
-            await sendDirections.sendDirections(
-              validator.sendType, sessionAttributes.KELA_PHONE,
-              sessionAttributes.KELA_EMAIL, directionURL)
-              .then(() => {
-                console.log('Message were send to user via: ' + validator.sendType);
-                callback(null, response.returnDirectionsSent());
-              }).catch(err => {
-                console.error(err);
-                callback(null, response.returnDirectionsSentFailed());
-              });
-          }
-        }
-      }).catch(err => {
-        console.error(err);
+      // If no data were found
+      if (res.Count === 0 || !res.Items[0].LatestDirectionURL.S) {
         callback(null, response.returnDirectionsSentFailed());
-      });
+      }
+
+      const directionURL: string = res.Items[0].LatestDirectionURL.S;
+
+      console.log(res);
+      console.log(directionURL);
+
+      const validator = new ValidateSendType();
+      validator.validateSendType(slots.KELA_SEND_TYPE);
+
+      if (validator.invalidSendType) {
+        return response.returnInvalidSendType();
+      }
+      else {
+        const sendDirections = new SendDirections();
+        const send = async () => {
+          await sendDirections.sendDirections(
+            validator.sendType, sessionAttributes.KELA_PHONE,
+            sessionAttributes.KELA_EMAIL, directionURL)
+            .then(() => {
+              console.log('Message were send to user via: ' + validator.sendType);
+              callback(null, response.returnDirectionsSent());
+            }).catch(err => {
+              console.error(err);
+              callback(null, response.returnDirectionsSentFailed());
+            });
+        }
+        send();
+      }
+    }).catch(err => {
+      console.error(err);
+      callback(null, response.returnDirectionsSentFailed());
+    });
   }
 
 
@@ -104,14 +106,14 @@ module.exports.handler = async (event: LexEvent,
    * logged in with PIN previously. If pin is OK, the send-type will
    * be asked next.
    */
-  else if (slots.KELA_PIN || 
+  else if (slots.KELA_PIN ||
     (event.currentIntent.confirmationStatus === 'Confirmed' && pinAlreadyValidated)) {
 
     let pin: string;
 
     if (pinAlreadyValidated) {
       pin = sessionAttributes['KELA_PIN'];
-    } 
+    }
     else {
       const pinValidator = new ValidatePin();
       pinValidator.validatePin(slots.KELA_PIN);

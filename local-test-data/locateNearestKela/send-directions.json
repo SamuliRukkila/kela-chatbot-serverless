@@ -1,0 +1,35 @@
+{
+    "messageVersion": "1.0",
+    "invocationSource": "DialogCodeHook",
+    "userId": "tmt4gp0wsskfcob8jp1guex2567xi53h",
+    "sessionAttributes": {
+        "KELA_FIRSTNAME": "John",
+        "KELA_PIN_OK": "true",
+        "KELA_PIN": "121295-121F",
+        "KELA_PHONE": "+358442045184",
+        "KELA_EMAIL": "l1622@student.jamk.fi"
+    },
+    "requestAttributes": null,
+    "bot": {
+        "name": "KelaChatBot",
+        "alias": "$LATEST",
+        "version": "$LATEST"
+    },
+    "outputDialogMode": "Text",
+    "currentIntent": {
+        "name": "Kela_LocateNearestKela",
+        "slots": {
+            "KELA_PIN": "121295-121F",
+            "KELA_SEND_TYPE": "Email"
+        },
+        "slotDetails": {
+            "KELA_PIN": null,
+            "KELA_SEND_TYPE": {
+                "resolutions": [],
+                "originalValue": "email"
+            }
+        },
+        "confirmationStatus": "None"
+    },
+    "inputTranscript": "email"
+}
