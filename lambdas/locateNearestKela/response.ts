@@ -60,6 +60,9 @@ export class Response {
    * searching for user in Sumerian UI. 
    */
   public returnStartLocating(): DialogConfirmIntent {
+
+    this.sessionAttributes['SEND_URL'] = true;
+
     return {
       sessionAttributes: this.sessionAttributes,
       dialogAction: {
@@ -181,6 +184,13 @@ export class Response {
     }
   }
 
+
+  /**
+   * User mutterance wasn't recognised as a "phone" or "email" so 
+   * elicit -request will be sent back to ask user to say it again.
+   * 
+   * @returns ElicitSlot -object to ask for send-type again 
+   */
   public returnInvalidSendType(): DialogElicitSlot {
     this.slots['KELA_SEND_TYPE'] = null;
     return {
@@ -198,6 +208,12 @@ export class Response {
     }
   }
 
+  /**
+   * Returns a message which tells that directions were send to the user.
+   * Dialog is complete now.
+   * 
+   * @returns DialogClose -object which will end current conversation as a success
+   */
   public returnDirectionsSent(): DialogClose {
     return {
       dialogAction: {
@@ -211,6 +227,10 @@ export class Response {
     }
   }
 
+  /**
+   * Returns a message which tells that lambda were unable to send 
+   * the directions for the user. Dialog is failed, but completeled.
+   */
   public returnDirectionsSentFailed(): DialogClose {
     return {
       dialogAction: {
