@@ -27,12 +27,12 @@ export class SendDirections {
 
       return await SNS.publish(params).promise();
     }
-    
+
     // Send directions to user via EMAIL
     else {
       const params = {
         Destination: {
-          ToAddresses: [ email ]
+          ToAddresses: [email]
         },
         Message: {
           Body: {
@@ -40,7 +40,7 @@ export class SendDirections {
               Charset: 'UTF-8',
               Data: `<p>Hello, thank you for using Kela's Chatbot.</p>
                 <p>Here are your directions: </p>
-                <p>${url}</p>`
+                <a href="${url}" target="_blank">Directions</a>`
             },
             Text: {
               Charset: 'UTF-8',
