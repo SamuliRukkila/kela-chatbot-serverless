@@ -61,7 +61,7 @@ export class Response {
    */
   public returnStartLocating(): DialogConfirmIntent {
 
-    this.sessionAttributes['SEND_URL'] = true;
+    this.sessionAttributes['KELA_SEND_URL'] = true;
 
     return {
       sessionAttributes: this.sessionAttributes,

@@ -9,12 +9,12 @@ export class SendDirections {
    * email. All the needed values come from parameters.
    */
   public async sendDirections(
-    sendType: string, phone: string, email: string): Promise<null> {
+    sendType: string, phone: string, email: string, url: string): Promise<null> {
 
     // Send directions to user via SMS
     if (sendType.toLowerCase().includes('phone')) {
       const params = {
-        Message: `Hello, thank you for using Kela's chatbot. Here are your directions: <DIRECTIONS>`,
+        Message: `Hello, thank you for using Kela's chatbot. Here are your directions: ${url}`,
         PhoneNumber: phone
       };
 
@@ -32,7 +32,7 @@ export class SendDirections {
               Charset: 'UTF-8',
               Data: `<p>Hello, thank you for using Kela's Chatbot.</p>
                 <p>Here are your directions: </p>
-                <p>[DIRECTIONS]</p>`
+                <p>${url}</p>`
             },
             Text: {
               Charset: 'UTF-8',

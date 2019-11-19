@@ -38,7 +38,8 @@ module.exports.handler = async (event: LexEvent,
    * will be send for the user.
    */
   if (sessionAttributes && slots.KELA_PIN && sessionAttributes.KELA_PIN_OK &&
-      !sessionAttributes.KELA_SEND_TYPE_OK && slots.KELA_SEND_TYPE) {
+      !sessionAttributes.KELA_SEND_TYPE_OK && slots.KELA_SEND_TYPE && 
+      sessionAttributes.KELA_SEND_URL) {
 
       console.log('KELA_SEND_TYPE > Received value: ' + slots.KELA_SEND_TYPE);
 
@@ -51,14 +52,15 @@ module.exports.handler = async (event: LexEvent,
       else {
         const sendDirections = new SendDirections();
         await sendDirections.sendDirections(
-          validator.sendType, sessionAttributes.KELA_PHONE, sessionAttributes.KELA_EMAIL)
-            .then(() => {
-              console.log('Message were send to user via: ' + validator.sendType);
-              callback(null, response.returnDirectionsSent());
-            }).catch(err => {
-              console.error(err);
-              callback(null, response.returnDirectionsSentFailed());
-            });
+          validator.sendType, sessionAttributes.KELA_PHONE, 
+            sessionAttributes.KELA_EMAIL, sessionAttributes.KELA_SEND_URL)
+              .then(() => {
+                console.log('Message were send to user via: ' + validator.sendType);
+                callback(null, response.returnDirectionsSent());
+              }).catch(err => {
+                console.error(err);
+                callback(null, response.returnDirectionsSentFailed());
+              });
       }
   }
 
