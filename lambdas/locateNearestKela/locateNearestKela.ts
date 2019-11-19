@@ -38,22 +38,35 @@ module.exports.handler = async (event: LexEvent,
    * will be send for the user.
    */
   if (sessionAttributes && slots.KELA_PIN && sessionAttributes.KELA_PIN_OK &&
-      !sessionAttributes.KELA_SEND_TYPE_OK && slots.KELA_SEND_TYPE && 
-      sessionAttributes.KELA_SEND_URL) {
-
+      !sessionAttributes.KELA_SEND_TYPE_OK && slots.KELA_SEND_TYPE) {
+        
       console.log('KELA_SEND_TYPE > Received value: ' + slots.KELA_SEND_TYPE);
-
-      const validator = new ValidateSendType();
-      validator.validateSendType(slots.KELA_SEND_TYPE);
       
-      if (validator.invalidSendType) {
-        return response.returnInvalidSendType();
-      }
-      else {
-        const sendDirections = new SendDirections();
-        await sendDirections.sendDirections(
-          validator.sendType, sessionAttributes.KELA_PHONE, 
-            sessionAttributes.KELA_EMAIL, sessionAttributes.KELA_SEND_URL)
+      const dynamoDB = new DynamoDB();
+      
+      await dynamoDB.getUserLatestDirectionURL(slots.KELA_PIN).then((res: ScanOutput) => {
+
+        // If no data were found
+        if (res.Count === 0 || !res.Items[0].LatestDirectionURL.S) {
+          callback(null, response.returnDirectionsSentFailed());
+        }
+        
+        const directionURL: string = res.Items[0].LatestDirectionURL.S;
+
+        console.log(res);
+
+        const validator = new ValidateSendType();
+        validator.validateSendType(slots.KELA_SEND_TYPE);
+
+        if (validator.invalidSendType) {
+          return response.returnInvalidSendType();
+        }
+        else {
+          const sendDirections = new SendDirections();
+          const send = async () => {
+            await sendDirections.sendDirections(
+              validator.sendType, sessionAttributes.KELA_PHONE,
+              sessionAttributes.KELA_EMAIL, directionURL)
               .then(() => {
                 console.log('Message were send to user via: ' + validator.sendType);
                 callback(null, response.returnDirectionsSent());
@@ -61,7 +74,12 @@ module.exports.handler = async (event: LexEvent,
                 console.error(err);
                 callback(null, response.returnDirectionsSentFailed());
               });
-      }
+          }
+        }
+      }).catch(err => {
+        console.error(err);
+        callback(null, response.returnDirectionsSentFailed());
+      });
   }
 
 

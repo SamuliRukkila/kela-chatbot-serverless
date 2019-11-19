@@ -36,6 +36,14 @@ export class Response {
   }
 
 
+  /**
+   * User wants the directions to be sent to him/her. Before
+   * that we'll need their PIN in order to know where the 
+   * directions will be sent. 
+   * 
+   * @returns DialogElicitSlot -object telling user that we'll
+   * need their PIN
+   */
   public returnElicitPin(): DialogElicitSlot {
     return {
       sessionAttributes: this.sessionAttributes,
@@ -57,7 +65,10 @@ export class Response {
 
   /**
    * Returns confirmation which'll tell Sumerian to start
-   * searching for user in Sumerian UI. 
+   * searching for user in Sumerian UI via coordinates.
+   * 
+   * @returns ConfirmIntent -object, because we need to know
+   * if user wants the directions to be sent to him/her
    */
   public returnStartLocating(): DialogConfirmIntent {
 
@@ -78,6 +89,12 @@ export class Response {
     }
   }
 
+  /**
+   * Returns an eror telling that the provided PIN were invalid. User
+   * needs to re-enter their PIN.
+   * 
+   * @returns DialogElicitSlot, to elicit PIN-slot again
+   */
   public returnInvalidPin(pin: string): DialogElicitSlot {
     return {
       dialogAction: {
@@ -229,7 +246,9 @@ export class Response {
 
   /**
    * Returns a message which tells that lambda were unable to send 
-   * the directions for the user. Dialog is failed, but completeled.
+   * the directions for the user. Dialog is failed, but completed.
+   * 
+   * @returns DialogClose -object, telling that sending directions has failed.
    */
   public returnDirectionsSentFailed(): DialogClose {
     return {

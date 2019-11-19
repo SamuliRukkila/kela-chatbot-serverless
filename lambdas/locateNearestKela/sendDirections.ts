@@ -7,6 +7,13 @@ export class SendDirections {
   /**
    * Function which'll send directions to user via Phone SMS or
    * email. All the needed values come from parameters.
+   * 
+   * @param {string} sendType Type in which the directions are sent (phone/email)
+   * @param {string} phone Phonenumber if directions are sent via SMS
+   * @param {string} email Email-address if directions are sent via email
+   * @param {string} url The url which contains the directions specified in Sumerian
+   * 
+   * @returns Empty promise (we won't need any data expect if there's an error)  
    */
   public async sendDirections(
     sendType: string, phone: string, email: string, url: string): Promise<null> {
@@ -20,6 +27,7 @@ export class SendDirections {
 
       return await SNS.publish(params).promise();
     }
+    
     // Send directions to user via EMAIL
     else {
       const params = {

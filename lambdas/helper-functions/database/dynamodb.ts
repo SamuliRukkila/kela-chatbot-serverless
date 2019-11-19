@@ -125,4 +125,20 @@ export class DynamoDB {
 
   }
 
+
+  public async getUserLatestDirectionURL(pin: string): Promise<any> {
+
+    const params: ScanInput = {
+      TableName: 'kela-Customers',
+      Select: 'SPECIFIC_ATTRIBUTES',
+      ProjectionExpression: 'LatestDirectionURL',
+      FilterExpression: 'Pin = :pin',
+      ExpressionAttributeValues: {
+        ':pin': { S: pin }
+      }
+    };
+
+    return await dynamo.scan(params).promise();
+  }
+
 }
