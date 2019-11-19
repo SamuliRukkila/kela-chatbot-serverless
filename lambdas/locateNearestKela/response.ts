@@ -72,7 +72,9 @@ export class Response {
    */
   public returnStartLocating(): DialogConfirmIntent {
 
-    this.sessionAttributes['KELA_SEND_URL'] = true;
+    if (this.sessionAttributes['KELA_PIN_OK']) {
+      this.sessionAttributes['KELA_SEND_URL'] = true;
+    }
 
     return {
       sessionAttributes: this.sessionAttributes,
@@ -176,6 +178,8 @@ export class Response {
   public returnPinSuccess(item: any): DialogElicitSlot {
 
     const user: User = item;
+
+    this.sessionAttributes['KELA_SEND_URL'] = true;
 
     return {
       sessionAttributes: {
