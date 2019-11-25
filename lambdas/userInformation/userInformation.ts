@@ -51,7 +51,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
     await dynamoDB.searchUserByPin(pin).then((res: ScanOutput) => {
 
-      if (!res.Items[0]) {
+      if (res && !res.Items[0]) {
         console.error('Could not find user with PIN: ' + pin);
         callback(null, response.returnFailedSearch(true, pin));
       } else {

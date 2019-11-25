@@ -22,10 +22,10 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   const sessionAttributes: BookAppointmentAttributes = event.sessionAttributes || {};
 
   const attributes: { session: boolean, name: string }[] = [
-    { session: sessionAttributes.KELA_TYPE_OK, name: 'KELA_TYPE' },
-    { session: sessionAttributes.KELA_DATE_OK, name: 'KELA_DATE' },
-    { session: sessionAttributes.KELA_START_TIME_OK, name: 'KELA_START_TIME' },
-    { session: sessionAttributes.KELA_REASON_OK, name: 'KELA_REASON' }
+    { session: sessionAttributes.KELA_TYPE_OK || false, name: 'KELA_TYPE' },
+    { session: sessionAttributes.KELA_DATE_OK || false, name: 'KELA_DATE' },
+    { session: sessionAttributes.KELA_START_TIME_OK || false, name: 'KELA_START_TIME' },
+    { session: sessionAttributes.KELA_REASON_OK || false, name: 'KELA_REASON' }
   ];
 
   // If user is already logged in 
