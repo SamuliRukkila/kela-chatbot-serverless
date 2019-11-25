@@ -107,6 +107,31 @@ export class Response {
     };
   }
 
+  
+  /**
+   * User has denied the provided and converted PIN.
+   * PIN will be asked again with confirmation.
+   *
+   * @returns DialogEliciSlot -object which'll ask PIN again
+   */
+  public returnAskPinAgain(): DialogElicitSlot {
+    return {
+      sessionAttributes: null,
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Alright, lets try it again - what is your PIN?`
+        },
+        intentName: 'Kela_CheckAppointments',
+        slots: {
+          KELA_PIN: null
+        },
+        slotToElicit: 'KELA_PIN'
+      }
+    };
+  }
+
 
   /**
    * If at least one appointment is found for the user, return data back to the caller.

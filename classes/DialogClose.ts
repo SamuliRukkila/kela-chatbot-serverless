@@ -20,7 +20,7 @@ export class DialogClose {
   public sessionAttributes?: Object;
   public dialogAction: {
     type: 'Close',
-    fulfillmentState: string,
+    fulfillmentState: 'Fulfilled' | 'Failed',
     message?: {
       contentType: string,
       content: string;

@@ -21,11 +21,22 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   const response = new Response();
 
   const pinExists: boolean = event.sessionAttributes && 
-    event.sessionAttributes.hasOwnProperty('KELA_PIN') ?
-      true : false; 
+    event.sessionAttributes.hasOwnProperty('KELA_PIN');
 
   /**
    * 1. SCENARIO
+   * =========================================================
+   * 
+   * User has denied the converted and validated PIN so it'll
+   * be asked from the user again.
+   */
+  if (event.currentIntent.confirmationStatus === 'Denied') {
+    return response.returnAskPinAgain();
+  }
+
+
+  /**
+   * 2. SCENARIO
    * =========================================================
    * 
    * PIN already exists from previous intent.
@@ -55,7 +66,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 2. SCENARIO
+   * 3. SCENARIO
    * =========================================================
    * 
    * User PIN is confirmed and information will be searched 
@@ -84,7 +95,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 3. SCENARIO
+   * 4. SCENARIO
    * =========================================================
    * 
    * If Lex is doing a validation call for the PIN.
@@ -108,7 +119,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 4. SCENARIO
+   * 5. SCENARIO
    * =========================================================
    * 
    * This will (and should) only happen when Lex is doing

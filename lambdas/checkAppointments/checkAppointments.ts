@@ -19,24 +19,31 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   const slots = event.currentIntent.slots;
   const response = new Response();
 
-  let pinExists: boolean = false;
-
-  if (event.sessionAttributes) {
-    if (event.sessionAttributes.hasOwnProperty('KELA_PIN')) {
-      pinExists = true;
-    }
-  }
+  const pinExists: boolean = event.sessionAttributes &&
+    event.sessionAttributes.hasOwnProperty('KELA_PIN');
 
 
   /**
    * 1. SCENARIO
    * =========================================================
    * 
+   * User has denied the converted and validated PIN so it'll
+   * be asked from the user again.
+   */
+  if (event.currentIntent.confirmationStatus === 'Denied') {
+    return response.returnAskPinAgain();
+  }
+
+
+  /**
+   * 2. SCENARIO
+   * =========================================================
+   * 
    * PIN already exists from previous intents.
    * Appointments will be searched according to 
    * that user by it's PIN from DynamoDB.
    */
-  if (pinExists) {
+  else if (pinExists) {
     console.log('SCENARIO 1.');
     const dynamoDB = new DynamoDB();
     const pin: string = event.sessionAttributes.KELA_PIN;
@@ -72,7 +79,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 2. SCENARIO
+   * 3. SCENARIO
    * =========================================================
    * 
    * User PIN is confirmed and appointments will be searched 
@@ -114,7 +121,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 3. SCENARIO
+   * 4. SCENARIO
    * =========================================================
    * 
    * If Lex is doing a validation call for the PIN.
@@ -139,7 +146,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 4. SCENARIO
+   * 5. SCENARIO
    * =========================================================
    * 
    * This will (and should) only happen when Lex is doing

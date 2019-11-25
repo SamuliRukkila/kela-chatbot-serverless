@@ -19,11 +19,9 @@ export class ValidatePin {
   public validatePin(pin: string): void {
 
     this.pin = pin;
-
     console.log('VALIDATEPIN: Unparsed string: ' + this.pin);
     
     this.parsePinFromString();
-
     console.log('VALIDATEPIN: Parsed PIN without validation: ' + this.pin);
 
     // Add validations here, for every method call, check if invalidPin 

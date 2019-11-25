@@ -12,7 +12,6 @@ import { ValidateType } from '../helper-functions/validators/validateType';
 import { ValidatePin } from '../helper-functions/validators/validatePin';
 import { ValidateReason } from '../helper-functions/validators/validateReason';
 
-
 module.exports.handler = async (event: LexEvent, context: Object, callback: Function) => {
 
   console.log(event);
@@ -40,16 +39,27 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   response.slots = slots;
 
 
-
   /**
    * 1. SCENARIO
+   * ========================================================
+   * 
+   * User has denied the appointment. PIN will be saved for 
+   * further intents, but the current intent will be closed.
+   */
+  if (event.currentIntent.confirmationStatus === 'Denied') {
+    return response.returnDeniedAppointment();
+  }
+
+
+  /**
+   * 2. SCENARIO
    * ========================================================
    * 
    * User has confirmed the appointment and all the slots are fullfilled 
    * + valid. Appointment will be saved into DynamoDB. All the slots 
    * and session-attributes will be forwarded aswell.
    */
-  if (event.currentIntent.confirmationStatus === 'Confirmed' &&
+  else if (event.currentIntent.confirmationStatus === 'Confirmed' &&
     attributes.every(attr => attr.session)) {
 
     const dynamoDB = new DynamoDB();
@@ -66,7 +76,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 2. SCENARIO
+   * 3. SCENARIO
    * ========================================================
    * 
    * User has been verified (by PIN). Slots which'll be given,
@@ -78,7 +88,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
   else if (sessionAttributes && sessionAttributes.KELA_PIN_OK) {
 
     /**
-     * 2.1 SCENARIO
+     * 3.1 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * User has been validated and will now choose the 
@@ -99,7 +109,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
     /**
-     * 2.2 SCENARIO
+     * 3.2 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * User has provided date when the appointment should take
@@ -120,7 +130,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
     /**
-     * 2.3 SCENARIO
+     * 3.3 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * User has provided the wanted start-time for the appointment.
@@ -151,7 +161,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
     /**
-     * 2.4 SCENARIO
+     * 3.4 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * User has provided the reason for the appointment. The reason is one 
@@ -188,7 +198,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
     /**
-     * 2.5 SCENARIO
+     * 3.5 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * In theory, this condition should (almost) never occur, because previous
@@ -205,7 +215,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
     /**
-     * 2.6 SCENARIO
+     * 3.6 SCENARIO
      * ------------------------------------------------------------------------
      * 
      * Something went wrong while validating or giving values
@@ -226,7 +236,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 3. SCENARIO
+   * 4. SCENARIO
    * ========================================================
    * 
    * User hasn't been verified yet but the PIN is provided. In this
@@ -279,7 +289,7 @@ module.exports.handler = async (event: LexEvent, context: Object, callback: Func
 
 
   /**
-   * 4. SCENARIO
+   * 5. SCENARIO
    * ========================================================
    *
    * This will (and should) only happen when Lex is doing

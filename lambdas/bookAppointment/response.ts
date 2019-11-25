@@ -157,6 +157,7 @@ d
       sessionAttributes: {
         'KELA_FIRSTNAME': user.FirstName.S,
         'KELA_LASTNAME': user.LastName.S,
+        'KELA_PIN': user.Pin.S,
         'KELA_PIN_OK': true
       },
       dialogAction: {
@@ -277,6 +278,7 @@ d
    */
   public returnSuccessfulAppointment(): DialogClose {
     return {
+      sessionAttributes: { 'KELA_PIN': this.slots.KELA_PIN },
       dialogAction: {
       type: 'Close',
         fulfillmentState: 'Fulfilled',
@@ -309,6 +311,20 @@ d
         slots: this.slots
       }
     };
+  }
+
+  public returnDeniedAppointment(): DialogClose {
+    return {
+      sessionAttributes: { 'KELA_PIN': this.slots.KELA_PIN },
+      dialogAction: {
+        type: 'Close',
+        fulfillmentState: 'Fulfilled',
+        message: {
+          contentType: 'PlainText',
+          content: `Alright, I won't save or retry the appointment.`
+        }
+      }
+    }
   }
 
 }

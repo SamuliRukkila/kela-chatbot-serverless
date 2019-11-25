@@ -24,7 +24,6 @@ export class SendDirections {
         Message: `Hello, thank you for using Kela's chatbot. Here are your directions: ${url}`,
         PhoneNumber: phone
       };
-
       return await SNS.publish(params).promise();
     }
 
@@ -39,8 +38,8 @@ export class SendDirections {
             Html: {
               Charset: 'UTF-8',
               Data: `<p>Hello, thank you for using Kela's Chatbot.</p>
-                <p>Here are your directions: </p>
-                <a href="${url}" target="_blank">Directions</a>`
+                     <p>Here are your directions: </p>
+                     <p><a href="${url}" target="_blank">Directions</a></p>`
             },
             Text: {
               Charset: 'UTF-8',
@@ -54,7 +53,6 @@ export class SendDirections {
         },
         Source: 'kela.chatbot@gmail.com'
       };
-
       return await SES.sendEmail(params).promise();
     }
 

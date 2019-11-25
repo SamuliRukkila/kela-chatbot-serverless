@@ -126,6 +126,14 @@ export class DynamoDB {
   }
 
 
+  /**
+   * DynamoDB -function which'll fetch the latest (Google Maps)
+   * directions -url from database. URL is saved in Sumerian,
+   * since it cannot send those values back to Lex -> Lambda.
+   * 
+   * @param {string} pin The user's PIN whose directions we're searching
+   * @returns Promise which'll contain (or not contain) the URL 
+   */
   public async getUserLatestDirectionURL(pin: string): Promise<any> {
 
     const params: ScanInput = {

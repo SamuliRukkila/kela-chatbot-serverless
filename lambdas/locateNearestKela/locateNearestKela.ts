@@ -20,6 +20,7 @@ module.exports.handler = async (event: LexEvent,
   response.sessionAttributes = sessionAttributes;
   response.slots = slots;
 
+  // If user is already logged in
   if (sessionAttributes && sessionAttributes['KELA_PIN']) {
     response.sessionAttributes['KELA_PIN'] = sessionAttributes['KELA_PIN'];
     response.sessionAttributes['KELA_PIN_OK'] = true;
@@ -29,6 +30,17 @@ module.exports.handler = async (event: LexEvent,
 
   /**
    * 1. SCENARIO
+   * ========================================================
+   * 
+   * User rejects the sending of the directions. Intent
+   * will now be stopped.
+   */
+  if (event.currentIntent.confirmationStatus === 'Denied') {
+    return response.returnRejectDirections();
+  }
+
+  /**
+   * 2. SCENARIO
    * ========================================================
    *  
    * User has been validated by PIN and has told Lex/Sumerian the
@@ -41,42 +53,40 @@ module.exports.handler = async (event: LexEvent,
     !sessionAttributes.KELA_SEND_TYPE_OK && slots.KELA_SEND_TYPE) {
 
     console.log('KELA_SEND_TYPE > Received value: ' + slots.KELA_SEND_TYPE);
-
     const dynamoDB = new DynamoDB();
 
     await dynamoDB.getUserLatestDirectionURL(slots.KELA_PIN).then((res: ScanOutput) => {
 
       // If no data were found
-      if (res.Count === 0 || !res.Items[0].LatestDirectionURL.S) {
+      if (res.Count === 0 || !res.Items[0].LatestDirectionURL) {
+        console.error('Could not find directions for PIN: ' + slots.KELA_PIN);
         callback(null, response.returnDirectionsSentFailed());
-      }
-
-      const directionURL: string = res.Items[0].LatestDirectionURL.S;
-
-      console.log(res);
-      console.log(directionURL);
-
-      const validator = new ValidateSendType();
-      validator.validateSendType(slots.KELA_SEND_TYPE);
-
-      if (validator.invalidSendType) {
-        return response.returnInvalidSendType();
-      }
+      } 
       else {
-        const sendDirections = new SendDirections();
-        const send = async () => {
-          await sendDirections.sendDirections(
-            validator.sendType, sessionAttributes.KELA_PHONE,
-            sessionAttributes.KELA_EMAIL, directionURL)
-            .then(() => {
-              console.log('Message were send to user via: ' + validator.sendType);
+
+        const directionURL: string = res.Items[0].LatestDirectionURL.S;
+        console.log('Found saved directions: ' + directionURL);
+  
+        const validator = new ValidateSendType();
+        validator.validateSendType(slots.KELA_SEND_TYPE);
+  
+        if (validator.invalidSendType) {
+          callback(null, response.returnInvalidSendType());
+        }
+        else {
+          console.log('Send type is valid: ' + validator.sendType);
+          const sendDirections = new SendDirections();
+          return new Promise(async () => {
+            try {
+              await sendDirections.sendDirections(validator.sendType, sessionAttributes.KELA_PHONE,
+                sessionAttributes.KELA_EMAIL, directionURL);
               callback(null, response.returnDirectionsSent());
-            }).catch(err => {
+            } catch (err) {
               console.error(err);
               callback(null, response.returnDirectionsSentFailed());
-            });
+            }
+          });
         }
-        send();
       }
     }).catch(err => {
       console.error(err);
@@ -86,7 +96,7 @@ module.exports.handler = async (event: LexEvent,
 
 
   /**
-   * 2. SCENARIO
+   * 3. SCENARIO
    * ========================================================
    * 
    * User wants the directions to be sent via phone/email but
@@ -99,7 +109,7 @@ module.exports.handler = async (event: LexEvent,
 
 
   /**
-   * 3. SCENARIO
+   * 4. SCENARIO
    * ========================================================
    *
    * User has either provided the PIN for validation or has been already
@@ -149,7 +159,7 @@ module.exports.handler = async (event: LexEvent,
 
 
   /**
-   * 4. SCENARIO
+   * 5. SCENARIO
    * ========================================================
    * 
    * This is the initialization which'll only send the message
@@ -159,5 +169,4 @@ module.exports.handler = async (event: LexEvent,
   else {
     return response.returnStartLocating();
   }
-
 }

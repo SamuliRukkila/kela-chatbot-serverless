@@ -55,6 +55,32 @@ export class Response {
     };
   }
 
+
+  /**
+   * User has denied the provided and converted PIN. 
+   * PIN will be asked again with confirmation.
+   * 
+   * @returns DialogEliciSlot -object which'll ask PIN again
+   */
+  public returnAskPinAgain(): DialogElicitSlot {
+    return {
+      sessionAttributes: null,
+      dialogAction: {
+        type: 'ElicitSlot',
+        message: {
+          contentType: 'PlainText',
+          content: `Alright, lets try it again - what is your PIN?`
+        },
+        intentName: 'Kela_CheckAppointments',
+        slots: {
+          KELA_PIN: null
+        },
+        slotToElicit: 'KELA_PIN'
+      }
+    };
+  }
+
+
   /**
    * PIN is valid and it'll be added to KELA_PIN -slot.
    * Confirmation will be sent to Lex's bot and if user

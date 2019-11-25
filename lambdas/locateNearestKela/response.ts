@@ -91,6 +91,7 @@ export class Response {
     }
   }
 
+  
   /**
    * Returns an eror telling that the provided PIN were invalid. User
    * needs to re-enter their PIN.
@@ -114,13 +115,14 @@ export class Response {
     };
   }
 
+
   /**
- * If lambda cannot find the user via provided PIN from 
- * DynamoDB-database.
- * 
- * @param {string} pin User's provided PIN
- * @returns Error message why search failed and data to close current intent
- */
+   * If lambda cannot find the user via provided PIN from 
+   * DynamoDB-database.
+   * 
+   * @param {string} pin User's provided PIN
+   * @returns Error message why search failed and data to close current intent
+   */
   public returnNotFoundPin(pin: string): DialogElicitSlot {
     return {
       dialogAction: {
@@ -186,7 +188,7 @@ export class Response {
         'KELA_FIRSTNAME': user.FirstName.S,
         'KELA_PHONE': user.Phone.S,
         'KELA_EMAIL': user.Email.S,
-        'KELA_PIN': this.slots['KELA_PIN'],
+        'KELA_PIN': user.Pin.S,
         'KELA_PIN_OK': true
       },
       dialogAction: {
@@ -229,6 +231,7 @@ export class Response {
     }
   }
 
+
   /**
    * Returns a message which tells that directions were send to the user.
    * Dialog is complete now.
@@ -242,11 +245,12 @@ export class Response {
         fulfillmentState: 'Fulfilled',
         message: {
           contentType: 'PlainText',
-          content: 'Directions has been sent to you. Thank you!'
+          content: 'Directions have been sent to you. Thank you!'
         }
       }
     }
   }
+
 
   /**
    * Returns a message which tells that lambda were unable to send 
@@ -262,6 +266,26 @@ export class Response {
         message: {
           contentType: 'PlainText',
           content: `Unfortunately I couldn't send the directions for you. My bad!`
+        }
+      }
+    }
+  }
+
+
+  /**
+   * When user rejects the sending of the directions. Intent
+   * will be closed.
+   * 
+   * @returns DialogClose -object, telling that directions won't be sent.
+   */
+  public returnRejectDirections(): DialogClose {
+    return {
+      dialogAction: {
+        type: 'Close',
+        fulfillmentState: 'Fulfilled',
+        message: {
+          contentType: 'PlainText',
+          content: `Alright, I won't send directions for you.`
         }
       }
     }
