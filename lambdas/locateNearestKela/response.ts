@@ -240,6 +240,7 @@ export class Response {
    */
   public returnDirectionsSent(): DialogClose {
     return {
+      sessionAttributes: { 'KELA_PIN': this.slots['KELA_PIN'] },
       dialogAction: {
         type: 'Close',
         fulfillmentState: 'Fulfilled',
@@ -260,6 +261,7 @@ export class Response {
    */
   public returnDirectionsSentFailed(): DialogClose {
     return {
+      sessionAttributes: { 'KELA_PIN': this.slots['KELA_PIN'] },
       dialogAction: {
         type: 'Close',
         fulfillmentState: 'Failed',
@@ -280,6 +282,7 @@ export class Response {
    */
   public returnRejectDirections(): DialogClose {
     return {
+      sessionAttributes: { 'KELA_PIN': this.slots['KELA_PIN'] },
       dialogAction: {
         type: 'Close',
         fulfillmentState: 'Fulfilled',
