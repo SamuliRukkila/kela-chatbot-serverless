@@ -3,7 +3,7 @@ Kela Chatbot: Sumerian
 
 Public URL for the application:
 
-https://eu-west-1.sumerian.aws/600828200d7e417b8c08d1396e9145e2.scene
+https://c50856a46b974123b968e6355ec67dd3.eu-west-1.sumerian.aws/?
 
 For the best possible experience, use device with:
 
