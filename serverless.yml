@@ -47,6 +47,10 @@ functions:
     handler: lambdas/locateNearestKela/locateNearestKela.handler
     name: kela-locateNearestKela
 
+  
+  # Convert speech to text (via Google Speech-To-Text -API)
+  ConvertSpeechToText:
+    handler: lambdas/converter/convertSpeechToText.handler
 
 resources:
   Resources:

@@ -12,3 +12,6 @@ test.js
 
 # Typescript maps
 .build/
+
+# Credentials
+google-speech-to-text-creds.json
