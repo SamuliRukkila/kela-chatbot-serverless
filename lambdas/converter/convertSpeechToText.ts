@@ -14,7 +14,9 @@ module.exports.handler = async (event: Object, context: Object, callback: Functi
   const base64string: string = event['base64string'].split(';base64,').pop();
   const client = new speech.SpeechClient();
 
-  fs.writeFile(FOLDER + FILE_NAME, base64string, { encoding: 'base64' }, err => {
+  console.log('Starting the convertion of file: ' + FILE_NAME);
+
+  await fs.writeFile(FOLDER + FILE_NAME, base64string, { encoding: 'base64' }, (err: Error) => {
     if (err) throw err;
     console.log('New file created for conversion: ' + FILE_NAME);
 
@@ -27,23 +29,46 @@ module.exports.handler = async (event: Object, context: Object, callback: Functi
         console.log(JSON.stringify(progress));
         console.log('Processing conversion: ' + progress.targetSize + ' KB converted');
       })
+      .save(FOLDER + FILE_NAME_WAV)
       .on('end', () => {
-        console.log('Finished converting file: ' + FILE_NAME);
-      })
-      .save(FOLDER + FILE_NAME_WAV, {
-        success: () => {
-          const audioBytes = fs.readFileSync(FOLDER + FILE_NAME_WAV).toString('base64');
+        console.log(`Finished converting file: ${FILE_NAME} to ${FILE_NAME_WAV}`);
+        const audioBytes = fs.readFileSync(FOLDER + FILE_NAME_WAV).toString('base64');
 
-          const request = {
-            audio: { content: audioBytes },
-            config: { languageCode: LANGUAGE_CODE }
-          }
-          console.log('Tänne');
-          client.recognize(request).then(res => {
-            console.log(res);
+        console.log('Sending .WAV -file to Google API: ' + FILE_NAME_WAV);
+
+        const request = {
+          audio: { content: audioBytes },
+          config: { languageCode: LANGUAGE_CODE }
+        };
+
+        client.recognize(request).then(response => {
+          const convertedText = response[0].results
+            .map(res => res.alternatives[0].transcript)
+            .join('\n');
+          console.log(`Successfully converted .WAV -audio file (${FILE_NAME_WAV}) to text: [${convertedText}]`);
+          removeFiles();
+          callback(null, {
+            error: false, msg: convertedText
           });
-        }
-      });
+        }).catch((err: Error) => {
+          console.error('Error while calling Google API: ' + err.message);
+          removeFiles();
+          callback(null, {
+            error: true, msg: err.message
+          });
+        });
+      })
   });
+
+  function removeFiles(): void {
+    try {
+      fs.unlinkSync(FOLDER + FILE_NAME);
+      fs.unlinkSync(FOLDER + FILE_NAME_WAV);
+    } catch (err) {
+      console.error(`Error while trying to delete audio file. Continuing..` +
+        `${FOLDER + FILE_NAME} / ${FOLDER + FILE_NAME_WAV}`);
+    }
+  }
+
 }
 

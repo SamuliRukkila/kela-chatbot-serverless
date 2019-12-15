@@ -16,6 +16,3 @@ test-conversion.js
 
 # Credentials
 google-speech-to-text-creds.json
-
-# Audio files
-audio/
