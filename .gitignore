@@ -9,9 +9,13 @@ serverless_sdk/
 # Temporary test files
 s_*
 test.js
+test-conversion.js
 
 # Typescript maps
 .build/
 
 # Credentials
 google-speech-to-text-creds.json
+
+# Audio files
+audio/
