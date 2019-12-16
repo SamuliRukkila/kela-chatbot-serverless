@@ -89,6 +89,3 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
-layers:
-  ffmpeg:
-    path: ./layer/
