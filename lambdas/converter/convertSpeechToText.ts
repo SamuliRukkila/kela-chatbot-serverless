@@ -61,12 +61,16 @@ module.exports.handler = async (event: Object, context: Object, callback: Functi
         });
       })
   });
-
+  
+  /**
+   * 
+   */
   function removeFiles(): void {
     try {
-      console.log('removed');
       fs.unlinkSync(FOLDER + FILE_NAME);
       fs.unlinkSync(FOLDER + FILE_NAME_WAV);
+      console.log(`Removed audio files successfully: ` + 
+        `${FILE_NAME} & ${FILE_NAME_WAV}`);
     } catch (err) {
       console.error(`Error while trying to delete audio file. Continuing..` +
         `${FOLDER + FILE_NAME} / ${FOLDER + FILE_NAME_WAV}`);

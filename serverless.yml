@@ -46,11 +46,14 @@ functions:
   KelaLocateNearestKela:
     handler: lambdas/locateNearestKela/locateNearestKela.handler
     name: kela-locateNearestKela
+    description: Locates nearest kela via Google API and sends it to user via txt/email
 
   
   # Convert speech to text (via Google Speech-To-Text -API)
   ConvertSpeechToText:
     handler: lambdas/converter/convertSpeechToText.handler
+    name: kela-ConvertSpeechToText
+    description: Converts finnish speech to finnish text via Google API
 
 resources:
   Resources:
@@ -86,3 +89,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+layers:
+  ffmpeg:
+    path: ./layer/

@@ -1,11 +1,18 @@
 README.md
-node_modules/*
-!node_modules/moment
-!node_modules/moment-timezone
-!node_modules/@*
+
+# node_modules/*
+# !node_modules/moment
+# !node_modules/moment-timezone
+# !node_modules/@*
+
 .git/*
 lex/*
 lambda-receive-json/*
 package.json
 package-lock.json
 serverless_sdk/*
+
+node_modules/@ffmpeg-installer/win32-ia32/**
+node_modules/@ffmpeg-installer/linux-ia32/**
+node_modules/@ffmpeg-installer/win32-x64/**
+node_modules/@ffmpeg-installer/darwin-x64/**
