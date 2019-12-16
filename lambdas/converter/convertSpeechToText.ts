@@ -1,7 +1,9 @@
 const speech = require('@google-cloud/speech');
-const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const random = require('unique-string');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 module.exports.handler = async (event: Object, context: Object, callback: Function) => {
 
@@ -62,6 +64,7 @@ module.exports.handler = async (event: Object, context: Object, callback: Functi
 
   function removeFiles(): void {
     try {
+      console.log('removed');
       fs.unlinkSync(FOLDER + FILE_NAME);
       fs.unlinkSync(FOLDER + FILE_NAME_WAV);
     } catch (err) {
