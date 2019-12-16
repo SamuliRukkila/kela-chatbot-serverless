@@ -1,4 +1,3 @@
-
 service: kela-chatbot-serverless
 # app and org for use with dashboard.serverless.com
 app: kela-chatbot-serverless
@@ -23,37 +22,29 @@ iamRoleStatements:
       - ses:*
 
 functions:
-
   # Get user's Kela information
   KelaUserInformation:
     handler: lambdas/userInformation/userInformation.handler
     name: kela-userInformation
     description: Gets user information from DynamoDB via provided PIN
-    
+
   # Book a new time for Kela meeting
   KelaBookAppointment:
     handler: lambdas/bookAppointment/bookAppointment.handler
     name: kela-bookAppointment
-    description: Books an appointment for the user 
+    description: Books an appointment for the user
 
   # Get user's appointments
   KelaCheckAppointments:
     handler: lambdas/checkAppointments/checkAppointments.handler
     name: kela-checkAppointments
-    description: Checks all user's appointments 
+    description: Checks all user's appointments
 
   # Locate nearest Kela -apartment
   KelaLocateNearestKela:
     handler: lambdas/locateNearestKela/locateNearestKela.handler
     name: kela-locateNearestKela
     description: Locates nearest kela via Google API and sends it to user via txt/email
-
-  
-  # Convert speech to text (via Google Speech-To-Text -API)
-  ConvertSpeechToText:
-    handler: lambdas/converter/convertSpeechToText.handler
-    name: kela-ConvertSpeechToText
-    description: Converts finnish speech to finnish text via Google API
 
 resources:
   Resources:

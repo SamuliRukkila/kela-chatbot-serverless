@@ -1,0 +1,11 @@
+{
+  "name": "ec2-instance-converter-speech",
+  "version": "1.0.0",
+  "description": "Converts speech into text via Google API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samuli Rukkila",
+  "license": "ISC"
+}

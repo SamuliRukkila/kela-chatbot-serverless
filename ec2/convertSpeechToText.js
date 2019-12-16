@@ -5,7 +5,23 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 
+const exec = require('child_process').execFile;
+const { ncp } = require('ncp');
+const path = require('path');
+const chmod = require('chmod');
+
 module.exports.handler = async (event: Object, context: Object, callback: Function) => {
+
+  await ncp(path.join(__dirname, '../ffmpeg/'), '/tmp/ffmpeg', {
+    clobber: false
+  }, (err: Error) => {
+    if (err) throw err;
+    else {
+      chmod('/tmp/ffmpeg/ffmpeg', {
+        execute: true
+      });
+    }
+  });
 
   const FORMAT: string = 'wav';
   const FOLDER: string = './audio/';

@@ -19,13 +19,15 @@
   "homepage": "https://github.com/SamuliRukkila/kela-chatbot-serverless#readme",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
-    "fluent-ffmpeg": "^2.1.2",
     "@google-cloud/speech": "^3.5.1",
     "@google-cloud/storage": "^4.1.3",
     "aws-sdk": "^2.538.0",
+    "chmod": "^0.2.1",
     "coordinates": "^0.1.6",
+    "fluent-ffmpeg": "^2.1.2",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
+    "ncp": "^2.0.0",
     "node-wav": "0.0.2",
     "serverless-ignore": "^0.1.5",
     "unique-string": "^2.0.0"

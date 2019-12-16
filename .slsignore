@@ -1,10 +1,11 @@
 README.md
 
-# node_modules/*
-# !node_modules/moment
-# !node_modules/moment-timezone
-# !node_modules/@*
+node_modules/*
+!node_modules/moment
+!node_modules/moment-timezone
+!node_modules/@*
 
+ec2/*
 .git/*
 lex/*
 lambda-receive-json/*
