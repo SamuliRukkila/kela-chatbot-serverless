@@ -1,46 +1,35 @@
-const speech = require('@google-cloud/speech');
-const fs = require('fs');
-const random = require('unique-string');
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
-const ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath(ffmpegPath);
+// const speech = require('@google-cloud/speech');
+// const fs = require('fs');
+// const random = require('unique-string');
+// const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+// const ffmpeg = require('fluent-ffmpeg');
+// ffmpeg.setFfmpegPath(ffmpegPath);
 
-const exec = require('child_process').execFile;
-const { ncp } = require('ncp');
-const path = require('path');
-const chmod = require('chmod');
+// const exec = require('child_process').execFile;
+// const { ncp } = require('ncp');
+// const path = require('path');
+// const chmod = require('chmod');
 
-module.exports.handler = async (event: Object, context: Object, callback: Function) => {
 
-  await ncp(path.join(__dirname, '../ffmpeg/'), '/tmp/ffmpeg', {
-    clobber: false
-  }, (err: Error) => {
-    if (err) throw err;
-    else {
-      chmod('/tmp/ffmpeg/ffmpeg', {
-        execute: true
-      });
-    }
-  });
 
-  const FORMAT: string = 'wav';
-  const FOLDER: string = './audio/';
-  const FILE_NAME: string = random();
-  const FILE_NAME_WAV: string = FILE_NAME + '.wav';
-  const LANGUAGE_CODE: string = 'fi-FI';
+  const FORMAT = 'wav';
+  const FOLDER = './audio/';
+  const FILE_NAME = random();
+  const FILE_NAME_WAV = FILE_NAME + '.wav';
+  const LANGUAGE_CODE = 'fi-FI';
 
-  const base64string: string = event['base64string'].split(';base64,').pop();
+  const base64string = event['base64string'].split(';base64,').pop();
   const client = new speech.SpeechClient();
 
   console.log('Starting the convertion of file: ' + FILE_NAME);
 
-  await fs.writeFile(FOLDER + FILE_NAME, base64string, { encoding: 'base64' }, (err: Error) => {
+  await fs.writeFile(FOLDER + FILE_NAME, base64string, { encoding: 'base64' }, err => {
     if (err) throw err;
     console.log('New file created for conversion: ' + FILE_NAME);
 
     ffmpeg(FOLDER + FILE_NAME)
       .toFormat(FORMAT)
-      .on('error', (err: Error) => {
+      .on('error', err => {
         console.error('Error occured while converting: ' + err.message);
       })
       .on('progress', progress => {
@@ -68,7 +57,7 @@ module.exports.handler = async (event: Object, context: Object, callback: Functi
           callback(null, {
             error: false, msg: convertedText
           });
-        }).catch((err: Error) => {
+        }).catch(err => {
           console.error('Error while calling Google API: ' + err.message);
           removeFiles();
           callback(null, {
@@ -81,7 +70,7 @@ module.exports.handler = async (event: Object, context: Object, callback: Functi
   /**
    * 
    */
-  function removeFiles(): void {
+  function removeFiles() {
     try {
       fs.unlinkSync(FOLDER + FILE_NAME);
       fs.unlinkSync(FOLDER + FILE_NAME_WAV);
@@ -92,6 +81,4 @@ module.exports.handler = async (event: Object, context: Object, callback: Functi
         `${FOLDER + FILE_NAME} / ${FOLDER + FILE_NAME_WAV}`);
     }
   }
-
-}
 

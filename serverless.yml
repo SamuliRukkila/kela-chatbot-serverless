@@ -46,6 +46,11 @@ functions:
     name: kela-locateNearestKela
     description: Locates nearest kela via Google API and sends it to user via txt/email
 
+  ConvertController:
+    handler: lambdas/convertController/controller.handler
+    name: kela-ConvertController
+    description: ---
+
 resources:
   Resources:
     # DynamoDB table for Customer-data
