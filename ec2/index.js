@@ -1,6 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const random = require('unique-string');
+const port = process.env.PORT || 8080;
+const perf = require('execution-time')();
+require('log-timestamp');
 
 const app = express();
 
@@ -9,21 +13,32 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.listen(port, () => console.log('Server running on port: ', port));
+
+
+const FORMAT = 'wav';
+const FOLDER = './audio/';
+const FILE_NAME = random();
+const FILE_NAME_WAV = FILE_NAME + '.wav';
+const LANGUAGE_CODE = 'fi-FI';
+
+const speech = require('@google-cloud/speech');
+const fs = require('fs');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
+
 app.post('/convert', (req, res) => {
-  const speech = require('@google-cloud/speech');
-  const fs = require('fs');
-  const random = require('unique-string');
-  const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
-  const ffmpeg = require('fluent-ffmpeg');
-  ffmpeg.setFfmpegPath(ffmpegPath);
+  
+  perf.start();
 
-  const FORMAT = 'wav';
-  const FOLDER = './audio/';
-  const FILE_NAME = random();
-  const FILE_NAME_WAV = FILE_NAME + '.wav';
-  const LANGUAGE_CODE = 'fi-FI';
-
-  const base64string = req.body.base64string['base64string']
+  if (!req.body || !req.body.base64string) {
+    console.log('Base64string is null; returning 500-error');
+    console.log('Execution took: ' + perf.stop().time + ' milliseconds');
+    return res.status(500).send({ error: true, msg: 'Body (base64string) was empty!' });
+  }
+  
+  const base64string = req.body.base64string
     .split(';base64,')
     .pop();
   const client = new speech.SpeechClient();
@@ -65,7 +80,7 @@ app.post('/convert', (req, res) => {
             config: { languageCode: LANGUAGE_CODE }
           };
 
-          client
+	  return client
             .recognize(request)
             .then(response => {
               const convertedText = response[0].results
@@ -75,24 +90,14 @@ app.post('/convert', (req, res) => {
                 `Successfully converted .WAV -audio file (${FILE_NAME_WAV}) to text: [${convertedText}]`
               );
               removeFiles();
-              return (
-                null,
-                {
-                  error: false,
-                  msg: convertedText
-                }
-              );
+	      console.log('Execution took: ' + perf.stop().time + ' milliseconds');
+	      return res.send({ error: false, msg: convertedText });
             })
             .catch(err => {
               console.error('Error while calling Google API: ' + err.message);
               removeFiles();
-              return (
-                null,
-                {
-                  error: true,
-                  msg: err.message
-                }
-              );
+	      console.log('Execution took: ' + perf.stop().time + ' milliseconds');
+              return res.status(500).send({ error: true, msg: err.message });
             });
         });
     }
@@ -114,4 +119,3 @@ function removeFiles() {
   }
 }
 
-app.listen(3000, () => console.log('Server running on port 3000'));
