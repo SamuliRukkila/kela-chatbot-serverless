@@ -1,52 +1,58 @@
-const querystring = require('querystring');
+import { TranslateTextResponse } from "aws-sdk/clients/translate";
+
 const http = require('http');
+const AWS = require('aws-sdk'); 
+const translate = new AWS.Translate();
 
-module.exports.handler = async (event, context) => {
+exports.handler = async (event: Event) => new Promise(async (resolve) => {
 
-  const URL: string = 'http://ec2-18-202-227-66.eu-west-1.compute.amazonaws.com:3000/convert';
+  const token = 
+    await post({ base64string: event['base64string'] });
 
-  const post_data = querystring.stringify(
-    event['base64string']
-  );
+  if (token['error']) return resolve(token);
 
-  const post_options = {
-    host: URL,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
+  const params = {
+    SourceLanguageCode: 'fi',
+    TargetLanguageCode: 'en',
+    Text: token['msg'],
+    TerminologyNames: [
+      'Kela_Terminology'
+    ]
+  }
+
+  translate.translateText(params, (err: Error, data: TranslateTextResponse) => {
+    if (err) {
+      console.error(err);
+      return resolve({ error: true, msg: err.message });
+    } 
+    else {
+      return resolve({ error: false, msg: data.TranslatedText });
     }
-  };
-
-  const post_req = http.request(post_options, res => {
-    res.setEncoding('UTF-8');
-    res.on('data', chunk => {
-      console.log('Response: ' + chunk);
-      context.succeed();
-    });
-    res.on('error', e => {
-      console.log(e);
-      context.done(null, 'FAILURE');
-    });
   });
+});
 
-  post_req.write(post_data);
-  post_req.end();
-
-
-
-  // const URL: string = 'http://ec2-18-202-227-66.eu-west-1.compute.amazonaws.com:3000/convert';
-  // const xhttp = new XMLHttpRequest();
-  // const base64string: string = event['base64string'];
-
-  // xhttp.open("POST", URL, false);
-  // xhttp.setRequestHeader('Content-Type', 'application/json');
-
-  // xhttp.onreadystatechange = () => {
-  //   if (Number(this.readyState) == 4 && Number(this.status) == 200) {
-  //     console.log(xhttp.responseText);
-  //   }
-  // }
-  // xhttp.send(JSON.stringify({
-  //   "base64string": base64string
-  // }));
+const options = {
+  host: 'ec2-18-202-18-6.eu-west-1.compute.amazonaws.com',
+  path: '/convert',
+  port: 80,
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  }
 }
+
+/**
+ * Makes a POST -request to Node.js REST-API resting in EC2,
+ * which will convert finnish speech into finnish text.
+ * @param payload 
+ */
+const post = (payload) => new Promise((resolve, reject) => {
+  const req = http.request(options, res => {
+    let buffer = '';
+    res.on('data', chunk => buffer += chunk)
+    res.on('end', () => resolve(JSON.parse(buffer)))
+  });
+  req.on('error', e => reject(e.message));
+  req.write(JSON.stringify(payload));
+  req.end();
+})
