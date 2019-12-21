@@ -6,6 +6,8 @@ const translate = new AWS.Translate();
 
 exports.handler = async (event: Event) => new Promise(async (resolve) => {
 
+  console.log('Started controller for converting...');
+
   const token = 
     await post({ base64string: event['base64string'] });
 
@@ -20,12 +22,16 @@ exports.handler = async (event: Event) => new Promise(async (resolve) => {
     ]
   }
 
+  console.log(`Successfully converted finnish 
+    speech to finnish text [${token['msg']}]. Converting to english now..`)
+
   translate.translateText(params, (err: Error, data: TranslateTextResponse) => {
     if (err) {
       console.error(err);
       return resolve({ error: true, msg: err.message });
     } 
     else {
+      console.log('Converted finnish text to english text: ' + data.TranslatedText)
       return resolve({ error: false, msg: data.TranslatedText });
     }
   });
@@ -50,7 +56,10 @@ const post = (payload) => new Promise((resolve, reject) => {
   const req = http.request(options, res => {
     let buffer = '';
     res.on('data', chunk => buffer += chunk)
-    res.on('end', () => resolve(JSON.parse(buffer)))
+    res.on('end', () => {
+      console.log('Ended transforming: ' + buffer);
+      resolve(JSON.parse(buffer))
+    })
   });
   req.on('error', e => reject(e.message));
   req.write(JSON.stringify(payload));
