@@ -12,7 +12,6 @@ plugins:
   - serverless-ignore
   - serverless-plugin-typescript
 
-# you can add statements to the Lambda function's IAM Role here
 iamRoleStatements:
   - Effect: Allow
     Action:
@@ -20,6 +19,7 @@ iamRoleStatements:
       - cloudwatch:*
       - sns:*
       - ses:*
+      - translate:*
 
 functions:
   # Get user's Kela information
@@ -49,7 +49,8 @@ functions:
   ConvertController:
     handler: lambdas/convertController/controller.handler
     name: kela-ConvertController
-    description: ---
+    description: Controller which passes base64string -audio-files for EC2-container and returns english text for the bot
+    timeout: 10
 
 resources:
   Resources:
